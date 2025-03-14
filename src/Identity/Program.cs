@@ -15,6 +15,15 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllersWithViews();
+// Configure Razor view locations
+builder.Services.Configure<RazorViewEngineOptions>(options =>
+{
+    options.ViewLocationFormats.Clear();
+    options.ViewLocationFormats.Add("/API/Views/{1}/{0}.cshtml");
+    options.ViewLocationFormats.Add("/API/Views/Shared/{0}.cshtml");
+});
+
+
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -30,6 +39,7 @@ var app = builder.Build();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseStaticFiles();
 
 app.MapControllers();
 

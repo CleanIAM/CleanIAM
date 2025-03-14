@@ -1,0 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace Identity.Api.ViewModels.Signin;
+
+public class SigninViewModel
+{
+    [Required]
+    [EmailAddress]
+    public required string Email { get; set; } 
+    
+    [Required]
+    public required string Password { get; set; }
+}
