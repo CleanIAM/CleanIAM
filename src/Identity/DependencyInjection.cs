@@ -5,22 +5,63 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
 
+using System.Reflection;
+using System.Text;
+using System.Text.Json.Serialization;
+using CommunityToolkit.Diagnostics;
+using JasperFx.CodeGeneration;
+using Marten;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using OpenTelemetry.Trace;
+using Wolverine;
+using Wolverine.FluentValidation;
+using Wolverine.Http;
+using Wolverine.Http.FluentValidation;
+using Wolverine.Http.Marten;
+using Wolverine.Marten;
+
 namespace Identity;
 
 public static class DependencyInjection
 {
+    
+    
+    public static IHostBuilder UseProjects(this IHostBuilder host, string[] assemblies)
+    {
+        host.UseWolverine(opts =>
+        {
+            foreach (var assembly in assemblies)
+                opts.Discovery.IncludeAssembly(Assembly.Load(assembly));
+            opts.CodeGeneration.TypeLoadMode = TypeLoadMode.Auto;
+
+            opts.Policies.AutoApplyTransactions();
+            opts.Policies.UseDurableLocalQueues();
+            opts.UseFluentValidation();
+        });
+
+        return host;
+    }
+    
     public static IServiceCollection AddDatabases(this IServiceCollection serviceCollection,
         IConfiguration configuration)
     {
-        var dbConnectionString = configuration.GetSection("DbSettings:ConnectionString")["oidc"];
+        var dbConnectionString = configuration.GetSection("DbSettings:ConnectionStrings")["oidc"];
         Guard.IsNotNullOrEmpty(dbConnectionString, "Connection string not provided");
 
         serviceCollection.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseNpgsql(dbConnectionString);
-
             options.UseOpenIddict();
         });
+        
+        serviceCollection.AddMarten(configuration);
 
         return serviceCollection;
     }
@@ -30,7 +71,7 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         var encryptionKey = configuration.GetSection("OpenIddict")["EncryptionKey"];
-        Guard.IsNotNullOrEmpty(encryptionKey, "Encryption key not provided");
+        Guard.IsNotNullOrEmpty(encryptionKey, "Encryption key");
 
         serviceCollection.AddOpenIddict()
             .AddCore(options =>
@@ -41,7 +82,8 @@ public static class DependencyInjection
             .AddServer(options =>
             {
                 options.SetAuthorizationEndpointUris("/connect/authorize")
-                    .SetTokenEndpointUris("/connect/token");
+                    .SetTokenEndpointUris("/connect/token")
+                    .SetEndSessionEndpointUris("/connect/endsession");
 
                 options.AllowAuthorizationCodeFlow()
                     .AllowRefreshTokenFlow();
@@ -49,7 +91,9 @@ public static class DependencyInjection
                 options.AddDevelopmentSigningCertificate();
 
                 options.UseAspNetCore()
-                    .EnableAuthorizationEndpointPassthrough();
+                    .EnableAuthorizationEndpointPassthrough()
+                    .EnableErrorPassthrough()
+                    .EnableEndSessionEndpointPassthrough();
 
                 options.AddEncryptionKey(new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(encryptionKey)));
@@ -98,5 +142,41 @@ public static class DependencyInjection
                     OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange
                 }
             });
+    }
+
+    public static IServiceCollection AddMarten(this IServiceCollection services, IConfiguration configuration)
+    {
+        var dbSchemeName = configuration.GetSection("DbSettings:DatabaseNames")["MartenDb"];
+        var connectionString =
+            configuration.GetSection("DbSettings:ConnectionStrings")["MartenDb"];
+        Guard.IsNotNullOrEmpty(dbSchemeName, "Db scheme");
+        Guard.IsNotNullOrEmpty(connectionString, "Connection string");
+
+        services.AddMarten(opts =>
+            {
+                opts.Connection(connectionString);
+                opts.DatabaseSchemaName = dbSchemeName;
+                opts.Policies.AllDocumentsAreMultiTenanted();
+            })
+            .ApplyAllDatabaseChangesOnStartup()
+            .UseLightweightSessions()
+            // if crashes and throws exception "method not found", CHECK IF IN ALL PROJECTS ARE SAME VERSIONS OF PACKAGES!!!!
+            .IntegrateWithWolverine();
+
+        // TODO: Add multitenancy support
+
+        // services.AddMartenTenancyDetection(opts =>
+        // {
+        //     // Tenant name is organization id
+        //     opts.IsClaimTypeNamed(SharedKernelConstants.OrganizationId);
+        //     opts.DefaultIs("default_tenant");
+        // });
+
+        services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
+        return services;
     }
 }
