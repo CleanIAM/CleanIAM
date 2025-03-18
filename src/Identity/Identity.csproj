@@ -12,6 +12,7 @@
         <PackageReference Include="Marten" Version="7.38.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11"/>
         <PackageReference Include="Npgsql" Version="9.0.3"/>
+        <PackageReference Include="NSec.Cryptography" Version="24.4.0" />
         <PackageReference Include="OpenIddict.AspNetCore" Version="6.1.1"/>
         <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="6.1.1"/>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4"/>
