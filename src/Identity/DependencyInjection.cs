@@ -84,6 +84,13 @@ public static class DependencyInjection
                 options.SetAuthorizationEndpointUris("/connect/authorize")
                     .SetTokenEndpointUris("/connect/token")
                     .SetEndSessionEndpointUris("/connect/endsession");
+                    
+                    // .SetDeviceAuthorizationEndpointUris("connect/device")
+                    // .SetEndUserVerificationEndpointUris("connect/verify")
+                    // .SetIntrospectionEndpointUris("connect/introspect")
+                    // .SetPushedAuthorizationEndpointUris("connect/par")
+                    // .SetRevocationEndpointUris("connect/revoke")
+                    // .SetUserInfoEndpointUris("connect/userinfo");
 
                 options.AllowAuthorizationCodeFlow()
                     .AllowRefreshTokenFlow();
@@ -125,6 +132,7 @@ public static class DependencyInjection
                 {
                     new Uri("https://localhost:3000/signin-callback")
                 },
+                PostLogoutRedirectUris = { new Uri("https://localhost:3000/signout-callback") },
                 Permissions =
                 {
                     OpenIddictConstants.Permissions.Endpoints.Authorization,
@@ -160,7 +168,6 @@ public static class DependencyInjection
             })
             .ApplyAllDatabaseChangesOnStartup()
             .UseLightweightSessions()
-            // if crashes and throws exception "method not found", CHECK IF IN ALL PROJECTS ARE SAME VERSIONS OF PACKAGES!!!!
             .IntegrateWithWolverine();
 
         // TODO: Add multitenancy support

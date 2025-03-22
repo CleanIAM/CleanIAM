@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Identity.Api.ViewModels.Auth;
 using Identity.Core;
 using Identity.Infrastructure;
 using Microsoft.AspNetCore;
@@ -62,12 +63,22 @@ public class AuthController(ISigninRequestService signinRequestService) : Contro
     }
     
     [HttpGet("endsession")]
-    public async Task<IActionResult> Signout([FromQuery] string clientId, [FromQuery] string post_logout_redirect_uri)
+    public IActionResult EndSession()
+    {
+        var parameters = HttpContext.Request.Query.ToArray();
+        return View(new EndSessionViewModel
+        {
+            Parameters = parameters,
+        });
+    }
+
+
+    [HttpPost("endsession")]
+    public async Task<IActionResult> EndSession([FromForm] EndSessionViewModel model)
     {
         //TODO: Check if the given client allows given redirect uri
-        
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         
-        return Redirect(post_logout_redirect_uri);
+        return Redirect("https://localhost:3000/");
     }
 }
