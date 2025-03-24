@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Identity.Api.ViewModels.Shared;
 using Identity.Api.ViewModels.Signin;
+using Identity.Application.Interfaces;
 using Identity.Infrastructure;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -27,7 +28,7 @@ public class SigninController(ISigninRequestService signinRequestService): Contr
         // If user already authenticated redirect to authorize
         if (User.Identity?.IsAuthenticated == true)
         {
-            return RedirectToAction("Authorize", "Auth", signinRequestService.CreateOIDCQueryObject(signinRequest) );
+            return RedirectToAction("Authorize", "Auth", signinRequestService.CreateOidcQueryObject(signinRequest) );
         }
 
 
@@ -96,10 +97,8 @@ public class SigninController(ISigninRequestService signinRequestService): Contr
             new ClaimsPrincipal(claimsIdentity),
             authProperties);
         
-        return RedirectToAction("Authorize", "Auth", signinRequestService.CreateOIDCQueryObject(signinRequest));
+        return RedirectToAction("Authorize", "Auth", signinRequestService.CreateOidcQueryObject(signinRequest));
     }
-
-
     
     [HttpGet("test")]
     public async Task<IResult> Test()

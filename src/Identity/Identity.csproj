@@ -37,6 +37,17 @@
         <UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
     </ItemGroup>
 
+
+    <ItemGroup>
+      <Folder Include="Application\Services\" />
+      <Folder Include="Internal\Generated\WolverineHandlers\" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\SharedKernel\SharedKernel.csproj" />
+    </ItemGroup>
+
     <Target Name="Tailwind" BeforeTargets="Build">
         <Exec Command="npx @tailwindcss/cli -i ./wwwroot/css/base.css -o ./wwwroot/css/main.css"/>
     </Target>

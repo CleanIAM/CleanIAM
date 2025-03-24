@@ -1,6 +1,7 @@
 using Identity;
-using Identity.Application.Services;
+using Identity.Application.Interfaces;
 using Identity.Infrastructure;
+using Identity.Infrastructure.Services;
 using Lamar.Microsoft.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -24,6 +25,7 @@ string[] assemblies = ["Identity"];
 builder.Services.AddWolverineHttp();
 
 builder.Services.AddScoped<ISigninRequestService, SigninRequestService>();
+builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
 
 
 builder.Host.UseProjects(assemblies);

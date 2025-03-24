@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity", "src\Identity\Id
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "src\Console\Console.csproj", "{268654A1-8ADF-4FFB-A8B0-5E7FF1B38C4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedKernel", "SharedKernel\SharedKernel.csproj", "{03806D15-F836-4198-97DC-9CE07A708A56}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{268654A1-8ADF-4FFB-A8B0-5E7FF1B38C4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{268654A1-8ADF-4FFB-A8B0-5E7FF1B38C4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{268654A1-8ADF-4FFB-A8B0-5E7FF1B38C4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03806D15-F836-4198-97DC-9CE07A708A56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03806D15-F836-4198-97DC-9CE07A708A56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03806D15-F836-4198-97DC-9CE07A708A56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03806D15-F836-4198-97DC-9CE07A708A56}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,4 +1,4 @@
-namespace Identity.Core;
+namespace Identity.Core.Users;
 
 public class User
 {
@@ -6,5 +6,5 @@ public class User
     public string Email { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string PasswordHash { get; set; }
+    public HashedPassword HashedPassword { get; set; }
 }

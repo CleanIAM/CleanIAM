@@ -5,5 +5,5 @@ namespace Identity.Core;
 public class SigninRequest
 {
     public Guid Id { get; set; }
-    public OpenIddictRequest oidcRequest { get; set; }
+    public required OpenIddictRequest OidcRequest { get; set; }
 }

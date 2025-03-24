@@ -1,11 +1,11 @@
 using System.Security.Cryptography;
 using System.Text;
-using Identity.Infrastructure;
+using Identity.Application.Interfaces;
 using NSec.Cryptography;
 
-namespace Identity.Application.Services;
+namespace Identity.Infrastructure.Services;
 
-public class PasswordService : IPasswordService
+public class PasswordHasher : IPasswordHasher
 {
     private readonly Argon2id _argon;
 
@@ -13,7 +13,7 @@ public class PasswordService : IPasswordService
     private const int SaltSize = 16;
     private const int HashSize = 128;
 
-    public PasswordService()
+    public PasswordHasher()
     {
         // Configuration for `Argon2id` algorithm is based on OWASP recommendations:
         // https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
