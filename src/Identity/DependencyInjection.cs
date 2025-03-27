@@ -42,7 +42,7 @@ public static class DependencyInjection
             opts.Policies.AutoApplyTransactions();
             opts.Policies.UseDurableLocalQueues();
             opts.UseFluentValidation();
-            opts.CodeGeneration.TypeLoadMode = TypeLoadMode.Auto;
+            // opts.CodeGeneration.TypeLoadMode = TypeLoadMode.Auto;
         });
 
         MapsterConfig.Configure();
@@ -106,10 +106,11 @@ public static class DependencyInjection
                     .EnableErrorPassthrough()
                     .EnableEndSessionEndpointPassthrough();
 
+                options.DisableAccessTokenEncryption();
+
                 options.AddEncryptionKey(new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(encryptionKey)));
             });
-
         return serviceCollection;
     }
 
@@ -125,7 +126,7 @@ public static class DependencyInjection
 
     private static async Task CreateExampleOidcClient(AsyncServiceScope scope)
     {
-        var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
+        var applicationManager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
 
         var feClient = new OpenIddictApplicationDescriptor
         {
@@ -146,7 +147,7 @@ public static class DependencyInjection
                 OpenIddictConstants.Permissions.Scopes.Email,
                 OpenIddictConstants.Permissions.Scopes.Profile,
                 OpenIddictConstants.Permissions.Scopes.Roles,
-                OpenIddictConstants.Permissions.Prefixes.Scope
+                OpenIddictConstants.Permissions.Prefixes.Scope + "BE1"
             },
             Requirements =
             {
@@ -154,8 +155,8 @@ public static class DependencyInjection
             }
         };
 
-        if (await manager.FindByClientIdAsync("example-FE-client") is null)
-            await manager.CreateAsync(feClient);
+        if (await applicationManager.FindByClientIdAsync("example-FE-client") is null)
+            await applicationManager.CreateAsync(feClient);
 
 
         var beClient = new OpenIddictApplicationDescriptor
@@ -165,19 +166,34 @@ public static class DependencyInjection
             ClientType = OpenIddictConstants.ClientTypes.Confidential,
             Permissions =
             {
-                OpenIddictConstants.Permissions.Endpoints.Authorization,
-                OpenIddictConstants.Permissions.Endpoints.Token,
-                OpenIddictConstants.Permissions.Endpoints.Introspection,
-                OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
-                OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,
-                OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
-                OpenIddictConstants.Permissions.ResponseTypes.Code,
-                OpenIddictConstants.Permissions.Prefixes.Scope + "test-api"
+                OpenIddictConstants.Permissions.Endpoints.Introspection
             }
         };
 
-        if (await manager.FindByClientIdAsync("example-BE-client") is null)
-            await manager.CreateAsync(beClient);
+        if (await applicationManager.FindByClientIdAsync("example-BE-client") is null)
+            await applicationManager.CreateAsync(beClient);
+
+        var scopeManager = scope.ServiceProvider.GetRequiredService<IOpenIddictScopeManager>();
+
+        if (await scopeManager.FindByNameAsync("BE1") is null)
+            await scopeManager.CreateAsync(new OpenIddictScopeDescriptor
+            {
+                Name = "BE1",
+                Resources =
+                {
+                    "example-BE-client"
+                }
+            });
+
+        if (await scopeManager.FindByNameAsync("api2") is null)
+            await scopeManager.CreateAsync(new OpenIddictScopeDescriptor
+            {
+                Name = "api2",
+                Resources =
+                {
+                    "resource_server_2"
+                }
+            });
     }
 
     public static IServiceCollection AddMarten(this IServiceCollection services, IConfiguration configuration)

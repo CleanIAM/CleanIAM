@@ -4,10 +4,7 @@ namespace Identity.Api.ViewModels.Signin;
 
 public class SigninViewModel
 {
-    [Required]
-    [EmailAddress]
-    public required string Email { get; set; } 
-    
-    [Required]
-    public required string Password { get; set; }
+    [Required] [EmailAddress] public required string Email { get; set; }
+
+    [Required] [MaxLength(128)] public required string Password { get; set; }
 }

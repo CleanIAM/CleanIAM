@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using Identity.Application.Interfaces;
+using Identity.Core.Users;
 using NSec.Cryptography;
 
 namespace Identity.Infrastructure.Services;
@@ -26,7 +27,7 @@ public class PasswordHasher : IPasswordHasher
         _argon = argon;
     }
 
-    public PasswordHash Hash(string password)
+    public HashedPassword Hash(string password)
     {
         var salt = RandomNumberGenerator.GetBytes(SaltSize);
 
@@ -34,10 +35,10 @@ public class PasswordHasher : IPasswordHasher
 
         var hash = _argon.DeriveBytes(passwordBytes, salt, 128);
 
-        return new PasswordHash(hash, salt);
+        return new HashedPassword(hash, salt);
     }
 
-    public bool Compare(string password, PasswordHash hash)
+    public bool Compare(string password, HashedPassword hash)
     {
         var passwordBytes = Encoding.UTF8.GetBytes(password);
 

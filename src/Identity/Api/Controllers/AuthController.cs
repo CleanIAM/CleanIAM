@@ -3,8 +3,8 @@ using Identity.Api.ViewModels.Auth;
 using Identity.Api.ViewModels.Shared;
 using Identity.Application.Interfaces;
 using Identity.Core;
-using Identity.Infrastructure;
 using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
@@ -13,7 +13,9 @@ using OpenIddict.Server.AspNetCore;
 namespace Identity.Api.Controllers;
 
 [Route("/connect")]
-public class AuthController(ISigninRequestService signinRequestService, IOpenIddictTokenManager tokenManager)
+public class AuthController(
+    ISigninRequestService signinRequestService,
+    IOpenIddictScopeManager scopeManager)
     : Controller
 {
     [HttpGet("authorize")]
@@ -51,8 +53,10 @@ public class AuthController(ISigninRequestService signinRequestService, IOpenIdd
 
         // Add the claims that will be persisted in the tokens.
         identity.AddClaim(new Claim(OpenIddictConstants.Claims.Subject, Guid.NewGuid().ToString()));
-
+        identity.AddClaim(new Claim(OpenIddictConstants.Claims.Name, "John Doe"));
         identity.SetScopes(oidcRequest.GetScopes());
+        identity.SetResources(await scopeManager.ListResourcesAsync(identity.GetScopes()).ToListAsync());
+
         // Allow all claims to be added in the access tokens.
         identity.SetDestinations(_ => [OpenIddictConstants.Destinations.AccessToken]);
 
@@ -78,10 +82,13 @@ public class AuthController(ISigninRequestService signinRequestService, IOpenIdd
         if (oidcRequest == null)
             return View("Error", new ErrorViewModel { Title = "Error", Message = "Invalid end session request." });
 
-        if (oidcRequest.IdTokenHint == null)
-            return View("Error", new ErrorViewModel { Title = "Error", Message = "Invalid id_token_hint." });
+        // if (oidcRequest.IdTokenHint == null)
+        // {
+        //     
+        //     return View("Error", new ErrorViewModel { Title = "Error", Message = "Invalid id_token_hint." });
+        // }
 
-        var token = await tokenManager.FindByReferenceIdAsync(oidcRequest.IdTokenHint);
+        // var token = await tokenManager.FindByReferenceIdAsync(oidcRequest.IdTokenHint);
 
 
         //
@@ -117,6 +124,9 @@ public class AuthController(ISigninRequestService signinRequestService, IOpenIdd
 
         // Continue with the logout process
         // ...
+
+
+        await HttpContext.SignOutAsync();
 
         return Redirect("https://localhost:3000/");
     }

@@ -1,9 +1,24 @@
+using Identity.Core.Users;
+
 namespace Identity.Application.Interfaces;
 
-public record PasswordHash(byte[] Hash, byte[] Salt);
-
+/// <summary>
+/// Interface for password hashing
+/// </summary>
 public interface IPasswordHasher
 {
-    bool Compare(string password, PasswordHash hash);
-    PasswordHash Hash(string password);
+    /// <summary>
+    /// Compare password with hash
+    /// </summary>
+    /// <param name="password">password as a string</param>
+    /// <param name="hash">Password hash to compare the password to</param>
+    /// <returns>`True` if password matches the hast, `False` otherwise</returns>
+    bool Compare(string password, HashedPassword hash);
+
+    /// <summary>
+    /// Hash password
+    /// </summary>
+    /// <param name="password">Password to hash</param>
+    /// <returns>Hashed password</returns>
+    HashedPassword Hash(string password);
 }
