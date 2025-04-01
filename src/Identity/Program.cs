@@ -26,7 +26,7 @@ builder.Services.AddWolverineHttp();
 
 builder.Services.AddScoped<ISigninRequestService, SigninRequestService>();
 builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
-
+builder.Services.AddTransient<IIdentityBuilderService, IdentityBuilderService>();
 
 builder.Host.UseProjects(assemblies);
 

@@ -42,7 +42,7 @@ public static class DependencyInjection
             opts.Policies.AutoApplyTransactions();
             opts.Policies.UseDurableLocalQueues();
             opts.UseFluentValidation();
-            // opts.CodeGeneration.TypeLoadMode = TypeLoadMode.Auto;
+            opts.CodeGeneration.TypeLoadMode = TypeLoadMode.Dynamic;
         });
 
         MapsterConfig.Configure();

@@ -5,6 +5,9 @@ using SharedKernel.Infrastructure;
 
 namespace Identity.Application.Interfaces;
 
+/// <summary>
+/// Validate if the password is strong enough or contains required characters
+/// </summary>
 public interface IPasswordValidator
 {
     /// <summary>

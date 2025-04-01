@@ -41,11 +41,6 @@
 
 
     <ItemGroup>
-        <Folder Include="Application\Services\"/>
-    </ItemGroup>
-
-
-    <ItemGroup>
         <ProjectReference Include="..\..\SharedKernel\SharedKernel.csproj"/>
     </ItemGroup>
 
