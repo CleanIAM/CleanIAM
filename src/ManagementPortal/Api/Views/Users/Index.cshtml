@@ -1,0 +1,47 @@
+@page
+@model ManagementPortal.Api.Views.Users.Index
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Users";
+}
+
+<div>
+    <h1>Users</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Users[0].Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users[0].FirstName)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Users[0].LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users[0].Email)
+            </th>
+        </tr>
+        </thead>
+
+
+        <tbody>
+
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.FirstName</td>
+                <td>@user.LastName</td>
+                <td>@user.Email</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+
+</div>

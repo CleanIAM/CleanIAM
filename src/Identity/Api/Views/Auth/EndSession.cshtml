@@ -4,9 +4,9 @@
 <form method="post">
     @foreach (var parameter in Model.Parameters)
     {
-    <input type="hidden" name="@parameter.Key" value="@parameter.Value" />
+        <input type="hidden" name="@parameter.Key" value="@parameter.Value"/>
     }
-    
+
     <button type="submit">Sign out</button>
 
 </form>

@@ -1,4 +1,4 @@
-namespace ManagementPortal.Api.ViewModels.Shared;
+namespace Identity.Api.ViewModels.Shared;
 
 public class ErrorViewModel
 {

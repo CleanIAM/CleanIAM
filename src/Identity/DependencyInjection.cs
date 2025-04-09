@@ -31,7 +31,6 @@ namespace Identity;
 
 public static class DependencyInjection
 {
-
     public static IServiceCollection AddOpenIddict(this IServiceCollection serviceCollection,
         IConfiguration configuration)
     {
@@ -158,6 +157,4 @@ public static class DependencyInjection
                 }
             });
     }
-
-   
 }

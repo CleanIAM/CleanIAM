@@ -21,7 +21,8 @@ public class SigninRequestService(IDocumentSession documentSession) : ISigninReq
     public async Task<SigninRequest?> DeleteAsync(Guid id)
     {
         var requestToDelete = await GetAsync(id);
-        if (requestToDelete == null) return null;
+        if (requestToDelete == null)
+            return null;
         documentSession.Delete(requestToDelete);
 
         await documentSession.SaveChangesAsync();

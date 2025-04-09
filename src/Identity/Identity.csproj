@@ -12,8 +12,8 @@
         <PackageReference Include="Marten" Version="7.38.1"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.1">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Npgsql" Version="9.0.3"/>
         <PackageReference Include="NSec.Cryptography" Version="24.4.0"/>
@@ -38,10 +38,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Api\" />
-        <Folder Include="Application\" />
-        <Folder Include="Core\" />
-        <Folder Include="Infrastructure\" />
+        <Folder Include="Api\"/>
+        <Folder Include="Application\"/>
+        <Folder Include="Core\"/>
+        <Folder Include="Infrastructure\"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -49,14 +49,20 @@
         <UpToDateCheckBuilt Include="tailwind.config.js" Set="Css"/>
     </ItemGroup>
 
-    
+
     <ItemGroup>
-      <ProjectReference Include="..\Identity.AnticorrutptionLayer\Identity.AnticorrutptionLayer.csproj" />
-      <ProjectReference Include="..\SharedKernel\SharedKernel.csproj" />
+        <ProjectReference Include="..\Identity.AnticorrutptionLayer\Identity.AnticorrutptionLayer.csproj"/>
+        <ProjectReference Include="..\SharedKernel\SharedKernel.csproj"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <_ContentIncludedByDefault Remove="Api\Views\Users\CreateUser.cshtml"/>
+        <_ContentIncludedByDefault Remove="Api\Views\Users\Index.cshtml"/>
     </ItemGroup>
 
     <Target Name="Tailwind" BeforeTargets="Build">
         <Exec Command="npx @tailwindcss/cli -i ./wwwroot/css/base.css -o ./wwwroot/css/main.css"/>
     </Target>
-    
+
 </Project>

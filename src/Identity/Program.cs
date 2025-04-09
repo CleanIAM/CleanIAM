@@ -1,10 +1,10 @@
 using Identity;
 using Identity.Application.Interfaces;
-using Identity.Infrastructure;
 using Identity.Infrastructure.Services;
 using Lamar.Microsoft.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;
+using SharedKernel;
 using Wolverine.Http;
 
 var builder = WebApplication.CreateBuilder(args);

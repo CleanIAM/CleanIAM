@@ -13,7 +13,6 @@ namespace SharedKernel;
 
 public static class DependencyInjection
 {
-
     public static IHostBuilder UseProjects(this IHostBuilder host, string[] assemblies)
     {
         host.UseWolverine(opts =>
@@ -27,18 +26,18 @@ public static class DependencyInjection
             opts.UseFluentValidation();
             opts.CodeGeneration.TypeLoadMode = TypeLoadMode.Dynamic;
         });
-        
+
         return host;
     }
-    
+
     public static IServiceCollection AddDatabases(this IServiceCollection serviceCollection,
         IConfiguration configuration)
     {
+        var dbConnectionString = configuration.GetSection("DbSettings:ConnectionStrings")["oidc"];
+        Guard.IsNotNullOrEmpty(dbConnectionString, "Connection string not provided");
 
         serviceCollection.AddDbContext<ApplicationDbContext>(options =>
         {
-            var dbConnectionString = configuration.GetSection("DbSettings:ConnectionStrings")["oidc"];
-            Guard.IsNotNullOrEmpty(dbConnectionString, "Connection string not provided");
             options.UseNpgsql(dbConnectionString);
             options.UseOpenIddict();
         });
@@ -47,7 +46,7 @@ public static class DependencyInjection
 
         return serviceCollection;
     }
-    
+
     public static IServiceCollection AddMarten(this IServiceCollection services, IConfiguration configuration)
     {
         var dbSchemeName = configuration.GetSection("DbSettings:DatabaseNames")["MartenDb"];
@@ -87,6 +86,4 @@ public static class DependencyInjection
             });
         return services;
     }
-
-
 }

@@ -10,6 +10,7 @@ public class HashedPassword(byte[] hash, byte[] salt, string hashAlgorithmSignat
     /// Hash of the password
     /// </summary>
     public byte[] Hash { get; set; } = hash;
+
     /// <summary>
     /// Salt used to create the hash
     /// </summary>

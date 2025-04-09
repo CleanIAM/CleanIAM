@@ -1,7 +1,12 @@
+using Lamar.Microsoft.DependencyInjection;
+using ManagementPortal;
 using Microsoft.AspNetCore.Mvc.Razor;
 using SharedKernel;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseLamar();
+
+
 string[] assemblies = ["ManagementPortal"];
 
 builder.Host.UseProjects(assemblies);
@@ -24,8 +29,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDatabases(builder.Configuration);
-
-
+builder.Services.AddOpenIddict(builder.Configuration);
 
 
 var app = builder.Build();

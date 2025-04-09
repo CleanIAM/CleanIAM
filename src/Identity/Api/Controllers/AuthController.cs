@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Identity.Api.ViewModels.Auth;
 using Identity.Api.ViewModels.Shared;
 using Identity.Application.Interfaces;
@@ -6,7 +5,6 @@ using Identity.Core;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 

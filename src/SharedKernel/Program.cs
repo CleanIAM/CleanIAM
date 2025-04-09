@@ -8,6 +8,5 @@ builder.Host.UseProjects(assemblies);
 builder.Services.AddDatabases(builder.Configuration);
 
 
-
 var app = builder.Build();
 app.Run();

@@ -1,0 +1,43 @@
+@page
+@model ManagementPortal.Api.Views.Clients.Index
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Clients";
+}
+
+
+<div>
+
+
+    <div>
+        <h1>Clients</h1>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Applications[0].ClientId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Applications[0].ClientType)
+                </th>
+            </tr>
+            </thead>
+
+
+            <tbody>
+
+            @foreach (var applications in Model.Applications)
+            {
+                <tr>
+                    <td>@applications.ClientId</td>
+                    <td>@applications.ClientType</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+
+    </div>
+</div>
