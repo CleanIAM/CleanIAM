@@ -8,7 +8,6 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 using CommunityToolkit.Diagnostics;
-using Identity.Core.Database;
 using JasperFx.CodeGeneration;
 using Marten;
 using Microsoft.AspNetCore.Authentication;
@@ -20,6 +19,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Trace;
+using SharedKernel.Core.Database;
 using Wolverine;
 using Wolverine.FluentValidation;
 using Wolverine.Http;
@@ -31,43 +31,6 @@ namespace Identity;
 
 public static class DependencyInjection
 {
-    public static IHostBuilder UseProjects(this IHostBuilder host, string[] assemblies)
-    {
-        host.UseWolverine(opts =>
-        {
-            foreach (var assembly in assemblies)
-                opts.Discovery.IncludeAssembly(Assembly.Load(assembly));
-            opts.CodeGeneration.TypeLoadMode = TypeLoadMode.Auto;
-
-            opts.Policies.AutoApplyTransactions();
-            opts.Policies.UseDurableLocalQueues();
-            opts.UseFluentValidation();
-            opts.CodeGeneration.TypeLoadMode = TypeLoadMode.Dynamic;
-        });
-
-        MapsterConfig.Configure();
-
-        return host;
-    }
-
-    public static IServiceCollection AddDatabases(this IServiceCollection serviceCollection,
-        IConfiguration configuration)
-    {
-        var dbConnectionString = configuration.GetSection("DbSettings:ConnectionStrings")["oidc"];
-        Guard.IsNotNullOrEmpty(dbConnectionString, "Connection string not provided");
-
-        serviceCollection.AddDbContext<ApplicationDbContext>(options =>
-        {
-            options.UseNpgsql(dbConnectionString);
-
-            options.UseOpenIddict();
-        });
-
-        serviceCollection.AddMarten(configuration);
-
-        return serviceCollection;
-    }
-
 
     public static IServiceCollection AddOpenIddict(this IServiceCollection serviceCollection,
         IConfiguration configuration)
@@ -196,37 +159,5 @@ public static class DependencyInjection
             });
     }
 
-    public static IServiceCollection AddMarten(this IServiceCollection services, IConfiguration configuration)
-    {
-        var dbSchemeName = configuration.GetSection("DbSettings:DatabaseNames")["MartenDb"];
-        var connectionString =
-            configuration.GetSection("DbSettings:ConnectionStrings")["MartenDb"];
-        Guard.IsNotNullOrEmpty(dbSchemeName, "Db scheme");
-        Guard.IsNotNullOrEmpty(connectionString, "Connection string");
-
-        services.AddMarten(opts =>
-            {
-                opts.Connection(connectionString);
-                opts.DatabaseSchemaName = dbSchemeName;
-                opts.Policies.AllDocumentsAreMultiTenanted();
-            })
-            .ApplyAllDatabaseChangesOnStartup()
-            .UseLightweightSessions()
-            .IntegrateWithWolverine();
-
-        // TODO: Add multitenancy support
-        // services.AddMartenTenancyDetection(opts =>
-        // {
-        //     // Tenant name is organization id
-        //     opts.IsClaimTypeNamed(SharedKernelConstants.OrganizationId);
-        //     opts.DefaultIs("default_tenant");
-        // });
-
-        services.AddControllers()
-            .AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            });
-        return services;
-    }
+   
 }
