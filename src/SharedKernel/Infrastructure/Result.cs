@@ -39,7 +39,7 @@ public class Result
     /// <param name="errorMessage">Error message</param>
     /// <param name="errorCode">Error code</param>
     /// <returns>Result object representing an error</returns>
-    public static Result Error(string errorMessage, int errorCode)
+    public static Result Error(string? errorMessage, int errorCode)
     {
         return new Result { Success = false, ErrorMessage = errorMessage, ErrorCode = errorCode };
     }

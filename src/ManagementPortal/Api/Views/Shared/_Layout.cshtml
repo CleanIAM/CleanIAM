@@ -3,14 +3,50 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title> Portal - @ViewData["Title"]</title>
+    <title>OIDC Management Portal - @ViewData["Title"]</title>
     <link rel="stylesheet" href="/css/main.css">
 </head>
-<body>
+<body class="min-h-screen bg-gray-50">
+    <nav class="bg-indigo-600 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <span class="text-white text-xl font-bold">OIDC Management</span>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:items-center md:space-x-4">
+                        <a href="/" class="text-white hover:bg-indigo-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                        <a href="/users" class="text-white hover:bg-indigo-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Users</a>
+                        <a href="/clients" class="text-white hover:bg-indigo-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Clients</a>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <div class="ml-3 relative">
+                        <div>
+                            <button type="button" class="bg-indigo-700 p-1 rounded-full text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-indigo-800 focus:ring-white">
+                                <span class="sr-only">User menu</span>
+                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-@RenderBody()
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        @RenderBody()
+    </main>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
-<partial name="_ValidationScriptsPartial"/>
+    <footer class="bg-white shadow-inner mt-8 py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-sm text-gray-500">OIDC Management Portal - Master's Thesis © 2025</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <partial name="_ValidationScriptsPartial"/>
 </body>
 </html>
