@@ -4,17 +4,17 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ManagementPortal.Core;
 
-public class OpeinIdClient
+public class OpenIdApplication
 {
     /// <summary>
     /// Gets or sets the application type associated with the application.
     /// </summary>
-    public string? ApplicationType { get; set; }
+    public string ApplicationType { get; set; }
 
     /// <summary>
     /// Gets or sets the client identifier associated with the application.
     /// </summary>
-    public string? ClientId { get; set; }
+    public string ClientId { get; set; }
 
     /// <summary>
     /// Gets or sets the client secret associated with the application.

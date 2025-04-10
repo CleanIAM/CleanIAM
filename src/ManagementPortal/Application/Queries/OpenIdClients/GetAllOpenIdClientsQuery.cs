@@ -8,10 +8,10 @@ public record GetAllOpenIdClientsQuery();
 
 public class GetAllOpenIdClientsQueryHandler
 {
-    public static async Task<IEnumerable<OpeinIdClient>> Handle(GetAllOpenIdClientsQuery query,
+    public static async Task<IEnumerable<OpenIdApplication>> Handle(GetAllOpenIdClientsQuery query,
         IOpenIddictApplicationManager applicationManager)
     {
         return (await applicationManager.ListAsync().ToArrayAsync())
-            .Adapt<OpeinIdClient[]>();
+            .Adapt<OpenIdApplication[]>();
     }
 }
