@@ -78,6 +78,7 @@ public static class DependencyInjection
 
     public static IServiceCollection AddUtils(this IServiceCollection services, IConfiguration configuration)
     {
+        
         services.AddControllers()
             .AddJsonOptions(options =>
             {

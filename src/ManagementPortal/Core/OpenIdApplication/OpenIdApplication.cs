@@ -21,12 +21,13 @@ public class OpenIdApplication
     /// </summary>
     public string ClientId { get; set; }
 
-    /// <summary>
-    /// Gets or sets the client secret associated with the application.
-    /// Note: depending on the application manager used when creating it,
-    /// this property may be hashed or encrypted for security reasons.
-    /// </summary>
-    public string? ClientSecret { get; set; }
+    // <summary>
+    // Gets or sets the client secret associated with the application.
+    // Note: depending on the application manager used when creating it,
+    // this property may be hashed or encrypted for security reasons.
+    // </summary>
+    // TODO: Do something with secret
+    // public string? ClientSecret { get; set; }
 
     /// <summary>
     /// Gets or sets the client type associated with the application.
@@ -46,7 +47,7 @@ public class OpenIdApplication
     /// <summary>
     /// Gets the localized display names associated with the application.
     /// </summary>
-    public Dictionary<CultureInfo, string> DisplayNames { get; } = [];
+    public Dictionary<CultureInfo, string> DisplayNames { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the JSON Web Key Set associated with the application.
@@ -56,30 +57,30 @@ public class OpenIdApplication
     /// <summary>
     /// Gets the permissions associated with the application.
     /// </summary>
-    public HashSet<string> Permissions { get; } = new(StringComparer.Ordinal);
+    public HashSet<string> Permissions { get; set; } = new(StringComparer.Ordinal);
 
     /// <summary>
     /// Gets the post-logout redirect URIs associated with the application.
     /// </summary>
-    public HashSet<Uri> PostLogoutRedirectUris { get; } = [];
+    public HashSet<Uri> PostLogoutRedirectUris { get; set; } = [];
 
     /// <summary>
     /// Gets the additional properties associated with the application.
     /// </summary>
-    public Dictionary<string, JsonElement> Properties { get; } = new(StringComparer.Ordinal);
+    public Dictionary<string, JsonElement> Properties { get; set; } = new(StringComparer.Ordinal);
 
     /// <summary>
     /// Gets the redirect URIs associated with the application.
     /// </summary>
-    public HashSet<Uri> RedirectUris { get; } = [];
+    public HashSet<Uri> RedirectUris { get; set; } = [];
 
     /// <summary>
     /// Gets the requirements associated with the application.
     /// </summary>
-    public HashSet<string> Requirements { get; } = new(StringComparer.Ordinal);
+    public HashSet<string> Requirements { get; set; } = new(StringComparer.Ordinal);
 
     /// <summary>
     /// Gets the settings associated with the application.
     /// </summary>
-    public Dictionary<string, string> Settings { get; } = new(StringComparer.Ordinal);
+    public Dictionary<string, string> Settings { get; set; } = new(StringComparer.Ordinal);
 }

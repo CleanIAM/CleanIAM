@@ -41,7 +41,8 @@ public static class DependencyInjection
             .AddCore(options =>
             {
                 options.UseEntityFrameworkCore()
-                    .UseDbContext<ApplicationDbContext>();
+                    .UseDbContext<ApplicationDbContext>()
+                    .ReplaceDefaultEntities<Guid>();
             })
             .AddServer(options =>
             {

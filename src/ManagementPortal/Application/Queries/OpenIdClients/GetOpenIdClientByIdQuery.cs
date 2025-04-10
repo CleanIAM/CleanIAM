@@ -1,6 +1,6 @@
 using ManagementPortal.Core.OpenIdApplication;
 using Mapster;
-using OpenIddict.Abstractions;
+using OpenIddict.Core;
 using OpenIddict.EntityFrameworkCore.Models;
 
 namespace ManagementPortal.Application.Queries.OpenIdClients;
@@ -17,12 +17,14 @@ public record GetOpenIdClientByIdQuery(Guid Id);
 public class GetOpenIdClientByIdQueryHandler
 {
     public static async Task<OpenIdApplication?> Handle(GetOpenIdClientByIdQuery query, 
-        IOpenIddictApplicationManager applicationManager,
+        OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager,
         CancellationToken cancellationToken)
     {
         var application = await applicationManager.FindByIdAsync(query.Id.ToString(), cancellationToken);
 
-        return application.Adapt<OpenIdApplication>();
+        var res = application.Adapt<OpenIdApplication>();
+        
+        return res;
 
     }
 }

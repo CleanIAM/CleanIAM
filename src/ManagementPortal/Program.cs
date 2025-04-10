@@ -1,8 +1,12 @@
+using System.Linq.Expressions;
 using Mapster;
 using Lamar.Microsoft.DependencyInjection;
 using ManagementPortal;
+using MapsterMapper;
 using Microsoft.AspNetCore.Mvc.Razor;
 using SharedKernel;
+
+TypeAdapterConfig.GlobalSettings.Compiler = exp => exp.CompileWithDebugInfo();
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseLamar();
@@ -14,6 +18,7 @@ builder.Host.UseProjects(assemblies);
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
+builder.Services.AddScoped<IMapper, ServiceMapper>();
 // Add services to the container.
 builder.Services.AddRazorPages().WithRazorPagesRoot("/Api/Views");
 
@@ -34,7 +39,6 @@ builder.Services.AddOpenIddict(builder.Configuration);
 
 // Configure Mapster
 MapsterConfig.Configure();
-
 
 var app = builder.Build();
 
