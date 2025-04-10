@@ -1,5 +1,6 @@
 using CommunityToolkit.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using OpenIddict.EntityFrameworkCore.Models;
 
 namespace SharedKernel.Core.Database;
 
@@ -19,6 +20,12 @@ public class ApplicationDbContext : DbContext
         // Get the schema name from the configuration
         SchemaName = dbSchemeName;
     }
+
+    // Add DbSet properties for all OpenIddict entities
+    public DbSet<OpenIddictEntityFrameworkCoreApplication<Guid>> OpenIddictEntityFrameworkCoreApplication { get; set; }
+    public DbSet<OpenIddictEntityFrameworkCoreAuthorization<Guid>> OpenIddictEntityFrameworkCoreAuthorization { get; set; }
+    public DbSet<OpenIddictEntityFrameworkCoreScope<Guid>> OpenIddictEntityFrameworkCoreScope { get; set; }
+    public DbSet<OpenIddictEntityFrameworkCoreToken<Guid>> OpenIddictEntityFrameworkCoreToken { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -9,6 +9,8 @@
     <ItemGroup>
         <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.4.0"/>
         <PackageReference Include="Mapster" Version="7.4.0"/>
+        <PackageReference Include="Mapster.Async" Version="2.0.1" />
+        <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
         <PackageReference Include="Marten" Version="7.38.1"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.1">

@@ -12,8 +12,8 @@ using SharedKernel.Core.Database;
 namespace SharedKernel.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250410213712_Update_oidc_objects")]
-    partial class Update_oidc_objects
+    [Migration("20250410215551_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

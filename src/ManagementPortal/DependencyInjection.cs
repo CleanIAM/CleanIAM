@@ -1,4 +1,3 @@
-using CommunityToolkit.Diagnostics;
 using SharedKernel.Core.Database;
 
 namespace ManagementPortal;
@@ -12,7 +11,8 @@ public static class DependencyInjection
             .AddCore(options =>
             {
                 options.UseEntityFrameworkCore()
-                    .UseDbContext<ApplicationDbContext>();
+                    .UseDbContext<ApplicationDbContext>()
+                    .ReplaceDefaultEntities<Guid>();
             });
         return serviceCollection;
     }
