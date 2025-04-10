@@ -1,5 +1,6 @@
 using ManagementPortal.Application.Queries.OpenIdClients;
 using ManagementPortal.Core;
+using ManagementPortal.Core.OpenIdApplication;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Wolverine;
 

@@ -1,6 +1,7 @@
-using ManagementPortal.Core;
+using ManagementPortal.Core.OpenIdApplication;
 using Mapster;
 using OpenIddict.Abstractions;
+using OpenIddict.EntityFrameworkCore.Models;
 
 namespace ManagementPortal.Application.Queries.OpenIdClients;
 

@@ -1,4 +1,5 @@
 using ManagementPortal.Core;
+using ManagementPortal.Core.OpenIdApplication;
 using Mapster;
 using OpenIddict.Abstractions;
 

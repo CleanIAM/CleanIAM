@@ -2,16 +2,15 @@ using System.Globalization;
 using System.Text.Json;
 using Microsoft.IdentityModel.Tokens;
 
-namespace ManagementPortal.Core;
+namespace ManagementPortal.Core.OpenIdApplication;
 
 public class OpenIdApplication
 {
-    
     /// <summary>
     /// Gets or sets the id associated with the application.
     /// </summary>
     public Guid Id { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the application type associated with the application.
     /// </summary>
@@ -32,12 +31,12 @@ public class OpenIdApplication
     /// <summary>
     /// Gets or sets the client type associated with the application.
     /// </summary>
-    public string? ClientType { get; set; }
+    public ClientType? ClientType { get; set; }
 
     /// <summary>
     /// Gets or sets the consent type associated with the application.
     /// </summary>
-    public string? ConsentType { get; set; }
+    public ConsentType? ConsentType { get; set; }
 
     /// <summary>
     /// Gets or sets the display name associated with the application.

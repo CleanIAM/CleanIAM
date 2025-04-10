@@ -1,5 +1,6 @@
 using System.Text.Json;
 using ManagementPortal.Core;
+using ManagementPortal.Core.OpenIdApplication;
 using Mapster;
 
 namespace ManagementPortal;
