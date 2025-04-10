@@ -39,7 +39,6 @@ public static class DependencyInjection
         serviceCollection.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseNpgsql(dbConnectionString);
-            options.UseOpenIddict();
         });
 
         serviceCollection.AddMarten(configuration);
