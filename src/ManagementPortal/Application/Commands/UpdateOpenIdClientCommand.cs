@@ -1,6 +1,5 @@
 using ManagementPortal.Core;
 using Mapster;
-using Marten;
 using OpenIddict.Abstractions;
 using SharedKernel.Infrastructure;
 
@@ -10,38 +9,39 @@ public record UpdateOpenIdClientCommand(OpenIdApplication Client);
 
 public class UpdateOpenIdClientCommandHandler
 {
-
     public static async Task<Result<object>> LoadAsync(UpdateOpenIdClientCommand command,
         IOpenIddictApplicationManager applicationManager, CancellationToken cancellationToken)
     {
-     
-        var application = await applicationManager.FindByIdAsync(command.Client.ClientId, cancellationToken);
+        // Find application by its Guid Id property
+        var application = await applicationManager.FindByIdAsync(command.Client.Id.ToString(), cancellationToken);
         if (application is null)
         {
-            return Result<object>.Error("Client not found", 400);
+            return Result<object>.Error($"Client with ID {command.Client.Id} not found", 400);
         }   
+        
         return Result<object>.Ok(application);
     }
     
-    public static async Task<Result> Handle(UpdateOpenIdClientCommand command, Result<object> result, IOpenIddictApplicationManager applicationManager, CancellationToken cancellationToken)
+    public static async Task<Result> Handle(UpdateOpenIdClientCommand command, Result<object> result, 
+        IOpenIddictApplicationManager applicationManager, CancellationToken cancellationToken)
     {
         if (result.IsError())
         {
-            return Result.Error(result.ErrorValue.Message, result.ErrorValue.Code);
+            return result.Adapt<Result>();
         }
-
         var application = result.Value;
         
-        var updatedApplication = command.Client.Adapt(application);
-
-        var validationResults = await applicationManager.ValidateAsync(updatedApplication, cancellationToken).ToListAsync(cancellationToken: cancellationToken);
-        if (!validationResults.IsEmpty())
-        {
-            return Result.Error(validationResults[0].ErrorMessage, 400);
-        }
-
-        await applicationManager.UpdateAsync(updatedApplication, cancellationToken);
+        var descriptor = command.Client.Adapt<OpenIddictApplicationDescriptor>();
         
-        return Result.Ok();
+        try
+        {
+            // Update the application
+            await applicationManager.UpdateAsync(application, descriptor, cancellationToken);
+            return Result.Ok();
+        }
+        catch (OpenIddictExceptions.ValidationException ex)
+        {
+            return Result.Error(ex.Message, 400);
+        }
     }
 }
