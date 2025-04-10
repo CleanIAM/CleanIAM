@@ -23,14 +23,16 @@ public class UpdateOpenIdClientCommandHandler
         return Result<object>.Ok(application);
     }
     
-    public static async Task<Result> Handle(UpdateOpenIdClientCommand command, Result<object> application, IOpenIddictApplicationManager applicationManager, CancellationToken cancellationToken)
+    public static async Task<Result> Handle(UpdateOpenIdClientCommand command, Result<object> result, IOpenIddictApplicationManager applicationManager, CancellationToken cancellationToken)
     {
-        if (application.IsError())
+        if (result.IsError())
         {
-            return Result.Error(application.ErrorValue.Message, application.ErrorValue.Code);
+            return Result.Error(result.ErrorValue.Message, result.ErrorValue.Code);
         }
 
-        var updatedApplication = application.Adapt(command.Client);
+        var application = result.Value;
+        
+        var updatedApplication = command.Client.Adapt(application);
 
         var validationResults = await applicationManager.ValidateAsync(updatedApplication, cancellationToken).ToListAsync(cancellationToken: cancellationToken);
         if (!validationResults.IsEmpty())

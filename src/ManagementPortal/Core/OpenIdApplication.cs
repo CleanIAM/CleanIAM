@@ -6,6 +6,12 @@ namespace ManagementPortal.Core;
 
 public class OpenIdApplication
 {
+    
+    /// <summary>
+    /// Gets or sets the id associated with the application.
+    /// </summary>
+    public Guid Id { get; set; }
+    
     /// <summary>
     /// Gets or sets the application type associated with the application.
     /// </summary>
