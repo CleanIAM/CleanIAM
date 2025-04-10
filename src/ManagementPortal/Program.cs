@@ -1,3 +1,4 @@
+using Mapster;
 using Lamar.Microsoft.DependencyInjection;
 using ManagementPortal;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -30,6 +31,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDatabases(builder.Configuration);
 builder.Services.AddOpenIddict(builder.Configuration);
+
+// Configure Mapster
+MapsterConfig.Configure();
 
 
 var app = builder.Build();
