@@ -14,8 +14,23 @@ public class UriEditModel : PageModel
         Uri = uri;
         Id = id;
     }
+    
+    public IActionResult OnPost([FromRoute] Guid id, [FromBody] string uri)
+    {
 
-    public IResult OnDelete([FromRoute] Guid id)
+        if (!Uri.TryCreate(uri, UriKind.Absolute, out var parsedUri))
+        {
+            return BadRequest("Invalid URI format.");
+        }
+        
+        Console.WriteLine($"Uri: {uri}");
+        Uri = parsedUri;
+        Id = id;
+
+        return Page();
+    }
+
+    public IActionResult OnDelete([FromRoute] Guid id)
     {
         // HTMX request will remove the element from the DOM
         return new NoContentResult();

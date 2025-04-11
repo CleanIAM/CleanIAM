@@ -126,14 +126,21 @@
                         <!-- Add new URI form -->
                         <div class="flex space-x-2">
                             <input type="text" id="new-redirect-uri"
+                                   name="new-redirect-uri"
                                    class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                                    placeholder="https://example.com/callback"/>
-                            <button type="button" onclick="addRedirectUri()"
-                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <button 
+                                hx-post="/applications/@Model.Client.Id/edit/uri"
+                                hx-target="#redirect-uris-list"
+                                hx-swap="beforeend"
+                                hx-params="new-redirect-uri"
+                                hx-tartger-4*="redirect-uri-error"
+                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Add
                             </button>
+                            
                         </div>
-                        <div id="redirect-uri-error" class="text-sm text-red-600 hidden"></div>
+                        <div id="redirect-uri-error" class="text-sm text-red-600"></div>
                     </div>
                 </div>
 
