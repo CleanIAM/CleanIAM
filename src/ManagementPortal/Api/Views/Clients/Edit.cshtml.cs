@@ -24,6 +24,15 @@ public class EditModel : PageModel
     [BindProperty]
     public OpenIdApplication Client { get; set; }
 
+    [BindProperty]
+    public string? RedirectUrisString { get; set; }
+    
+    [BindProperty]
+    public string? PostLogoutRedirectUrisString { get; set; }
+    
+    [BindProperty]
+    public string? PermissionsString { get; set; }
+
     [TempData]
     public string StatusMessage { get; set; }
 
@@ -42,6 +51,7 @@ public class EditModel : PageModel
             return NotFound();
         }
         
+        Client = application;
         return Page();
     }
 
@@ -54,11 +64,54 @@ public class EditModel : PageModel
 
         try
         {
-            // Use Mapster to map from view model to domain model
-            var application = Client.Adapt<OpenIdApplication>();
+            // Process redirect URIs from strings to Uri objects
+            Client.RedirectUris = new HashSet<Uri>();
+            if (!string.IsNullOrWhiteSpace(RedirectUrisString))
+            {
+                foreach (var uriString in RedirectUrisString.Split(new[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (Uri.TryCreate(uriString.Trim(), UriKind.Absolute, out var uri))
+                    {
+                        Client.RedirectUris.Add(uri);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, $"Invalid redirect URI: {uriString}");
+                        return Page();
+                    }
+                }
+            }
+
+            // Process post-logout redirect URIs from strings to Uri objects
+            Client.PostLogoutRedirectUris = new HashSet<Uri>();
+            if (!string.IsNullOrWhiteSpace(PostLogoutRedirectUrisString))
+            {
+                foreach (var uriString in PostLogoutRedirectUrisString.Split(new[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (Uri.TryCreate(uriString.Trim(), UriKind.Absolute, out var uri))
+                    {
+                        Client.PostLogoutRedirectUris.Add(uri);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, $"Invalid post-logout redirect URI: {uriString}");
+                        return Page();
+                    }
+                }
+            }
+            
+            // Process permissions from string to HashSet<string>
+            Client.Permissions = new HashSet<string>(StringComparer.Ordinal);
+            if (!string.IsNullOrWhiteSpace(PermissionsString))
+            {
+                foreach (var permission in PermissionsString.Split(new[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    Client.Permissions.Add(permission.Trim());
+                }
+            }
             
             // Update the application using the command
-            var command = new UpdateOpenIdApplicationCommand(application);
+            var command = new UpdateOpenIdApplicationCommand(Client);
             var result = await _bus.InvokeAsync<Result>(command);
 
             if (result.IsError())
@@ -76,5 +129,4 @@ public class EditModel : PageModel
             return Page();
         }
     }
-
 }
