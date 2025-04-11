@@ -15,24 +15,24 @@ public class UriEditModel : PageModel
         Id = id;
     }
     
-    public IActionResult OnPost([FromRoute] Guid id, [FromBody] string uri)
+    public IActionResult OnPost([FromRoute] Guid id, [FromForm(Name = "new-redirect-uri")] string uri)
     {
-
+        // Validate the URI
         if (!Uri.TryCreate(uri, UriKind.Absolute, out var parsedUri))
         {
             return BadRequest("Invalid URI format.");
         }
         
-        Console.WriteLine($"Uri: {uri}");
         Uri = parsedUri;
         Id = id;
-
+        
+        // Return the partial view for HTMX to add to the DOM
         return Page();
     }
 
     public IActionResult OnDelete([FromRoute] Guid id)
     {
         // HTMX request will remove the element from the DOM
-        return new NoContentResult();
+        return new OkResult();
     }
 }

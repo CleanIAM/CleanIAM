@@ -2,6 +2,7 @@
 @using ManagementPortal.Api.Views.Applications.Edit
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model ManagementPortal.Api.Views.Clients.EditModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 
 @{
     Layout = "_Layout";
@@ -129,12 +130,13 @@
                                    name="new-redirect-uri"
                                    class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                                    placeholder="https://example.com/callback"/>
-                            <button 
+                            <button type="button"
                                 hx-post="/applications/@Model.Client.Id/edit/uri"
-                                hx-target="#redirect-uris-list"
-                                hx-swap="beforeend"
                                 hx-params="new-redirect-uri"
-                                hx-tartger-4*="redirect-uri-error"
+                                hx-target="#redirect-uris-list"
+                                hx-target-error="#redirect-uri-error"
+                                hx-swap="beforeend"
+                                hx-headers='{"RequestVerificationToken": "@(Antiforgery.GetAndStoreTokens(ViewContext.HttpContext).RequestToken)"}'
                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Add
                             </button>
