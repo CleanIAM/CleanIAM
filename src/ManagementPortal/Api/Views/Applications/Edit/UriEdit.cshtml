@@ -1,6 +1,0 @@
-@page "/applications/{id:guid}/edit/uri"
-@model ManagementPortal.Api.Views.Applications.Edit.UriEditModel
-@{
-    Layout = null;
-}
-<partial name="_UriItemPartial" model="@(new UriEditPartialModel { Uri = Model.Uri, Id = Model.Id })" />

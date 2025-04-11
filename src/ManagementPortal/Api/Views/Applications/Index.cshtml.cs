@@ -1,10 +1,9 @@
 using ManagementPortal.Application.Queries.OpenIdApplications;
-using ManagementPortal.Core;
 using ManagementPortal.Core.OpenIdApplication;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Wolverine;
 
-namespace ManagementPortal.Api.Views.Clients;
+namespace ManagementPortal.Api.Views.Applications;
 
 public class Index(IMessageBus bus) : PageModel
 {

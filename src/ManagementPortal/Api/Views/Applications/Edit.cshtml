@@ -1,7 +1,7 @@
 @page "/applications/{id:guid}/edit"
 @using ManagementPortal.Api.Views.Applications.Edit
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@model ManagementPortal.Api.Views.Clients.EditModel
+@model EditModel
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 
 @{
@@ -120,12 +120,18 @@
                         <div id="redirect-uris-list" class="space-y-2">
                             @foreach (var uri in Model.Client.RedirectUris)
                             {
-                                <partial name="Edit/_UriItemPartial" model="@(new UriEditPartialModel { Id = Model.Client.Id, Uri = uri })"/>
+                                <partial name="Edit/UriItem" model="@(new UriItemModel{ Id = Model.Client.Id, Uri = uri })"/>
                             }
                         </div>
 
                         <!-- Add new URI form -->
-                        <div class="flex space-x-2">
+                        <div class="flex space-x-2 relative" id="redirect-uri-form">
+                            <div class="htmx-indicator absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center hidden">
+                                <svg class="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </div>
                             <input type="text" id="new-redirect-uri"
                                    name="new-redirect-uri"
                                    class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
@@ -134,15 +140,16 @@
                                 hx-post="/applications/@Model.Client.Id/edit/uri"
                                 hx-params="new-redirect-uri"
                                 hx-target="#redirect-uris-list"
-                                hx-target-error="#redirect-uri-error"
+                                hx-target-4*="#redirect-uri-error"
                                 hx-swap="beforeend"
+                                hx-indicator=".htmx-indicator"
                                 hx-headers='{"RequestVerificationToken": "@(Antiforgery.GetAndStoreTokens(ViewContext.HttpContext).RequestToken)"}'
                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Add
                             </button>
                             
                         </div>
-                        <div id="redirect-uri-error" class="text-sm text-red-600"></div>
+                        <div id="redirect-uri-error" class="text-sm text-red-600 mt-2 p-2 rounded-md"></div>
                     </div>
                 </div>
 
