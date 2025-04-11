@@ -119,8 +119,7 @@
                         <div id="redirect-uris-list" class="space-y-2">
                             @foreach (var uri in Model.Client.RedirectUris)
                             {
-                                <div>@uri</div>
-                                @await Html.PartialAsync("Edit/UriEdit", new UriEdit { Id = Model.Client.Id, Uri = uri })
+                                <partial name="Edit/_UriItemPartial" model="@(new UriEditPartialModel { Id = Model.Client.Id, Uri = uri })"/>
                             }
                         </div>
 
