@@ -18,7 +18,6 @@ builder.Host.UseProjects(assemblies);
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
-builder.Services.AddScoped<IMapper, ServiceMapper>();
 // Add services to the container.
 builder.Services.AddRazorPages().WithRazorPagesRoot("/Api/Views");
 
@@ -36,6 +35,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDatabases(builder.Configuration);
 builder.Services.AddOpenIddict(builder.Configuration);
+builder.Services.AddUtils(builder.Configuration);
 
 // Configure Mapster
 MapsterConfig.Configure();

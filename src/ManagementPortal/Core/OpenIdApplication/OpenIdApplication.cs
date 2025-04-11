@@ -1,6 +1,10 @@
 using System.Globalization;
 using System.Text.Json;
+using Mapster;
 using Microsoft.IdentityModel.Tokens;
+using OpenIddict.Abstractions;
+using OpenIddict.Core;
+using OpenIddict.EntityFrameworkCore.Models;
 
 namespace ManagementPortal.Core.OpenIdApplication;
 
@@ -83,4 +87,31 @@ public class OpenIdApplication
     /// Gets the settings associated with the application.
     /// </summary>
     public Dictionary<string, string> Settings { get; set; } = new(StringComparer.Ordinal);
+    
+    
+    public OpenIddictApplicationDescriptor ToDescriptorAsync()
+    {
+        return this.Adapt<OpenIddictApplicationDescriptor>();
+    }
+    
+    public static async Task<OpenIdApplication> FromOpenIdDictApplication(OpenIddictEntityFrameworkCoreApplication<Guid> application,
+        OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager)
+    {
+        var dest = application.Adapt<OpenIdApplication>();
+        
+        dest.Permissions = new(await applicationManager.GetPermissionsAsync(application, CancellationToken.None));
+        dest.PostLogoutRedirectUris = new((
+                await applicationManager.GetPostLogoutRedirectUrisAsync(application, CancellationToken.None))
+            .Select(uri => new Uri(uri)));
+        dest.RedirectUris = new((
+                await applicationManager.GetRedirectUrisAsync(application, CancellationToken.None))
+            .Select(uri => new Uri(uri)));
+        dest.Requirements = new(await applicationManager.GetRequirementsAsync(application, CancellationToken.None));
+        dest.Properties = new(await applicationManager.GetPropertiesAsync(application, CancellationToken.None));
+        dest.Settings = new(await applicationManager.GetSettingsAsync(application, CancellationToken.None));
+        dest.DisplayNames = new(await applicationManager.GetDisplayNamesAsync(application, CancellationToken.None));
+        dest.JsonWebKeySet = await applicationManager.GetJsonWebKeySetAsync(application, CancellationToken.None);
+
+        return dest;
+    }
 }

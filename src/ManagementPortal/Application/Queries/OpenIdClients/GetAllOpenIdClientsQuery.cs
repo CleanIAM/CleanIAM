@@ -1,8 +1,7 @@
-using ManagementPortal.Core;
 using ManagementPortal.Core.OpenIdApplication;
-using Mapster;
 using MapsterMapper;
-using OpenIddict.Abstractions;
+using OpenIddict.Core;
+using OpenIddict.EntityFrameworkCore.Models;
 
 namespace ManagementPortal.Application.Queries.OpenIdClients;
 
@@ -11,8 +10,15 @@ public record GetAllOpenIdClientsQuery();
 public class GetAllOpenIdClientsQueryHandler
 {
     public static async Task<IEnumerable<OpenIdApplication>> Handle(GetAllOpenIdClientsQuery query,
-        IOpenIddictApplicationManager applicationManager, IMapper mapper)
+        OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager, IMapper mapper)
     {
-        return await mapper.From(await applicationManager.ListAsync().ToArrayAsync()).AdaptToTypeAsync<OpenIdApplication[]>();
+        var application = await applicationManager.ListAsync().ToArrayAsync();
+
+        return await Task.WhenAll(
+            application
+                .Select(src =>
+                    OpenIdApplication.FromOpenIdDictApplication(src, applicationManager))
+        );
+
     }
 }

@@ -1,5 +1,4 @@
 using ManagementPortal.Core.OpenIdApplication;
-using Mapster;
 using OpenIddict.Core;
 using OpenIddict.EntityFrameworkCore.Models;
 
@@ -22,7 +21,7 @@ public class GetOpenIdClientByIdQueryHandler
     {
         var application = await applicationManager.FindByIdAsync(query.Id.ToString(), cancellationToken);
 
-        var res = application.Adapt<OpenIdApplication>();
+        var res = await OpenIdApplication.FromOpenIdDictApplication(application, applicationManager);
         
         return res;
 

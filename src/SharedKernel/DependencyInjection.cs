@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using CommunityToolkit.Diagnostics;
 using JasperFx.CodeGeneration;
+using Mapster;
 using Marten;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Core.Database;
@@ -78,6 +79,7 @@ public static class DependencyInjection
 
     public static IServiceCollection AddUtils(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddMapster();
         
         services.AddControllers()
             .AddJsonOptions(options =>
