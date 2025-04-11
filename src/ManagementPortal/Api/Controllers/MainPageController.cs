@@ -55,6 +55,16 @@ public class MainPageController(IMessageBus bus): Controller
             RecentActivity = recentActivity
         });
     }
+    
+
+    /// <summary>
+    /// HTMX helper method to add a remove element from the page.
+    /// </summary>
+    [HttpDelete("htmx-element")]
+    public IActionResult RemoveHtmxElement()
+    {
+        return Ok();
+    }
 }
 
 public class ActivityItem

@@ -1,12 +1,15 @@
-@model ManagementPortal.Api.Views.Applications.Edit.UriItemModel
+@model ManagementPortal.Api.Views.Applications.Edit.DynamicListItem
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 
 <div class="redirect-uri-item flex items-center space-x-2 p-2 border border-gray-200 rounded-md bg-gray-50 hx-url-item"
      hx-target="this">
-    <span class="flex-grow text-sm text-gray-700 break-all">@Model.Uri</span>
-        
+    
+    <input name="@Model.Name" hidden value="@Model.Value"/>
+    
+    <span class="flex-grow text-sm text-gray-700 break-all">@Model.Value</span>
+
     <div class="text-red-500 hover:text-red-700 focus:outline-none"
-         hx-delete="/applications/@Model.Id/edit/uri"
+         hx-delete="@Url.Action("RemoveHtmxElement", "MainPage")"
          hx-swap="delete"
          hx-params="none"
          hx-headers='{"RequestVerificationToken": "@Antiforgery.GetAndStoreTokens(Context).RequestToken"}'>

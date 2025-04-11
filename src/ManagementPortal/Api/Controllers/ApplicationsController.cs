@@ -1,32 +1,67 @@
+using ManagementPortal.Api.Views.Applications;
 using ManagementPortal.Api.Views.Applications.Edit;
+using ManagementPortal.Application.Commands.OpenIdApplications;
+using ManagementPortal.Application.Queries.OpenIdApplications;
+using ManagementPortal.Core.OpenIdApplication;
 using Microsoft.AspNetCore.Mvc;
+using SharedKernel.Infrastructure;
+using Wolverine;
 
 namespace ManagementPortal.Api.Controllers;
 
-[Route("api/applications")]
-public class ApplicationsController: Controller
+[Route("applications")]
+public class ApplicationsController(
+    IMessageBus bus
+    ): Controller
 {
     
+    /// <summary>
+    /// Show the main application page with a list of all applications.
+    /// </summary>
     [HttpGet]
-    public IActionResult Index(Guid id)
+    public async Task<IActionResult> IndexAsync()
     {
-        return View();
+        var query = new GetAllOpenIdApplicationsQuery();
+        var applications = await bus.InvokeAsync<IEnumerable<OpenIdApplication>>(query);
+        
+        return View(new ApplicationPageModel {Applications = applications.ToArray()});
     }
     
+    /// <summary>
+    /// Show the edit page for a specific application.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpGet("{id:guid}/edit")]
-    public IActionResult Edit(Guid id)
+    public async Task<IActionResult> EditAsync([FromRoute] Guid id)
     {
-        return View();
+        
+        var query = new GetOpenIdApplicationByIdQuery(id);
+        var application = await bus.InvokeAsync<OpenIdApplication?>(query);
+        
+        if (application is null)
+            return NotFound();
+        
+        return View(new ApplicationEditModel {Application = application});
     }
 
     /// <summary>
-    /// HTMX endpoint to remove a URI Item from the list.
+    /// Update the application with the given id.
     /// </summary>
-    [HttpDelete("/{id:guid}/edit/uri")]
-    public IActionResult RemoveUri()
+    /// <param name="id"></param>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    [HttpPost("{id:guid}/edit")]
+    public async Task<IActionResult> EditPostAsync([FromRoute] Guid id, ApplicationEditModel model)
     {
-        // HTMX request will remove the element from the DOM
-        return new OkResult();
+        var command = new UpdateOpenIdApplicationCommand(model.Application);
+        var result = await bus.InvokeAsync<Result>(command);
+        if (result.IsError())
+        {
+            ModelState.AddModelError("", result.ErrorValue.Message);
+            return View("Edit", model);
+        }
+        return RedirectToAction("Index");
     }
 
     /// <summary>
@@ -34,9 +69,10 @@ public class ApplicationsController: Controller
     /// </summary>
     /// <param name="id">application id</param>
     /// <param name="uri">uri to include into generated html</param>
+    /// <param name="type">Type of the uri (Application.PostLogoutRedirectUris/)</param>
     /// <returns></returns>
-    [HttpPost("/{id:guid}/edit/uri")]
-    public IActionResult AddUri([FromRoute] Guid id, [FromForm(Name = "new-redirect-uri")] string uri)
+    [HttpPost("{id:guid}/edit/uri")]
+    public IActionResult AddUri([FromRoute] Guid id,[FromForm] string uri, [FromQuery] string type)
     {
         if (string.IsNullOrWhiteSpace(uri))
         {
@@ -49,6 +85,29 @@ public class ApplicationsController: Controller
         }
 
         // Return the partial view for HTMX to add to the DOM
-        return View("Edit/UriItem", new UriItemModel { Uri = parsedUri, Id = id });
+        return View("Edit/DynamicListItem", new DynamicListItem { Value = parsedUri.ToString(), Id = id , Name = type});
     }
+    
+    /// <summary>
+    /// HTMX endpoint to add a new permission item to the list.
+    /// </summary>
+    /// <param name="id">application id</param>
+    /// <param name="permission">permission to include into generated html</param>
+    /// <returns></returns>
+    [HttpPost("{id:guid}/edit/permission")]
+    public IActionResult AddPermission([FromRoute] Guid id,[FromForm] string permission)
+    {
+        if (string.IsNullOrWhiteSpace(permission))
+        {
+            return BadRequest("permission cannot be empty");
+        }
+
+        // TODO: Validate the permission format
+
+        // Return the partial view for HTMX to add to the DOM
+        return View("Edit/DynamicListItem", new DynamicListItem { Value = permission, Id = id });
+    }
+
+
+    
 }

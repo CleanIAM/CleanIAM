@@ -1,5 +1,6 @@
 using ManagementPortal.Core.OpenIdApplication;
 using Mapster;
+using OpenIddict.Abstractions;
 using OpenIddict.Core;
 using OpenIddict.EntityFrameworkCore.Models;
 
@@ -22,5 +23,16 @@ public static class MapsterConfig
             dest => dest.DisplayNames,
             dest => dest.JsonWebKeySet
         );
+    
+    TypeAdapterConfig.GlobalSettings.Default
+        .PreserveReference(true);
+
+    TypeAdapterConfig<OpenIdApplication, OpenIddictApplicationDescriptor>.ForType()
+        .Map(src => src.RedirectUris, dest => dest.RedirectUris)
+        .AfterMapping((src, dest, context) =>
+        {
+            // dest.RedirectUris.Add(src.RedirectUris);
+        });
+
     }
 }
