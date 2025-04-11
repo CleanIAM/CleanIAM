@@ -109,9 +109,9 @@
                         <!-- Add new URI form -->
                         <partial name="Edit/DynamicListInput" model="@(new DynamicListInput
                             {
-                                InputName = "uri",
+                                InputName = "redirectUri",
                                 Placeholder = "New Redirect URI",
-                                HxPostUrl = Url.Action("AddUri", "Applications", new { Model.Application.Id})
+                                HxPostUrl = Url.Action("AddRedirectUri", "Applications", new { Model.Application.Id})
                                             + "?type=Application.RedirectUris",
                                 HxTarget = "#redirect-uris-list",
                             })"/>
@@ -143,10 +143,9 @@
                         <!-- Add new post-logout URI form -->
                         <partial name="Edit/DynamicListInput" model="@(new DynamicListInput
                              {
-                                 InputName = "uri",
+                                 InputName = "postLogoutUri",
                                  Placeholder = "New post logout URI",
-                                 HxPostUrl = Url.Action("AddUri", "Applications", new { Model.Application.Id})
-                                             + "?type=Application.PostLogoutRedirectUris",
+                                 HxPostUrl = Url.Action("AddPostLogout", "Applications", new { Model.Application.Id, type = "Application.PostLogoutRedirectUris"}),
                                  HxTarget = "#post-logout-uris-list",
                              })"/>
 
@@ -180,7 +179,7 @@
                              {
                                  InputName = "permission",
                                  Placeholder = "New permission",
-                                 HxPostUrl = Url.Action("AddPermission", "Applications", new { Model.Application.Id}),
+                                 HxPostUrl = Url.Action("AddPermission", "Applications", new { Model.Application.Id }),
                                  HxTarget = "#permissions-list"
                              })"/>
                     </div>

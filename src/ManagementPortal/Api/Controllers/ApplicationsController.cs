@@ -65,27 +65,51 @@ public class ApplicationsController(
     }
 
     /// <summary>
-    /// HTMX endpoint to add a new URI Item to the list.
+    /// HTMX endpoint to add a new URI Item to the post logout uri list.
     /// </summary>
     /// <param name="id">application id</param>
-    /// <param name="uri">uri to include into generated html</param>
+    /// <param name="postLogoutUri">uri to include into generated html</param>
     /// <param name="type">Type of the uri (Application.PostLogoutRedirectUris/)</param>
     /// <returns></returns>
-    [HttpPost("{id:guid}/edit/uri")]
-    public IActionResult AddUri([FromRoute] Guid id,[FromForm] string uri, [FromQuery] string type)
+    [HttpPost("{id:guid}/edit/post-logout-uri")]
+    public IActionResult AddPostLogout([FromRoute] Guid id,[FromForm] string postLogoutUri, [FromQuery] string type)
     {
-        if (string.IsNullOrWhiteSpace(uri))
+        if (string.IsNullOrWhiteSpace(postLogoutUri))
         {
             return BadRequest("URI cannot be empty");
         }
 
-        if (!Uri.TryCreate(uri, UriKind.Absolute, out var parsedUri))
+        if (!Uri.TryCreate(postLogoutUri, UriKind.Absolute, out var parsedUri))
         {
             return BadRequest("Invalid URI format.");
         }
 
         // Return the partial view for HTMX to add to the DOM
-        return View("Edit/DynamicListItem", new DynamicListItem { Value = parsedUri.ToString(), Id = id , Name = type});
+        return View("Edit/DynamicListItem", new DynamicListItem { Value = parsedUri.ToString(), Id = id , Name = "Application.PostLogoutRedirectUris"});
+    }
+
+    /// <summary>
+    /// HTMX endpoint to add a new URI Item to the redirect uri list.
+    /// </summary>
+    /// <param name="id">application id</param>
+    /// <param name="redirectUri">uri to include into generated html</param>
+    /// <param name="type">Type of the uri (Application.PostLogoutRedirectUris/)</param>
+    /// <returns></returns>
+    [HttpPost("{id:guid}/edit/redirect-uri")]
+    public IActionResult AddRedirectUri([FromRoute] Guid id,[FromForm] string redirectUri, [FromQuery] string type)
+    {
+        if (string.IsNullOrWhiteSpace(redirectUri))
+        {
+            return BadRequest("URI cannot be empty");
+        }
+
+        if (!Uri.TryCreate(redirectUri, UriKind.Absolute, out var parsedUri))
+        {
+            return BadRequest("Invalid URI format.");
+        }
+
+        // Return the partial view for HTMX to add to the DOM
+        return View("Edit/DynamicListItem", new DynamicListItem { Value = parsedUri.ToString(), Id = id , Name = "Application.RedirectUris"});
     }
     
     /// <summary>
@@ -105,7 +129,7 @@ public class ApplicationsController(
         // TODO: Validate the permission format
 
         // Return the partial view for HTMX to add to the DOM
-        return View("Edit/DynamicListItem", new DynamicListItem { Value = permission, Id = id });
+        return View("Edit/DynamicListItem", new DynamicListItem { Value = permission, Id = id, Name = "Application.Permissions" });
     }
 
 

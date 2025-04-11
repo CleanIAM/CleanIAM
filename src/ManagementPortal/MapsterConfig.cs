@@ -31,7 +31,10 @@ public static class MapsterConfig
         .Map(src => src.RedirectUris, dest => dest.RedirectUris)
         .AfterMapping((src, dest, context) =>
         {
-            // dest.RedirectUris.Add(src.RedirectUris);
+            dest.Permissions.UnionWith(src.Permissions);
+            dest.RedirectUris.UnionWith(src.RedirectUris);
+            dest.PostLogoutRedirectUris.UnionWith(src.PostLogoutRedirectUris);
+            dest.Requirements.UnionWith(src.Requirements);
         });
 
     }
