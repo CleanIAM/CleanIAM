@@ -1,7 +1,5 @@
 using ManagementPortal.Application.Queries.Users;
-using ManagementPortal.Application.Queries.OpenIdClients;
-using ManagementPortal.Core;
-using ManagementPortal.Core.OpenIdApplication;
+using ManagementPortal.Application.Queries.OpenIdApplications;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Wolverine;
 
@@ -10,36 +8,36 @@ namespace ManagementPortal.Api.Views;
 public class Index : PageModel
 {
     private readonly IMessageBus _bus;
-    
+
     public long UserCount { get; private set; }
-    public long ClientCount { get; private set; }
+    public long ApplicationsCount { get; private set; }
     public int AuthRequestCount { get; private set; } = 142; // Sample data
     public int SuccessfulLogins { get; private set; } = 125; // Sample data
     public int FailedLogins { get; private set; } = 17; // Sample data
     public double ServerUptime { get; private set; } = 99.9; // Sample data
     public int CpuUsage { get; private set; } = 23; // Sample data
     public int MemoryUsage { get; private set; } = 68; // Sample data
-    
+
     // Dashboard activity feed items (would be fetched from an audit log in a real system)
-    public List<ActivityItem> RecentActivity { get; private set; } = new List<ActivityItem>();
-    
+    public List<ActivityItem> RecentActivity { get; private set; } = new();
+
     public Index(IMessageBus bus)
     {
         _bus = bus;
     }
-    
+
     public async Task OnGetAsync()
     {
         // Get user count
         var userQuery = new GetAllUsersCountQuery();
         var usersCount = await _bus.InvokeAsync<long>(userQuery);
         UserCount = usersCount;
-        
-        // Get client count
-        var clientQuery = new GetAllOpenIdApplicationCountQuery();
-        var clientCount = await _bus.InvokeAsync<long>(clientQuery);
-        ClientCount = clientCount;
-        
+
+        // Get applications count
+        var applicationsQuery = new GetAllOpenIdApplicationCountQuery();
+        var applicationsCount = await _bus.InvokeAsync<long>(applicationsQuery);
+        ApplicationsCount = applicationsCount;
+
         // Initialize sample activity items
         RecentActivity =
         [
@@ -53,8 +51,8 @@ public class Index : PageModel
 
             new ActivityItem
             {
-                Type = "Client",
-                Action = "New client created",
+                Type = "Applications",
+                Action = "New applications created",
                 Details = "My Web App",
                 TimeAgo = "1 hour ago"
             },
@@ -68,7 +66,7 @@ public class Index : PageModel
             }
         ];
     }
-    
+
     public class ActivityItem
     {
         public string Type { get; set; }

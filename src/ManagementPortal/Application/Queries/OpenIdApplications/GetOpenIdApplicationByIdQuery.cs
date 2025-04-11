@@ -2,7 +2,7 @@ using ManagementPortal.Core.OpenIdApplication;
 using OpenIddict.Core;
 using OpenIddict.EntityFrameworkCore.Models;
 
-namespace ManagementPortal.Application.Queries.OpenIdClients;
+namespace ManagementPortal.Application.Queries.OpenIdApplications;
 
 /// <summary>
 /// Find OpenIdClient by its Id
@@ -15,15 +15,14 @@ public record GetOpenIdApplicationByIdQuery(Guid Id);
 /// </summary>
 public class GetOpenIdClientByIdQueryHandler
 {
-    public static async Task<OpenIdApplication?> Handle(GetOpenIdApplicationByIdQuery query, 
+    public static async Task<OpenIdApplication?> Handle(GetOpenIdApplicationByIdQuery query,
         OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager,
         CancellationToken cancellationToken)
     {
         var application = await applicationManager.FindByIdAsync(query.Id.ToString(), cancellationToken);
 
         var res = await OpenIdApplication.FromOpenIdDictApplication(application, applicationManager);
-        
-        return res;
 
+        return res;
     }
 }

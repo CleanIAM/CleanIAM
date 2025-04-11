@@ -1,4 +1,3 @@
-using ManagementPortal.Core;
 using ManagementPortal.Core.OpenIdApplication;
 using Mapster;
 using OpenIddict.Abstractions;
@@ -6,7 +5,7 @@ using OpenIddict.Core;
 using OpenIddict.EntityFrameworkCore.Models;
 using SharedKernel.Infrastructure;
 
-namespace ManagementPortal.Application.Commands;
+namespace ManagementPortal.Application.Commands.OpenIdApplications;
 
 public record UpdateOpenIdApplicationCommand(OpenIdApplication Application);
 

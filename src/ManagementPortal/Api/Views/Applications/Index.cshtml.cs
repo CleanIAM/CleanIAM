@@ -1,4 +1,4 @@
-using ManagementPortal.Application.Queries.OpenIdClients;
+using ManagementPortal.Application.Queries.OpenIdApplications;
 using ManagementPortal.Core;
 using ManagementPortal.Core.OpenIdApplication;
 using Microsoft.AspNetCore.Mvc.RazorPages;

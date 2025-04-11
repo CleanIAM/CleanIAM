@@ -1,7 +1,7 @@
 using OpenIddict.Core;
 using OpenIddict.EntityFrameworkCore.Models;
 
-namespace ManagementPortal.Application.Queries.OpenIdClients;
+namespace ManagementPortal.Application.Queries.OpenIdApplications;
 
 public record GetAllOpenIdApplicationCountQuery();
 

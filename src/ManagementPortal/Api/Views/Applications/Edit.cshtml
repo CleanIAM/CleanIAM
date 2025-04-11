@@ -1,0 +1,238 @@
+@page "/applications/{id:guid}/edit"
+@using ManagementPortal.Api.Views.Applications.Edit
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model ManagementPortal.Api.Views.Clients.EditModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Edit Client";
+}
+
+<div class="bg-white shadow overflow-hidden sm:rounded-lg">
+    <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+        <h1 class="text-2xl font-semibold text-gray-900">Edit OIDC Client</h1>
+        <a asp-page="./Index"
+           class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+            <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                      d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                      clip-rule="evenodd"/>
+            </svg>
+            Back to List
+        </a>
+    </div>
+
+    <div class="px-6 py-5">
+        @if (!string.IsNullOrEmpty(Model.StatusMessage))
+        {
+            <div class="rounded-md bg-green-50 p-4 mb-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                             fill="currentColor">
+                            <path fill-rule="evenodd"
+                                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                  clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-green-800">@Model.StatusMessage</p>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="mb-4 rounded-md bg-red-50 p-4 text-sm text-red-700"></div>
+            <input type="hidden" asp-for="Client.Id"/>
+            <input type="hidden" asp-for="Client.ClientId"/>
+
+            <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                <div class="sm:col-span-3">
+                    <label asp-for="Client.ClientId" class="block text-sm font-medium text-gray-700"></label>
+                    <div class="mt-1">
+                        <input asp-for="Client.ClientId" disabled
+                               class="bg-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
+                    </div>
+                    <span asp-validation-for="Client.ClientId" class="text-sm text-red-600"></span>
+                </div>
+
+                <div class="sm:col-span-3">
+                    <label asp-for="Client.DisplayName" class="block text-sm font-medium text-gray-700"></label>
+                    <div class="mt-1">
+                        <input asp-for="Client.DisplayName"
+                               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
+                    </div>
+                    <span asp-validation-for="Client.DisplayName" class="text-sm text-red-600"></span>
+                </div>
+
+                <div class="sm:col-span-3">
+                    <label asp-for="Client.ApplicationType" class="block text-sm font-medium text-gray-700"></label>
+                    <div class="mt-1">
+                        <input asp-for="Client.ApplicationType"
+                               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
+                    </div>
+                    <span asp-validation-for="Client.ApplicationType" class="text-sm text-red-600"></span>
+                </div>
+
+                <div class="sm:col-span-3">
+                    <label asp-for="Client.ClientType" class="block text-sm font-medium text-gray-700"></label>
+                    <div class="mt-1">
+                        <select asp-for="Client.ClientType"
+                                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                            <option value="@Core.OpenIdApplication.ClientType.Confidential">
+                                Confidential
+                            </option>
+                            <option value="@Core.OpenIdApplication.ClientType.Public">Public</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="Client.ClientType" class="text-sm text-red-600"></span>
+                </div>
+
+                <div class="sm:col-span-3">
+                    <label asp-for="Client.ConsentType" class="block text-sm font-medium text-gray-700"></label>
+                    <div class="mt-1">
+                        <select asp-for="Client.ConsentType"
+                                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                            <option value="@Core.OpenIdApplication.ConsentType.Explicit">Explicit
+                            </option>
+                            <option value="@Core.OpenIdApplication.ConsentType.External">External
+                            </option>
+                            <option value="@Core.OpenIdApplication.ConsentType.Implicit">Implicit
+                            </option>
+                            <option value="@Core.OpenIdApplication.ConsentType.Systematic">Systematic
+                            </option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="Client.ConsentType" class="text-sm text-red-600"></span>
+                </div>
+
+                <div class="sm:col-span-6">
+                    <label for="redirectUris" class="block text-sm font-medium text-gray-700">Redirect URIs</label>
+                    <p class="text-xs text-gray-500 mb-1">Add redirect URIs that are allowed for this client</p>
+
+                    <div id="redirect-uris-container" class="mt-1 space-y-2">
+                        <input type="hidden" id="RedirectUrisString" name="RedirectUrisString"
+                               value="@(string.Join(Environment.NewLine, Model.Client.RedirectUris.Select(u => u.ToString())))"/>
+
+                        <!-- List of current URIs -->
+                        <div id="redirect-uris-list" class="space-y-2">
+                            @foreach (var uri in Model.Client.RedirectUris)
+                            {
+                                <div>@uri</div>
+                                @await Html.PartialAsync("Edit/UriEdit", new UriEdit { Id = Model.Client.Id, Uri = uri })
+                            }
+                        </div>
+
+                        <!-- Add new URI form -->
+                        <div class="flex space-x-2">
+                            <input type="text" id="new-redirect-uri"
+                                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                   placeholder="https://example.com/callback"/>
+                            <button type="button" onclick="addRedirectUri()"
+                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Add
+                            </button>
+                        </div>
+                        <div id="redirect-uri-error" class="text-sm text-red-600 hidden"></div>
+                    </div>
+                </div>
+
+                <div class="sm:col-span-6">
+                    <label for="postLogoutRedirectUris" class="block text-sm font-medium text-gray-700">Post Logout
+                        Redirect URIs</label>
+                    <p class="text-xs text-gray-500 mb-1">Add URIs that are allowed after logout</p>
+
+                    <div id="post-logout-uris-container" class="mt-1 space-y-2">
+                        <input type="hidden" id="PostLogoutRedirectUrisString" name="PostLogoutRedirectUrisString"
+                               value="@(string.Join(Environment.NewLine, Model.Client.PostLogoutRedirectUris.Select(u => u.ToString())))"/>
+
+                        <!-- List of current post-logout URIs -->
+                        <div id="post-logout-uris-list" class="space-y-2">
+                            @foreach (var uri in Model.Client.PostLogoutRedirectUris)
+                            {
+                                <div
+                                    class="post-logout-uri-item flex items-center space-x-2 p-2 border border-gray-200 rounded-md bg-gray-50">
+                                    <span class="flex-grow text-sm text-gray-700 break-all">@uri</span>
+                                    <button type="button" class="text-red-500 hover:text-red-700 focus:outline-none"
+                                            onclick="removePostLogoutUri(this, '@uri')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                             fill="currentColor">
+                                            <path fill-rule="evenodd"
+                                                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                  clip-rule="evenodd"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Add new post-logout URI form -->
+                        <div class="flex space-x-2">
+                            <input type="text" id="new-post-logout-uri"
+                                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                   placeholder="https://example.com/logout-callback"/>
+                            <button type="button" onclick="addPostLogoutUri()"
+                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Add
+                            </button>
+                        </div>
+                        <div id="post-logout-uri-error" class="text-sm text-red-600 hidden"></div>
+                    </div>
+                </div>
+
+                <div class="sm:col-span-6">
+                    <label for="permissions" class="block text-sm font-medium text-gray-700">Permissions</label>
+                    <p class="text-xs text-gray-500 mb-1">Add permissions for this client</p>
+
+                    <div id="permissions-container" class="mt-1 space-y-2">
+                        <input type="hidden" id="PermissionsString" name="PermissionsString"
+                               value="@(string.Join(Environment.NewLine, Model.Client.Permissions))"/>
+
+                        <!-- List of current permissions -->
+                        <div id="permissions-list" class="space-y-2">
+                            @foreach (var permission in Model.Client.Permissions)
+                            {
+                                <div
+                                    class="permission-item flex items-center space-x-2 p-2 border border-gray-200 rounded-md bg-gray-50">
+                                    <span class="flex-grow text-sm text-gray-700">@permission</span>
+                                    <button type="button" class="text-red-500 hover:text-red-700 focus:outline-none"
+                                            onclick="removePermission(this, '@permission')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                             fill="currentColor">
+                                            <path fill-rule="evenodd"
+                                                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                  clip-rule="evenodd"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Add new permission form -->
+                        <div class="flex space-x-2">
+                            <input type="text" id="new-permission"
+                                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                   placeholder="urn:openiddict:permissions:scope:your-scope"/>
+                            <button type="button" onclick="addPermission()"
+                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-5">
+                <div class="flex justify-end">
+                    <a asp-page="./Index"
+                       class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Cancel</a>
+                    <button type="submit"
+                            class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

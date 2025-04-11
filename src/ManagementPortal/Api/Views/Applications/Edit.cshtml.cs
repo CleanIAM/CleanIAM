@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using ManagementPortal.Application.Commands.OpenIdApplications;
 using Mapster;
-using ManagementPortal.Application.Commands;
-using ManagementPortal.Application.Queries.OpenIdClients;
+using ManagementPortal.Application.Queries.OpenIdApplications;
 using ManagementPortal.Core;
 using ManagementPortal.Core.OpenIdApplication;
 using Microsoft.AspNetCore.Mvc;
