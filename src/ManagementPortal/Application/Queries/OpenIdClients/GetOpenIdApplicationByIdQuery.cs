@@ -8,14 +8,14 @@ namespace ManagementPortal.Application.Queries.OpenIdClients;
 /// Find OpenIdClient by its Id
 /// </summary>
 /// <param name="Id"></param>
-public record GetOpenIdClientByIdQuery(Guid Id);
+public record GetOpenIdApplicationByIdQuery(Guid Id);
 
 /// <summary>
 /// Query handler for `GetOpenIdClientByIdQuery`
 /// </summary>
 public class GetOpenIdClientByIdQueryHandler
 {
-    public static async Task<OpenIdApplication?> Handle(GetOpenIdClientByIdQuery query, 
+    public static async Task<OpenIdApplication?> Handle(GetOpenIdApplicationByIdQuery query, 
         OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager,
         CancellationToken cancellationToken)
     {

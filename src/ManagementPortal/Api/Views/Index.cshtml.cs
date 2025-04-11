@@ -11,8 +11,8 @@ public class Index : PageModel
 {
     private readonly IMessageBus _bus;
     
-    public int UserCount { get; private set; }
-    public int ClientCount { get; private set; }
+    public long UserCount { get; private set; }
+    public long ClientCount { get; private set; }
     public int AuthRequestCount { get; private set; } = 142; // Sample data
     public int SuccessfulLogins { get; private set; } = 125; // Sample data
     public int FailedLogins { get; private set; } = 17; // Sample data
@@ -31,18 +31,18 @@ public class Index : PageModel
     public async Task OnGetAsync()
     {
         // Get user count
-        var userQuery = new GetAllUsersQuery();
-        var users = await _bus.InvokeAsync<IEnumerable<User>>(userQuery);
-        UserCount = users.Count();
+        var userQuery = new GetAllUsersCountQuery();
+        var usersCount = await _bus.InvokeAsync<long>(userQuery);
+        UserCount = usersCount;
         
         // Get client count
-        var clientQuery = new GetAllOpenIdClientsQuery();
-        var clients = await _bus.InvokeAsync<IEnumerable<OpenIdApplication>>(clientQuery);
-        ClientCount = clients.Count();
+        var clientQuery = new GetAllOpenIdApplicationCountQuery();
+        var clientCount = await _bus.InvokeAsync<long>(clientQuery);
+        ClientCount = clientCount;
         
         // Initialize sample activity items
-        RecentActivity = new List<ActivityItem>
-        {
+        RecentActivity =
+        [
             new ActivityItem
             {
                 Type = "User",
@@ -50,6 +50,7 @@ public class Index : PageModel
                 Details = "john.doe@example.com",
                 TimeAgo = "10 minutes ago"
             },
+
             new ActivityItem
             {
                 Type = "Client",
@@ -57,6 +58,7 @@ public class Index : PageModel
                 Details = "My Web App",
                 TimeAgo = "1 hour ago"
             },
+
             new ActivityItem
             {
                 Type = "Token",
@@ -64,7 +66,7 @@ public class Index : PageModel
                 Details = "Mobile Application",
                 TimeAgo = "3 hours ago"
             }
-        };
+        ];
     }
     
     public class ActivityItem

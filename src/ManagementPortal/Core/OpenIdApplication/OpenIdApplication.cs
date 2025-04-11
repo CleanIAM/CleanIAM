@@ -89,7 +89,7 @@ public class OpenIdApplication
     public Dictionary<string, string> Settings { get; set; } = new(StringComparer.Ordinal);
     
     
-    public OpenIddictApplicationDescriptor ToDescriptorAsync()
+    public OpenIddictApplicationDescriptor ToDescriptor()
     {
         return this.Adapt<OpenIddictApplicationDescriptor>();
     }

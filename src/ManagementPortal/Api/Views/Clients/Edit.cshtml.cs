@@ -34,7 +34,8 @@ public class EditModel : PageModel
             return BadRequest("Valid Client ID is required");
         }
 
-        var application = await _bus.InvokeAsync<OpenIdApplication?>(new GetOpenIdClientByIdQuery(id));
+        var query = new GetOpenIdApplicationByIdQuery(id);
+        var application = await _bus.InvokeAsync<OpenIdApplication?>(query);
         
         if (application is null)
         {
@@ -57,7 +58,7 @@ public class EditModel : PageModel
             var application = Client.Adapt<OpenIdApplication>();
             
             // Update the application using the command
-            var command = new UpdateOpenIdClientCommand(application);
+            var command = new UpdateOpenIdApplicationCommand(application);
             var result = await _bus.InvokeAsync<Result>(command);
 
             if (result.IsError())

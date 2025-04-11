@@ -12,7 +12,7 @@ public class Index(IMessageBus bus) : PageModel
 
     public async Task OnGetAsync()
     {
-        var query = new GetAllOpenIdClientsQuery();
+        var query = new GetAllOpenIdApplicationsQuery();
         var applications = await bus.InvokeAsync<IEnumerable<OpenIdApplication>>(query);
         Applications = applications.ToArray();
     }
