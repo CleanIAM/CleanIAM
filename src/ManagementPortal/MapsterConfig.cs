@@ -1,7 +1,8 @@
+using ManagementPortal.Api.Views.Applications;
+using ManagementPortal.Application.Commands.OpenIdApplications;
 using ManagementPortal.Core.OpenIdApplication;
 using Mapster;
 using OpenIddict.Abstractions;
-using OpenIddict.Core;
 using OpenIddict.EntityFrameworkCore.Models;
 
 namespace ManagementPortal;
@@ -28,8 +29,17 @@ public static class MapsterConfig
         .PreserveReference(true);
 
     TypeAdapterConfig<OpenIdApplication, OpenIddictApplicationDescriptor>.ForType()
-        .Map(src => src.RedirectUris, dest => dest.RedirectUris)
         .AfterMapping((src, dest, context) =>
+        {
+            dest.Permissions.UnionWith(src.Permissions);
+            dest.RedirectUris.UnionWith(src.RedirectUris);
+            dest.PostLogoutRedirectUris.UnionWith(src.PostLogoutRedirectUris);
+            dest.Requirements.UnionWith(src.Requirements);
+        });
+
+
+    TypeAdapterConfig<UpdateOpenIdApplicationCommand, OpenIddictApplicationDescriptor>.ForType()
+        .AfterMapping((src, dest) =>
         {
             dest.Permissions.UnionWith(src.Permissions);
             dest.RedirectUris.UnionWith(src.RedirectUris);

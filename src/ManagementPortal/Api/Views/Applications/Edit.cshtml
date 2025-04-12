@@ -24,41 +24,41 @@
     <div class="px-6 py-5">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="mb-4 rounded-md bg-red-50 p-4 text-sm text-red-700"></div>
-            <input type="hidden" asp-for="Application.Id"/>
-            <input type="hidden" asp-for="Application.ClientId"/>
+            <input type="hidden" asp-for="Id"/>
+            <input type="hidden" asp-for="ClientId"/>
 
             <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                 <div class="sm:col-span-3">
-                    <label asp-for="Application.ClientId" class="block text-sm font-medium text-gray-700"></label>
+                    <label asp-for="ClientId" class="block text-sm font-medium text-gray-700"></label>
                     <div class="mt-1">
-                        <input asp-for="Application.ClientId" disabled
+                        <input asp-for="ClientId" disabled
                                class="bg-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
                     </div>
-                    <span asp-validation-for="Application.ClientId" class="text-sm text-red-600"></span>
+                    <span asp-validation-for="ClientId" class="text-sm text-red-600"></span>
                 </div>
 
                 <div class="sm:col-span-3">
-                    <label asp-for="Application.DisplayName" class="block text-sm font-medium text-gray-700"></label>
+                    <label asp-for="DisplayName" class="block text-sm font-medium text-gray-700"></label>
                     <div class="mt-1">
-                        <input asp-for="Application.DisplayName"
+                        <input asp-for="DisplayName"
                                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
                     </div>
-                    <span asp-validation-for="Application.DisplayName" class="text-sm text-red-600"></span>
+                    <span asp-validation-for="DisplayName" class="text-sm text-red-600"></span>
                 </div>
 
                 <div class="sm:col-span-3">
-                    <label asp-for="Application.ApplicationType" class="block text-sm font-medium text-gray-700"></label>
+                    <label asp-for="ApplicationType" class="block text-sm font-medium text-gray-700"></label>
                     <div class="mt-1">
-                        <input asp-for="Application.ApplicationType"
+                        <input asp-for="ApplicationType"
                                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
                     </div>
-                    <span asp-validation-for="Application.ApplicationType" class="text-sm text-red-600"></span>
+                    <span asp-validation-for="ApplicationType" class="text-sm text-red-600"></span>
                 </div>
 
                 <div class="sm:col-span-3">
-                    <label asp-for="Application.ClientType" class="block text-sm font-medium text-gray-700"></label>
+                    <label asp-for="ClientType" class="block text-sm font-medium text-gray-700"></label>
                     <div class="mt-1">
-                        <select asp-for="Application.ClientType"
+                        <select asp-for="ClientType"
                                 class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
                             <option value="@Core.OpenIdApplication.ClientType.Confidential">
                                 Confidential
@@ -66,13 +66,13 @@
                             <option value="@Core.OpenIdApplication.ClientType.Public">Public</option>
                         </select>
                     </div>
-                    <span asp-validation-for="Application.ClientType" class="text-sm text-red-600"></span>
+                    <span asp-validation-for="ClientType" class="text-sm text-red-600"></span>
                 </div>
 
                 <div class="sm:col-span-3">
-                    <label asp-for="Application.ConsentType" class="block text-sm font-medium text-gray-700"></label>
+                    <label asp-for="ConsentType" class="block text-sm font-medium text-gray-700"></label>
                     <div class="mt-1">
-                        <select asp-for="Application.ConsentType"
+                        <select asp-for="ConsentType"
                                 class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
                             <option value="@Core.OpenIdApplication.ConsentType.Explicit">Explicit
                             </option>
@@ -84,7 +84,7 @@
                             </option>
                         </select>
                     </div>
-                    <span asp-validation-for="Application.ConsentType" class="text-sm text-red-600"></span>
+                    <span asp-validation-for="ConsentType" class="text-sm text-red-600"></span>
                 </div>
 
                 @* Redirect URIs edit *@
@@ -95,12 +95,12 @@
                     <div id="redirect-uris-container" class="mt-1 space-y-2">
                         <!-- List of current URIs -->
                         <div id="redirect-uris-list" class="space-y-2">
-                            @foreach (var uri in Model.Application.RedirectUris)
+                            @foreach (var uri in Model.RedirectUris)
                             {
                                 <partial name="Edit/DynamicListItem" model="@(new DynamicListItem
                                     {
-                                        Name = "Application.RedirectUris",
-                                        Id = Model.Application.Id,
+                                        Name = "RedirectUris",
+                                        Id = Model.Id,
                                         Value = uri.ToString()
                                     })"/>
                             }
@@ -111,7 +111,7 @@
                             {
                                 InputName = "redirectUri",
                                 Placeholder = "New Redirect URI",
-                                HxPostUrl = Url.Action("AddRedirectUri", "Applications", new { Model.Application.Id})
+                                HxPostUrl = Url.Action("AddRedirectUri", "Applications", new { Model.Id})
                                             + "?type=Application.RedirectUris",
                                 HxTarget = "#redirect-uris-list",
                             })"/>
@@ -129,12 +129,12 @@
                         
                         <!-- List of current post-logout URIs -->
                         <div id="post-logout-uris-list" class="space-y-2">
-                            @foreach (var uri in Model.Application.PostLogoutRedirectUris)
+                            @foreach (var uri in Model.PostLogoutRedirectUris)
                             {
                                 <partial name="Edit/DynamicListItem" model="@(new DynamicListItem
                                     {
-                                        Name = "Application.PostLogoutRedirectUris",
-                                        Id = Model.Application.Id,
+                                        Name = "PostLogoutRedirectUris",
+                                        Id = Model.Id,
                                         Value = uri.ToString()
                                     })"/>
                             }
@@ -145,7 +145,7 @@
                              {
                                  InputName = "postLogoutUri",
                                  Placeholder = "New post logout URI",
-                                 HxPostUrl = Url.Action("AddPostLogout", "Applications", new { Model.Application.Id, type = "Application.PostLogoutRedirectUris"}),
+                                 HxPostUrl = Url.Action("AddPostLogout", "Applications", new { Model.Id, type = "PostLogoutRedirectUris"}),
                                  HxTarget = "#post-logout-uris-list",
                              })"/>
 
@@ -159,16 +159,16 @@
 
                     <div id="permissions-container" class="mt-1 space-y-2">
                         <input type="hidden" id="PermissionsString" name="PermissionsString"
-                               value="@(string.Join(Environment.NewLine, Model.Application.Permissions))"/>
+                               value="@(string.Join(Environment.NewLine, Model.Permissions))"/>
 
                         <!-- List of current permissions -->
                         <div id="permissions-list" class="space-y-2">
-                            @foreach (var permission in Model.Application.Permissions)
+                            @foreach (var permission in Model.Permissions)
                             {
                                 <partial name="Edit/DynamicListItem" model="@(new DynamicListItem
                                     {
-                                        Name = "Application.Permissions",
-                                        Id = Model.Application.Id,
+                                        Name = "Permissions",
+                                        Id = Model.Id,
                                         Value = permission
                                     })"/>
                             }
@@ -179,7 +179,7 @@
                              {
                                  InputName = "permission",
                                  Placeholder = "New permission",
-                                 HxPostUrl = Url.Action("AddPermission", "Applications", new { Model.Application.Id }),
+                                 HxPostUrl = Url.Action("AddPermission", "Applications", new { Model.Id }),
                                  HxTarget = "#permissions-list"
                              })"/>
                     </div>

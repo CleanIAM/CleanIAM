@@ -3,6 +3,7 @@ using ManagementPortal.Api.Views.Applications.Edit;
 using ManagementPortal.Application.Commands.OpenIdApplications;
 using ManagementPortal.Application.Queries.OpenIdApplications;
 using ManagementPortal.Core.OpenIdApplication;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using SharedKernel.Infrastructure;
 using Wolverine;
@@ -42,7 +43,9 @@ public class ApplicationsController(
         if (application is null)
             return NotFound();
         
-        return View(new ApplicationEditModel {Application = application});
+        var model = application.Adapt<ApplicationEditModel>();
+        
+        return View(model);
     }
 
     /// <summary>
@@ -54,7 +57,11 @@ public class ApplicationsController(
     [HttpPost("{id:guid}/edit")]
     public async Task<IActionResult> EditPostAsync([FromRoute] Guid id, ApplicationEditModel model)
     {
-        var command = new UpdateOpenIdApplicationCommand(model.Application);
+        if (!ModelState.IsValid){
+            return View("Edit", model);
+        }
+        
+        var command = model.Adapt<UpdateOpenIdApplicationCommand>();
         var result = await bus.InvokeAsync<Result>(command);
         if (result.IsError())
         {
@@ -85,7 +92,7 @@ public class ApplicationsController(
         }
 
         // Return the partial view for HTMX to add to the DOM
-        return View("Edit/DynamicListItem", new DynamicListItem { Value = parsedUri.ToString(), Id = id , Name = "Application.PostLogoutRedirectUris"});
+        return View("Edit/DynamicListItem", new DynamicListItem { Value = parsedUri.ToString(), Id = id , Name = "PostLogoutRedirectUris"});
     }
 
     /// <summary>
@@ -109,7 +116,7 @@ public class ApplicationsController(
         }
 
         // Return the partial view for HTMX to add to the DOM
-        return View("Edit/DynamicListItem", new DynamicListItem { Value = parsedUri.ToString(), Id = id , Name = "Application.RedirectUris"});
+        return View("Edit/DynamicListItem", new DynamicListItem { Value = parsedUri.ToString(), Id = id , Name = "RedirectUris"});
     }
     
     /// <summary>
@@ -129,7 +136,7 @@ public class ApplicationsController(
         // TODO: Validate the permission format
 
         // Return the partial view for HTMX to add to the DOM
-        return View("Edit/DynamicListItem", new DynamicListItem { Value = permission, Id = id, Name = "Application.Permissions" });
+        return View("Edit/DynamicListItem", new DynamicListItem { Value = permission, Id = id, Name = "Permissions" });
     }
 
 
