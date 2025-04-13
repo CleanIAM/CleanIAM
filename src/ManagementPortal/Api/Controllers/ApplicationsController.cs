@@ -2,6 +2,7 @@ using ManagementPortal.Api.Views.Applications;
 using ManagementPortal.Api.Views.Applications.Edit;
 using ManagementPortal.Application.Commands.OpenIdApplications;
 using ManagementPortal.Application.Queries.OpenIdApplications;
+using ManagementPortal.Core.Events;
 using ManagementPortal.Core.OpenIdApplication;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +14,8 @@ namespace ManagementPortal.Api.Controllers;
 [Route("applications")]
 public class ApplicationsController(
     IMessageBus bus
-    ): Controller
+) : Controller
 {
-    
     /// <summary>
     /// Show the main application page with a list of all applications.
     /// </summary>
@@ -24,10 +24,49 @@ public class ApplicationsController(
     {
         var query = new GetAllOpenIdApplicationsQuery();
         var applications = await bus.InvokeAsync<IEnumerable<OpenIdApplication>>(query);
-        
-        return View(new ApplicationPageModel {Applications = applications.ToArray()});
+
+        return View(new ApplicationPageModel { Applications = applications.ToArray() });
     }
-    
+
+    /// <summary>
+    /// Get form for creating new oidc application
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("new")]
+    public async Task<IActionResult> CreateNewApplicationAsync()
+    {
+        return View();
+    }
+
+    /// <summary>
+    /// Handle form submission for creating new oidc application
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    [HttpPost("new")]
+    public async Task<IActionResult> CreateNewApplicationAsync([FromForm] CreateNewApplicationModel model,
+        CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var command = model.Adapt<CreateNewOpenIdApplicationCommand>();
+        var res = await bus.InvokeAsync<Result<OpenIdApplicationCreated>>(command, cancellationToken);
+
+        if (res.IsError())
+        {
+            ModelState.AddModelError("asdf", res.ErrorValue.Message);
+            return View(model);
+        }
+
+        if (res.Value.ClientType == ClientType.Confidential)
+        {
+            //TODO: Show popup with secret value (on close, redirect to the "Application.Index")
+        }
+        
+        return RedirectToAction("Index");
+    }
+
     /// <summary>
     /// Show the edit page for a specific application.
     /// </summary>
@@ -36,15 +75,14 @@ public class ApplicationsController(
     [HttpGet("{id:guid}/edit")]
     public async Task<IActionResult> EditApplicationAsync([FromRoute] Guid id)
     {
-        
         var query = new GetOpenIdApplicationByIdQuery(id);
         var application = await bus.InvokeAsync<OpenIdApplication?>(query);
-        
+
         if (application is null)
             return NotFound();
-        
+
         var model = application.Adapt<EditApplicationModel>();
-        
+
         return View(model);
     }
 
@@ -57,10 +95,11 @@ public class ApplicationsController(
     [HttpPost("{id:guid}/edit")]
     public async Task<IActionResult> EditPostAsync([FromRoute] Guid id, EditApplicationModel model)
     {
-        if (!ModelState.IsValid){
+        if (!ModelState.IsValid)
+        {
             return View("EditApplication", model);
         }
-        
+
         var command = model.Adapt<UpdateOpenIdApplicationCommand>();
         var result = await bus.InvokeAsync<Result>(command);
         if (result.IsError())
@@ -68,6 +107,7 @@ public class ApplicationsController(
             ModelState.AddModelError("", result.ErrorValue.Message);
             return View("EditApplication", model);
         }
+
         return RedirectToAction("Index");
     }
 
@@ -79,7 +119,7 @@ public class ApplicationsController(
     /// <param name="type">Type of the uri (Application.PostLogoutRedirectUris/)</param>
     /// <returns></returns>
     [HttpPost("{id:guid}/edit/post-logout-uri")]
-    public IActionResult AddPostLogout([FromRoute] Guid id,[FromForm] string postLogoutUri, [FromQuery] string type)
+    public IActionResult AddPostLogout([FromRoute] Guid id, [FromForm] string postLogoutUri, [FromQuery] string type)
     {
         if (string.IsNullOrWhiteSpace(postLogoutUri))
         {
@@ -92,7 +132,8 @@ public class ApplicationsController(
         }
 
         // Return the partial view for HTMX to add to the DOM
-        return View("Edit/DynamicListItem", new DynamicListItem { Value = parsedUri.ToString(), Id = id , Name = "PostLogoutRedirectUris"});
+        return View("Edit/DynamicListItem",
+            new DynamicListItem { Value = parsedUri.ToString(), Id = id, Name = "PostLogoutRedirectUris" });
     }
 
     /// <summary>
@@ -103,7 +144,7 @@ public class ApplicationsController(
     /// <param name="type">Type of the uri (Application.PostLogoutRedirectUris/)</param>
     /// <returns></returns>
     [HttpPost("{id:guid}/edit/redirect-uri")]
-    public IActionResult AddRedirectUri([FromRoute] Guid id,[FromForm] string redirectUri, [FromQuery] string type)
+    public IActionResult AddRedirectUri([FromRoute] Guid id, [FromForm] string redirectUri, [FromQuery] string type)
     {
         if (string.IsNullOrWhiteSpace(redirectUri))
         {
@@ -116,9 +157,10 @@ public class ApplicationsController(
         }
 
         // Return the partial view for HTMX to add to the DOM
-        return View("Edit/DynamicListItem", new DynamicListItem { Value = parsedUri.ToString(), Id = id , Name = "RedirectUris"});
+        return View("Edit/DynamicListItem",
+            new DynamicListItem { Value = parsedUri.ToString(), Id = id, Name = "RedirectUris" });
     }
-    
+
     /// <summary>
     /// HTMX endpoint to add a new permission item to the list.
     /// </summary>
@@ -126,7 +168,7 @@ public class ApplicationsController(
     /// <param name="permission">permission to include into generated html</param>
     /// <returns></returns>
     [HttpPost("{id:guid}/edit/permission")]
-    public IActionResult AddPermission([FromRoute] Guid id,[FromForm] string permission)
+    public IActionResult AddPermission([FromRoute] Guid id, [FromForm] string permission)
     {
         if (string.IsNullOrWhiteSpace(permission))
         {
@@ -138,7 +180,4 @@ public class ApplicationsController(
         // Return the partial view for HTMX to add to the DOM
         return View("Edit/DynamicListItem", new DynamicListItem { Value = permission, Id = id, Name = "Permissions" });
     }
-
-
-    
 }

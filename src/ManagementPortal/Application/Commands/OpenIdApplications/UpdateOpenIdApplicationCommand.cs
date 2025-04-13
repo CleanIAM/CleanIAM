@@ -1,9 +1,11 @@
+using ManagementPortal.Core.Events;
 using ManagementPortal.Core.OpenIdApplication;
 using Mapster;
 using OpenIddict.Abstractions;
 using OpenIddict.Core;
 using OpenIddict.EntityFrameworkCore.Models;
 using SharedKernel.Infrastructure;
+using Wolverine;
 
 namespace ManagementPortal.Application.Commands.OpenIdApplications;
 
@@ -29,25 +31,30 @@ public class UpdateOpenIdClientCommandHandler
         var application = await applicationManager.FindByIdAsync(command.Id.ToString(), cancellationToken);
         if (application is null)
         {
-            return Result<OpenIddictEntityFrameworkCoreApplication<Guid>>.Error($"Client with ID {command.Id} not found", 400);
+            return Result.Error($"Client with ID {command.Id} not found", 400);
         }   
         
-        return Result<OpenIddictEntityFrameworkCoreApplication<Guid>>.Ok(application);
+        return Result.Ok(application);
     }
     
-    public static async Task<Result> Handle(UpdateOpenIdApplicationCommand command,
-        Result<OpenIddictEntityFrameworkCoreApplication<Guid>> result, 
+    public static async Task<Result<OpenIdApplicationUpdated>> Handle(UpdateOpenIdApplicationCommand command,
+        Result<OpenIddictEntityFrameworkCoreApplication<Guid>> loadResult, 
+        IMessageBus bus,
         IOpenIddictApplicationManager applicationManager, CancellationToken cancellationToken)
     {
-        if (result.IsError())
-            return result.Adapt<Result>();
+        if (loadResult.IsError())
+            return Result<OpenIdApplicationUpdated>.From(loadResult);
 
         var descriptor = command.Adapt<OpenIddictApplicationDescriptor>();
         
         try
         {
-            await applicationManager.UpdateAsync(result.Value, descriptor, cancellationToken);
-            return Result.Ok();
+            await applicationManager.UpdateAsync(loadResult.Value, descriptor, cancellationToken);
+            
+            // On success publish event and return Ok with that event
+            var applicationUpdatedEvent = command.Adapt<OpenIdApplicationUpdated>();
+            await bus.PublishAsync(applicationUpdatedEvent);
+            return Result.Ok(applicationUpdatedEvent);
         }
         catch (OpenIddictExceptions.ValidationException ex)
         {
