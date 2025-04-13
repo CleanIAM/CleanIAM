@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ManagementPortal.Api.Views.Applications;
 
-public class ApplicationEditModel
+public class EditApplicationModel
 {
      /// <summary>
     /// Gets or sets the id associated with the application.

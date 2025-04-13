@@ -1,6 +1,6 @@
 @using ManagementPortal.Api.Views.Applications.Edit
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@model ApplicationEditModel
+@model EditApplicationModel
 
 @{
     Layout = "_Layout";
@@ -25,18 +25,20 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="mb-4 rounded-md bg-red-50 p-4 text-sm text-red-700"></div>
             <input type="hidden" asp-for="Id"/>
-            <input type="hidden" asp-for="ClientId"/>
-
+            
             <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                @* ClientId *@
                 <div class="sm:col-span-3">
                     <label asp-for="ClientId" class="block text-sm font-medium text-gray-700"></label>
                     <div class="mt-1">
                         <input asp-for="ClientId" disabled
                                class="bg-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
+                        <input type="hidden" asp-for="ClientId"/>  @* Since disabled inputs are not included in form *@
                     </div>
                     <span asp-validation-for="ClientId" class="text-sm text-red-600"></span>
                 </div>
 
+                @* DisplayName edit *@
                 <div class="sm:col-span-3">
                     <label asp-for="DisplayName" class="block text-sm font-medium text-gray-700"></label>
                     <div class="mt-1">
@@ -46,6 +48,7 @@
                     <span asp-validation-for="DisplayName" class="text-sm text-red-600"></span>
                 </div>
 
+                @* ApplicationType edit *@
                 <div class="sm:col-span-3">
                     <label asp-for="ApplicationType" class="block text-sm font-medium text-gray-700"></label>
                     <div class="mt-1">
@@ -55,6 +58,7 @@
                     <span asp-validation-for="ApplicationType" class="text-sm text-red-600"></span>
                 </div>
 
+                @* ClientType edit *@
                 <div class="sm:col-span-3">
                     <label asp-for="ClientType" class="block text-sm font-medium text-gray-700"></label>
                     <div class="mt-1">
@@ -69,6 +73,7 @@
                     <span asp-validation-for="ClientType" class="text-sm text-red-600"></span>
                 </div>
 
+                @* ConsentType edit *@
                 <div class="sm:col-span-3">
                     <label asp-for="ConsentType" class="block text-sm font-medium text-gray-700"></label>
                     <div class="mt-1">

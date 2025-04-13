@@ -34,7 +34,7 @@ public class ApplicationsController(
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("{id:guid}/edit")]
-    public async Task<IActionResult> EditAsync([FromRoute] Guid id)
+    public async Task<IActionResult> EditApplicationAsync([FromRoute] Guid id)
     {
         
         var query = new GetOpenIdApplicationByIdQuery(id);
@@ -43,7 +43,7 @@ public class ApplicationsController(
         if (application is null)
             return NotFound();
         
-        var model = application.Adapt<ApplicationEditModel>();
+        var model = application.Adapt<EditApplicationModel>();
         
         return View(model);
     }
@@ -55,10 +55,10 @@ public class ApplicationsController(
     /// <param name="model"></param>
     /// <returns></returns>
     [HttpPost("{id:guid}/edit")]
-    public async Task<IActionResult> EditPostAsync([FromRoute] Guid id, ApplicationEditModel model)
+    public async Task<IActionResult> EditPostAsync([FromRoute] Guid id, EditApplicationModel model)
     {
         if (!ModelState.IsValid){
-            return View("Edit", model);
+            return View("EditApplication", model);
         }
         
         var command = model.Adapt<UpdateOpenIdApplicationCommand>();
@@ -66,7 +66,7 @@ public class ApplicationsController(
         if (result.IsError())
         {
             ModelState.AddModelError("", result.ErrorValue.Message);
-            return View("Edit", model);
+            return View("EditApplication", model);
         }
         return RedirectToAction("Index");
     }
