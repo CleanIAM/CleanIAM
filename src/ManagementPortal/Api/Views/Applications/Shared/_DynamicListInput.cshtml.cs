@@ -1,6 +1,6 @@
-namespace ManagementPortal.Api.Views.Applications.Edit;
+namespace ManagementPortal.Api.Views.Applications.Shared;
 
-public class DynamicListInput
+public class _DynamicListInput
 {
     public string InputName { get; set; } = string.Empty;
     

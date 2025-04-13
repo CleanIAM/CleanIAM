@@ -1,6 +1,6 @@
-namespace ManagementPortal.Api.Views.Applications.Edit;
+namespace ManagementPortal.Api.Views.Applications.Shared;
 
-public class DynamicListItem
+public class _DynamicListItem
 {
     public string Name { get; set; } = string.Empty;
     public string Value{ get; set; } = string.Empty;

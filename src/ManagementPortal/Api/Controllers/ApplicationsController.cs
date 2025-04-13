@@ -1,5 +1,5 @@
 using ManagementPortal.Api.Views.Applications;
-using ManagementPortal.Api.Views.Applications.Edit;
+using ManagementPortal.Api.Views.Applications.Shared;
 using ManagementPortal.Application.Commands.OpenIdApplications;
 using ManagementPortal.Application.Queries.OpenIdApplications;
 using ManagementPortal.Core.Events;
@@ -101,7 +101,7 @@ public class ApplicationsController(
         }
 
         var command = model.Adapt<UpdateOpenIdApplicationCommand>();
-        var result = await bus.InvokeAsync<Result>(command);
+        var result = await bus.InvokeAsync<Result<OpenIdApplicationUpdated>>(command);
         if (result.IsError())
         {
             ModelState.AddModelError("", result.ErrorValue.Message);
@@ -133,7 +133,7 @@ public class ApplicationsController(
 
         // Return the partial view for HTMX to add to the DOM
         return View("Edit/DynamicListItem",
-            new DynamicListItem { Value = parsedUri.ToString(), Id = id, Name = "PostLogoutRedirectUris" });
+            new _DynamicListItem { Value = parsedUri.ToString(), Id = id, Name = "PostLogoutRedirectUris" });
     }
 
     /// <summary>
@@ -158,7 +158,7 @@ public class ApplicationsController(
 
         // Return the partial view for HTMX to add to the DOM
         return View("Edit/DynamicListItem",
-            new DynamicListItem { Value = parsedUri.ToString(), Id = id, Name = "RedirectUris" });
+            new _DynamicListItem { Value = parsedUri.ToString(), Id = id, Name = "RedirectUris" });
     }
 
     /// <summary>
@@ -178,6 +178,6 @@ public class ApplicationsController(
         // TODO: Validate the permission format
 
         // Return the partial view for HTMX to add to the DOM
-        return View("Edit/DynamicListItem", new DynamicListItem { Value = permission, Id = id, Name = "Permissions" });
+        return View("Edit/DynamicListItem", new _DynamicListItem { Value = permission, Id = id, Name = "Permissions" });
     }
 }

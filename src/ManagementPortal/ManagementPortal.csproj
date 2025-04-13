@@ -40,7 +40,6 @@
 
     <ItemGroup>
         <Folder Include="Api\Views\appl\" />
-        <Folder Include="Api\Views\Shared\Components\" />
         <Folder Include="Infrastructure\"/>
     </ItemGroup>
 
