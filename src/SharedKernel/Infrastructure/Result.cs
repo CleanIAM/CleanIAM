@@ -33,7 +33,24 @@ public class Result
     /// <typeparam name="T">Type for the generics Result</typeparam>
     /// <returns></returns>
     public static Result<T> Ok<T>(T value) where T : class => Result<T>.Ok(value);
-
+    
+    /// <summary>
+    /// Function to convert generics Result to non-generics result 
+    /// </summary>
+    /// <param name="result"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    /// <remarks> When mapping success result the successValue will be lost</remarks>
+    public static Result From<T>(Result<T> result) where T : class
+    {
+        return new Result
+        {
+            Success = result.Success,
+            ErrorMessage = result.ErrorMessage,
+            ErrorCode = result.ErrorCode,
+        };
+    }
+    
     /// <summary>
     /// Creates a new Result object representing an error without description.
     /// </summary>
@@ -102,10 +119,10 @@ public class Result
 /// </summary>
 public class Result<T> where T : class
 {
-    private bool Success { get; set; }
-    private T? SuccessValue { get; set; }
-    private string? ErrorMessage { get; set; }
-    private int? ErrorCode { get; set; }
+    internal bool Success { get; set; }
+    internal T? SuccessValue { get; set; }
+    internal string? ErrorMessage { get; set; }
+    internal int? ErrorCode { get; set; }
 
 
     /// <summary>
@@ -128,6 +145,21 @@ public class Result<T> where T : class
     };
 
 
+    public static Result<T> From<T1>(Result<T1> result) where T1 : class
+    {
+        if (result.Success)
+            throw new InvalidOperationException(
+                "Cannot convert one generics success result to another (only error results are possible)!");
+
+        return new Result<T>
+        {
+            Success = result.Success,
+            ErrorMessage = result.ErrorMessage,
+            ErrorCode = result.ErrorCode,
+            SuccessValue = null
+        };
+    }
+    
     /// <summary>
     /// Value of the result if it represents success.
     /// </summary>
