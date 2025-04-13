@@ -39,7 +39,6 @@
 
 
     <ItemGroup>
-        <Folder Include="Api\Views\appl\" />
         <Folder Include="Infrastructure\"/>
     </ItemGroup>
 
@@ -55,6 +54,8 @@
 
     <ItemGroup>
         <AdditionalFiles Include="Api\Views\Shared\Error.cshtml"/>
+        <AdditionalFiles Include="Api\Views\Shared\_DynamicListInput.cshtml" />
+        <AdditionalFiles Include="Api\Views\Shared\_DynamicListItem.cshtml" />
         <AdditionalFiles Include="Api\Views\Shared\_Layout.cshtml"/>
         <AdditionalFiles Include="Api\Views\Shared\_ValidationScriptsPartial.cshtml"/>
         <AdditionalFiles Include="Api\Views\_ViewImports.cshtml"/>

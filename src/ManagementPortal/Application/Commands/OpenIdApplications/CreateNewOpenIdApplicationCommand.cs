@@ -26,7 +26,7 @@ public record CreateNewOpenIdApplicationCommand(
 
 public class CreateNewOpenIdApplicationCommandHandler
 {
-    public static async Task<Result> LoadAync(CreateNewOpenIdApplicationCommand command, IQuerySession session,
+    public static async Task<Result> LoadAsync(CreateNewOpenIdApplicationCommand command, IQuerySession session,
         OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager)
     {
         // Since the clientId must be unique for all application we need to check it 
@@ -48,7 +48,11 @@ public class CreateNewOpenIdApplicationCommandHandler
 
         //TODO: Create new app
         var application = command.Adapt<OpenIdApplication>();
-        application.ClientSecret = Guid.NewGuid().ToString();
+        
+        // Generate a client secter only if the application type is confidential
+        if (application.ClientType == ClientType.Confidential)
+            application.ClientSecret = Guid.NewGuid().ToString();
+            
 
         var descriptor = application.ToDescriptor();
 
