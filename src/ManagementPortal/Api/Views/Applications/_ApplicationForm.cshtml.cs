@@ -2,8 +2,7 @@ using System.Globalization;
 using System.Text.Json;
 using ManagementPortal.Core.OpenIdApplication;
 using Microsoft.IdentityModel.Tokens;
-
-namespace ManagementPortal.Api.Views.Applications.Shared;
+namespace ManagementPortal.Api.Views.Applications;
 
 public class ApplicationFormModel
 {
@@ -20,27 +19,27 @@ public class ApplicationFormModel
     /// <summary>
     /// Gets or sets the application type associated with the application.
     /// </summary>
-    public ApplicationType? ApplicationType { get; set; }
+    public ApplicationType? ApplicationType { get; set; } = Core.OpenIdApplication.ApplicationType.Web;
 
     /// <summary>
     /// Gets or sets the client identifier associated with the application.
     /// </summary>
-    public string ClientId { get; set; }
-    
+    public string ClientId { get; set; } = string.Empty;
+
     /// <summary>
     /// Gets or sets the client type associated with the application.
     /// </summary>
-    public ClientType? ClientType { get; set; }
+    public ClientType? ClientType { get; set; } = Core.OpenIdApplication.ClientType.Public;
 
     /// <summary>
     /// Gets or sets the consent type associated with the application.
     /// </summary>
-    public ConsentType? ConsentType { get; set; }
+    public ConsentType? ConsentType { get; set; } = Core.OpenIdApplication.ConsentType.Explicit;
 
     /// <summary>
     /// Gets or sets the display name associated with the application.
     /// </summary>
-    public string? DisplayName { get; set; }
+    public string? DisplayName { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets the localized display names associated with the application.

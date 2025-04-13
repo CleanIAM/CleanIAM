@@ -1,0 +1,196 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model ApplicationFormModel
+
+<div asp-validation-summary="ModelOnly" class="mb-4 rounded-md bg-red-50 p-4 text-sm text-red-700"></div>
+<input type="hidden" asp-for="Id"/>
+
+<div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+    @* ClientId *@
+    <div class="sm:col-span-3">
+        <label asp-for="ClientId" class="block text-sm font-medium text-gray-700"></label>
+        <div class="mt-1">
+            @if (Model.IsEditMode)
+            {
+                <input asp-for="ClientId" disabled
+                       class="bg-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
+                <input type="hidden" asp-for="ClientId"/> @* Since disabled inputs are not included in form *@
+            }
+            else
+            {
+                <input asp-for="ClientId"
+                       class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
+            }
+        </div>
+        <span asp-validation-for="ClientId" class="text-sm text-red-600"></span>
+    </div>
+
+    @* DisplayName *@
+    <div class="sm:col-span-3">
+        <label asp-for="DisplayName" class="block text-sm font-medium text-gray-700"></label>
+        <div class="mt-1">
+            <input asp-for="DisplayName"
+                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
+        </div>
+        <span asp-validation-for="DisplayName" class="text-sm text-red-600"></span>
+    </div>
+
+    @* ApplicationType *@
+    <div class="sm:col-span-3">
+        <label asp-for="ApplicationType" class="block text-sm font-medium text-gray-700"></label>
+        <div class="mt-1">
+            <select asp-for="ApplicationType"
+                    class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                <option value="@Core.OpenIdApplication.ApplicationType.Web">
+                    Web
+                </option>
+                <option value="@Core.OpenIdApplication.ApplicationType.Native">Native</option>
+            </select>
+        </div>
+        <span asp-validation-for="ApplicationType" class="text-sm text-red-600"></span>
+    </div>
+
+    @* ClientType *@
+    <div class="sm:col-span-3">
+        <label asp-for="ClientType" class="block text-sm font-medium text-gray-700"></label>
+        <div class="mt-1">
+            <select asp-for="ClientType"
+                    class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                <option value="@Core.OpenIdApplication.ClientType.Confidential">
+                    Confidential
+                </option>
+                <option value="@Core.OpenIdApplication.ClientType.Public">Public</option>
+            </select>
+        </div>
+        <span asp-validation-for="ClientType" class="text-sm text-red-600"></span>
+    </div>
+
+    @* ConsentType *@
+    <div class="sm:col-span-3">
+        <label asp-for="ConsentType" class="block text-sm font-medium text-gray-700"></label>
+        <div class="mt-1">
+            <select asp-for="ConsentType"
+                    class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                <option value="@Core.OpenIdApplication.ConsentType.Explicit">Explicit
+                </option>
+                <option value="@Core.OpenIdApplication.ConsentType.External">External
+                </option>
+                <option value="@Core.OpenIdApplication.ConsentType.Implicit">Implicit
+                </option>
+                <option value="@Core.OpenIdApplication.ConsentType.Systematic">Systematic
+                </option>
+            </select>
+        </div>
+        <span asp-validation-for="ConsentType" class="text-sm text-red-600"></span>
+    </div>
+    @* Redirect URIs edit *@
+    <div class="sm:col-span-6">
+        <label for="uri" class="block text-sm font-medium text-gray-700">Redirect URIs</label>
+        <p class="text-xs text-gray-500 mb-1">Add redirect URIs that are allowed for this client</p>
+
+        <div id="redirect-uris-container" class="mt-1 space-y-2">
+            <!-- List of current URIs -->
+            <div id="redirect-uris-list" class="space-y-2">
+                @foreach (var uri in Model.RedirectUris)
+                {
+                    <partial name="_DynamicListItem" model="@(new DynamicListItem
+                                                            {
+                                                                Name = "RedirectUris",
+                                                                Id = Model.Id,
+                                                                Value = uri.ToString()
+                                                            })"/>
+                }
+            </div>
+
+            <!-- Add new URI form -->
+            <partial name="_DynamicListInput" model="@(new DynamicListInput
+                                                     {
+                                                         InputName = "redirectUri",
+                                                         Placeholder = "New Redirect URI",
+                                                         HxPostUrl = Url.Action("AddRedirectUri", "Applications", new { Model.Id })
+                                                                     + "?type=Application.RedirectUris",
+                                                         HxTarget = "#redirect-uris-list",
+                                                     })"/>
+
+        </div>
+    </div>
+
+    @* Post Logout redirect URIs edit *@
+    <div class="sm:col-span-6">
+        <label for="uri" class="block text-sm font-medium text-gray-700">Post Logout
+            Redirect URIs</label>
+        <p class="text-xs text-gray-500 mb-1">Add URIs that are allowed after logout</p>
+
+        <div id="post-logout-uris-container" class="mt-1 space-y-2">
+
+            <!-- List of current post-logout URIs -->
+            <div id="post-logout-uris-list" class="space-y-2">
+                @foreach (var uri in Model.PostLogoutRedirectUris)
+                {
+                    <partial name="_DynamicListItem" model="@(new DynamicListItem
+                                                            {
+                                                                Name = "PostLogoutRedirectUris",
+                                                                Id = Model.Id,
+                                                                Value = uri.ToString()
+                                                            })"/>
+                }
+            </div>
+
+            <!-- Add new post-logout URI form -->
+            <partial name="_DynamicListInput" model="@(new DynamicListInput
+                                                     {
+                                                         InputName = "postLogoutUri",
+                                                         Placeholder = "New post logout URI",
+                                                         HxPostUrl = Url.Action("AddPostLogout", "Applications", new { Model.Id, type = "PostLogoutRedirectUris" }),
+                                                         HxTarget = "#post-logout-uris-list",
+                                                     })"/>
+
+        </div>
+    </div>
+
+    @* Permissions edit *@
+    <div class="sm:col-span-6">
+        <label for="permission" class="block text-sm font-medium text-gray-700">Permissions</label>
+        <p class="text-xs text-gray-500 mb-1">Add permissions for this client</p>
+
+        <div id="permissions-container" class="mt-1 space-y-2">
+            <input type="hidden" id="PermissionsString" name="PermissionsString"
+                   value="@(string.Join(Environment.NewLine, Model.Permissions))"/>
+
+            <!-- List of current permissions -->
+            <div id="permissions-list" class="space-y-2">
+                @foreach (var permission in Model.Permissions)
+                {
+                    <partial name="_DynamicListItem" model="@(new DynamicListItem
+                                                            {
+                                                                Name = "Permissions",
+                                                                Id = Model.Id,
+                                                                Value = permission
+                                                            })"/>
+                }
+            </div>
+
+            <!-- Add new permission form -->
+            <partial name="_DynamicListInput" model="@(new DynamicListInput
+                                                     {
+                                                         InputName = "permission",
+                                                         Placeholder = "New permission",
+                                                         HxPostUrl = Url.Action("AddPermission", "Applications", new { Model.Id }),
+                                                         HxTarget = "#permissions-list"
+                                                     })"/>
+        </div>
+    </div>
+
+</div>
+
+<div class="pt-5">
+    <div class="flex justify-end">
+        <a asp-action="Index"
+           class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Cancel
+        </a>
+        <button type="submit"
+                class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            @(Model.IsEditMode ? "Save" : "Create")
+        </button>
+    </div>
+</div>

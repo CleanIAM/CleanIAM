@@ -1,29 +1,8 @@
-@using ManagementPortal.Api.Views.Applications.Shared
 @model CreateNewApplicationModel
 
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Create New Client";
-    
-    // Map the model to the shared form model
-    var formModel = new ApplicationFormModel
-    {
-        IsEditMode = false,
-        Id = Model.Id,
-        ApplicationType = Model.ApplicationType,
-        ClientId = Model.ClientId,
-        ClientType = Model.ClientType,
-        ConsentType = Model.ConsentType,
-        DisplayName = Model.DisplayName,
-        DisplayNames = Model.DisplayNames,
-        JsonWebKeySet = Model.JsonWebKeySet,
-        Permissions = Model.Permissions,
-        PostLogoutRedirectUris = Model.PostLogoutRedirectUris,
-        Properties = Model.Properties,
-        RedirectUris = Model.RedirectUris,
-        Requirements = Model.Requirements,
-        Settings = Model.Settings
-    };
 }
 
 <div class="bg-white shadow overflow-hidden sm:rounded-lg">
@@ -42,7 +21,10 @@
 
     <div class="px-6 py-5">
         <form method="post">
-            <partial name="Shared/_ApplicationForm" model="@formModel" />
+            <partial name="_ApplicationForm" model="@(new ApplicationFormModel
+                                                    {
+                                                        IsEditMode = false
+                                                    })"/>
         </form>
     </div>
 </div>
