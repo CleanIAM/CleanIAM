@@ -3,6 +3,24 @@
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Applications";
+    
+    // Check if we need to show the application created modal
+    var showModal = TempData["ShowApplicationCreatedModal"] != null && (bool)(TempData["ShowApplicationCreatedModal"] ?? false);
+    ApplicationCreatedPopup? createdAppModel = null;
+    
+    if (showModal)
+    {
+        createdAppModel = new ApplicationCreatedPopup
+        {
+            ClientId = (string)TempData["ApplicationCreatedClientId"]!,
+            ClientType = (Core.OpenIdApplication.ClientType)TempData["ApplicationCreatedClientType"]!
+        };
+        
+        if (TempData["ApplicationCreatedClientSecret"] != null)
+        {
+            createdAppModel.ClientSecret = TempData["ApplicationCreatedClientSecret"]!.ToString();
+        }
+    }
 }
 
 <div class="bg-white shadow overflow-hidden sm:rounded-lg">
@@ -18,6 +36,11 @@
             Create Application
         </a>
     </div>
+
+@if (showModal && createdAppModel != null)
+{
+    <partial name="_ApplicationCreatedPopup" model="createdAppModel" />
+}
 
     <div class="px-4 py-5 sm:p-6">
         <div class="flex justify-between mb-4">

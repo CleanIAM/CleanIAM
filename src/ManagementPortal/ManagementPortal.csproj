@@ -52,16 +52,6 @@
         <ProjectReference Include="..\SharedKernel\SharedKernel.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <AdditionalFiles Include="Api\Views\Shared\Error.cshtml"/>
-        <AdditionalFiles Include="Api\Views\Shared\_DynamicListInput.cshtml" />
-        <AdditionalFiles Include="Api\Views\Shared\_DynamicListItem.cshtml" />
-        <AdditionalFiles Include="Api\Views\Shared\_Layout.cshtml"/>
-        <AdditionalFiles Include="Api\Views\Shared\_ValidationScriptsPartial.cshtml"/>
-        <AdditionalFiles Include="Api\Views\_ViewImports.cshtml"/>
-        <AdditionalFiles Include="Api\Views\_ViewStart.cshtml"/>
-    </ItemGroup>
-
     <Target Name="Tailwind" BeforeTargets="Build">
         <Exec Command="npx @tailwindcss/cli -i ./wwwroot/css/base.css -o ./wwwroot/css/main.css"/>
     </Target>

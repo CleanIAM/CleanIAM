@@ -4,6 +4,7 @@ using ManagementPortal.Application.Queries.OpenIdApplications;
 using ManagementPortal.Core.Events;
 using ManagementPortal.Core.OpenIdApplication;
 using Mapster;
+using Marten;
 using Microsoft.AspNetCore.Mvc;
 using SharedKernel.Infrastructure;
 using Wolverine;
@@ -12,9 +13,9 @@ namespace ManagementPortal.Api.Controllers;
 
 [Route("applications")]
 public class ApplicationsController(
-    IMessageBus bus
-) : Controller
+    IMessageBus bus) : Controller
 {
+
     /// <summary>
     /// Show the main application page with a list of all applications.
     /// </summary>
@@ -49,7 +50,7 @@ public class ApplicationsController(
         if (!ModelState.IsValid)
             return View(model);
 
-        var command = model.Adapt<CreateNewOpenIdApplicationCommand>();
+        var command = model.Adapt<CreateNewOpenIdApplicationCommand>() with { Id = Guid.NewGuid() };
         var res = await bus.InvokeAsync<Result<OpenIdApplicationCreated>>(command, cancellationToken);
 
         if (res.IsError())
@@ -58,9 +59,22 @@ public class ApplicationsController(
             return View(model);
         }
 
-        if (res.Value.ClientType == ClientType.Confidential)
+        var applicationCreatedModel = new ApplicationCreatedPopup
         {
-            //TODO: Show popup with secret value (on close, redirect to the "Application.Index")
+            ClientId = res.Value.ClientId,
+            ClientType = res.Value.ClientType ?? ClientType.Public,
+            ClientSecret = res.Value.ClientSecret
+        };
+        
+        // For modal popup approach - using TempData since we're redirecting
+        TempData["ShowApplicationCreatedModal"] = true;
+        TempData["ApplicationCreatedClientId"] = applicationCreatedModel.ClientId;
+        TempData["ApplicationCreatedClientType"] = applicationCreatedModel.ClientType;
+        
+        // Only set the client secret in TempData if it's not null or empty
+        if (!string.IsNullOrEmpty(applicationCreatedModel.ClientSecret))
+        {
+            TempData["ApplicationCreatedClientSecret"] = applicationCreatedModel.ClientSecret;
         }
         
         return RedirectToAction("Index");

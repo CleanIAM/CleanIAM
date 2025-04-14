@@ -40,12 +40,15 @@ public class UpdateOpenIdClientCommandHandler
     public static async Task<Result<OpenIdApplicationUpdated>> Handle(UpdateOpenIdApplicationCommand command,
         Result<OpenIddictEntityFrameworkCoreApplication<Guid>> loadResult, 
         IMessageBus bus,
-        IOpenIddictApplicationManager applicationManager, CancellationToken cancellationToken)
+        OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager
+        ,CancellationToken cancellationToken)
     {
         if (loadResult.IsError())
             return Result<OpenIdApplicationUpdated>.From(loadResult);
 
+
         var descriptor = command.Adapt<OpenIddictApplicationDescriptor>();
+        descriptor.ClientSecret = loadResult.Value.ClientSecret;
         
         try
         {
