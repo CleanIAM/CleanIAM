@@ -125,6 +125,24 @@ public class ApplicationsController(
     }
 
     /// <summary>
+    /// HTMX endpoint to delete an application.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteApplication([FromRoute] Guid id)
+    {
+        var command = new DeleteOpenIdApplicationCommand(id);
+        var result = await bus.InvokeAsync<Result<OpenIdApplicationDeleted>>(command);
+        if (result.IsError())
+        {
+            return BadRequest(result.ErrorValue.Message);
+        }
+
+        return Ok();
+    }
+
+    /// <summary>
     /// HTMX endpoint to add a new URI Item to the post logout uri list.
     /// </summary>
     /// <param name="id">application id</param>
