@@ -1,0 +1,76 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using SharedKernel.Core
+@model UserFormModel
+
+<div asp-validation-summary="ModelOnly" class="mb-4 rounded-md bg-red-50 p-4 text-sm text-red-700"></div>
+<input type="hidden" asp-for="Id"/>
+
+<div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+    @* Email *@
+    <div class="sm:col-span-3">
+        <label asp-for="Email" class="block text-sm font-medium text-gray-700"></label>
+        <div class="mt-1">
+            @if (Model.IsEditMode)
+            {
+                <input asp-for="Email" disabled
+                       class="bg-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
+                <input type="hidden" asp-for="Email" value="@Model.Email"/> @* Since disabled inputs are not included in form *@
+            }
+            else
+            {
+                <input asp-for="Email"
+                       class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
+            }
+        </div>
+        <span asp-validation-for="Email" class="text-sm text-red-600"></span>
+    </div>
+
+    @* FirstName *@
+    <div class="sm:col-span-3">
+        <label asp-for="FirstName" class="block text-sm font-medium text-gray-700"></label>
+        <div class="mt-1">
+            <input asp-for="FirstName"
+                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
+        </div>
+        <span asp-validation-for="FirstName" class="text-sm text-red-600"></span>
+    </div>
+
+    @* LastName *@
+    <div class="sm:col-span-3">
+        <label asp-for="LastName" class="block text-sm font-medium text-gray-700"></label>
+        <div class="mt-1">
+            <input asp-for="LastName"
+                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
+        </div>
+        <span asp-validation-for="LastName" class="text-sm text-red-600"></span>
+    </div>
+
+    @* Roles *@
+    <div class="sm:col-span-3">
+        <label asp-for="Roles" class="block text-sm font-medium text-gray-700">User Roles</label>
+        <div class="mt-1">
+            @foreach (var role in Enum.GetValues<UserRole>())
+            {
+                <div class="flex items-center mt-1">
+                    <input type="checkbox" id="role-@role" name="Roles" value="@role" 
+                           @(Model.Roles != null && Model.Roles.Contains(role) ? "checked" : "")
+                           class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                    <label for="role-@role" class="ml-2 block text-sm text-gray-900">@role</label>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="pt-5">
+    <div class="flex justify-end">
+        <a asp-action="Index"
+           class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Cancel
+        </a>
+        <button type="submit"
+                class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            @(Model.IsEditMode ? "Save" : "Create")
+        </button>
+    </div>
+</div>

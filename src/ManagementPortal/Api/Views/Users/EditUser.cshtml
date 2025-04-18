@@ -1,0 +1,29 @@
+@model EditUserModel
+@{
+    ViewData["Title"] = "Edit User";
+    Layout = "_Layout";
+}
+
+<div class="bg-white shadow sm:rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+        <div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Edit User</h3>
+            <p class="mt-1 text-sm text-gray-500">
+                Update user information.
+            </p>
+        </div>
+        <form method="post" asp-action="EditPostAsync" asp-route-id="@Model.Id">
+            <div class="mt-5">
+                <partial name="_UserForm" model="new UserFormModel
+                                            {
+                                                Id = Model.Id,
+                                                Email = Model.Email,
+                                                FirstName = Model.FirstName,
+                                                LastName = Model.LastName,
+                                                Roles = Model.Roles,
+                                                IsEditMode = true
+                                            }"/>
+            </div>
+        </form>
+    </div>
+</div>
