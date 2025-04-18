@@ -53,13 +53,28 @@
     <div class="sm:col-span-3">
         <label asp-for="ClientType" class="block text-sm font-medium text-gray-700"></label>
         <div class="mt-1">
-            <select asp-for="ClientType"
-                    class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
-                <option value="@Core.OpenIdApplication.ClientType.Confidential">
-                    Confidential
-                </option>
-                <option value="@Core.OpenIdApplication.ClientType.Public">Public</option>
-            </select>
+            @if (Model.IsEditMode)
+            {
+                <select asp-for="ClientType" disabled
+                        class="bg-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                    <option value="@Core.OpenIdApplication.ClientType.Confidential">
+                        Confidential
+                    </option>
+                    <option value="@Core.OpenIdApplication.ClientType.Public">Public</option>
+                </select>
+                @* Since disabled inputs are not included in form *@
+                <input type="hidden" asp-for="ClientType" value="@Model.ClientType"/>
+            }
+            else
+            {
+                <select asp-for="ClientType"
+                        class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                    <option value="@Core.OpenIdApplication.ClientType.Confidential">
+                        Confidential
+                    </option>
+                    <option value="@Core.OpenIdApplication.ClientType.Public">Public</option>
+                </select>
+            }
         </div>
         <span asp-validation-for="ClientType" class="text-sm text-red-600"></span>
     </div>
