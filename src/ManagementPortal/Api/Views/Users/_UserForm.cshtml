@@ -6,20 +6,31 @@
 <input type="hidden" asp-for="Id"/>
 
 <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+    <div class="sm:col-span-6 pb-5 mb-6 border-b border-gray-200">
+        <h3 class="text-lg font-medium leading-6 text-gray-900">User Information</h3>
+        <p class="mt-1 text-sm text-gray-500">Basic information about the user account.</p>
+    </div>
+    
     @* Email *@
     <div class="sm:col-span-3">
-        <label asp-for="Email" class="block text-sm font-medium text-gray-700"></label>
-        <div class="mt-1">
+        <label asp-for="Email" class="block text-sm font-medium text-gray-700">Email Address</label>
+        <div class="mt-1 relative rounded-md shadow-sm">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                </svg>
+            </div>
             @if (Model.IsEditMode)
             {
                 <input asp-for="Email" disabled
-                       class="bg-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
+                       class="bg-gray-100 pl-10 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
                 <input type="hidden" asp-for="Email" value="@Model.Email"/> @* Since disabled inputs are not included in form *@
             }
             else
             {
                 <input asp-for="Email"
-                       class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
+                       class="pl-10 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
             }
         </div>
         <span asp-validation-for="Email" class="text-sm text-red-600"></span>
@@ -27,42 +38,59 @@
 
     @* FirstName *@
     <div class="sm:col-span-3">
-        <label asp-for="FirstName" class="block text-sm font-medium text-gray-700"></label>
-        <div class="mt-1">
+        <label asp-for="FirstName" class="block text-sm font-medium text-gray-700">First Name</label>
+        <div class="mt-1 relative rounded-md shadow-sm">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                </svg>
+            </div>
             <input asp-for="FirstName"
-                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
+                   class="pl-10 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
         </div>
         <span asp-validation-for="FirstName" class="text-sm text-red-600"></span>
     </div>
 
     @* LastName *@
     <div class="sm:col-span-3">
-        <label asp-for="LastName" class="block text-sm font-medium text-gray-700"></label>
-        <div class="mt-1">
+        <label asp-for="LastName" class="block text-sm font-medium text-gray-700">Last Name</label>
+        <div class="mt-1 relative rounded-md shadow-sm">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                </svg>
+            </div>
             <input asp-for="LastName"
-                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
+                   class="pl-10 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
         </div>
         <span asp-validation-for="LastName" class="text-sm text-red-600"></span>
     </div>
 
+    <div class="sm:col-span-6 pt-5 mt-6 border-t border-gray-200">
+        <h3 class="text-lg font-medium leading-6 text-gray-900">Permissions</h3>
+        <p class="mt-1 text-sm text-gray-500">Define what this user can access in the system.</p>
+    </div>
+    
     @* Roles *@
-    <div class="sm:col-span-3">
+    <div class="sm:col-span-6">
         <label asp-for="Roles" class="block text-sm font-medium text-gray-700">User Roles</label>
-        <div class="mt-1">
-            @foreach (var role in Enum.GetValues<UserRole>())
-            {
-                <div class="flex items-center mt-1">
-                    <input type="checkbox" id="role-@role" name="Roles" value="@role" 
-                           @(Model.Roles != null && Model.Roles.Contains(role) ? "checked" : "")
-                           class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-                    <label for="role-@role" class="ml-2 block text-sm text-gray-900">@role</label>
-                </div>
-            }
+        <div class="mt-4 bg-gray-50 p-4 rounded-md border border-gray-200">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                @foreach (var role in Enum.GetValues<UserRole>())
+                {
+                    <div class="flex items-center">
+                        <input type="checkbox" id="role-@role" name="Roles" value="@role" 
+                               @(Model.Roles != null && Model.Roles.Contains(role) ? "checked" : "")
+                               class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                        <label for="role-@role" class="ml-3 block text-sm font-medium text-gray-700">@role</label>
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </div>
 
-<div class="pt-5">
+<div class="pt-6 mt-6 border-t border-gray-200">
     <div class="flex justify-end">
         <a asp-action="Index"
            class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -70,7 +98,7 @@
         </a>
         <button type="submit"
                 class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            @(Model.IsEditMode ? "Save" : "Create")
+            @(Model.IsEditMode ? "Save Changes" : "Create User")
         </button>
     </div>
 </div>
