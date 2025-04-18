@@ -1,11 +1,12 @@
 using ManagementPortal.Core.OpenIdApplication;
 
-namespace ManagementPortal.Core.Events;
+namespace ManagementPortal.Core.Events.OpenIdApplications;
 
-public record OpenIdApplicationUpdated(
+public record OpenIdApplicationCreated(
     Guid Id,
     ApplicationType? ApplicationType,
     string ClientId,
+    string? ClientSecret,
     ClientType? ClientType,
     ConsentType? ConsentType,
     string? DisplayName,

@@ -1,7 +1,7 @@
 using ManagementPortal.Api.Views.Applications;
 using ManagementPortal.Application.Commands.OpenIdApplications;
 using ManagementPortal.Application.Queries.OpenIdApplications;
-using ManagementPortal.Core.Events;
+using ManagementPortal.Core.Events.OpenIdApplications;
 using ManagementPortal.Core.OpenIdApplication;
 using Mapster;
 using Marten;

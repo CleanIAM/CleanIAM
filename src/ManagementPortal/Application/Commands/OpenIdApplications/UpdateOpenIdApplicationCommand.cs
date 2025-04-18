@@ -1,4 +1,4 @@
-using ManagementPortal.Core.Events;
+using ManagementPortal.Core.Events.OpenIdApplications;
 using ManagementPortal.Core.OpenIdApplication;
 using Mapster;
 using OpenIddict.Abstractions;
@@ -44,7 +44,7 @@ public class UpdateOpenIdClientCommandHandler
         ,CancellationToken cancellationToken)
     {
         if (loadResult.IsError())
-            return Result<OpenIdApplicationUpdated>.From(loadResult);
+            return Result.From(loadResult);
 
 
         var descriptor = command.Adapt<OpenIddictApplicationDescriptor>();

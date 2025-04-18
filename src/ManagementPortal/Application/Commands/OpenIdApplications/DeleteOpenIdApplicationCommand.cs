@@ -1,4 +1,4 @@
-using ManagementPortal.Core.Events;
+using ManagementPortal.Core.Events.OpenIdApplications;
 using Mapster;
 using OpenIddict.Abstractions;
 using OpenIddict.Core;
@@ -34,7 +34,7 @@ public class DeleteOpenIdApplicationCommandHandler
         CancellationToken cancellationToken)
     {
         if (loadResult.IsError())
-            return Result<OpenIdApplicationDeleted>.From(loadResult);
+            return Result.From(loadResult);
         
         try
         {

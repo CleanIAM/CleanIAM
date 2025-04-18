@@ -1,5 +1,5 @@
 using System.Net;
-using ManagementPortal.Core.Events;
+using ManagementPortal.Core.Events.OpenIdApplications;
 using ManagementPortal.Core.OpenIdApplication;
 using Mapster;
 using Marten;

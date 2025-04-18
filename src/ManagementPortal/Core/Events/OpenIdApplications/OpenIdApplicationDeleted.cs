@@ -1,3 +1,3 @@
-namespace ManagementPortal.Core.Events;
+namespace ManagementPortal.Core.Events.OpenIdApplications;
 
 public record OpenIdApplicationDeleted(Guid Id, string DisplayName);
