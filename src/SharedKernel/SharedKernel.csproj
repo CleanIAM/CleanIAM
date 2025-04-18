@@ -20,8 +20,8 @@
         </PackageReference>
         <PackageReference Include="Npgsql" Version="9.0.3"/>
         <PackageReference Include="NSec.Cryptography" Version="24.4.0"/>
-        <PackageReference Include="OpenIddict.AspNetCore" Version="6.1.1"/>
-        <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="6.1.1"/>
+        <PackageReference Include="OpenIddict.AspNetCore" Version="6.2.0" />
+        <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="6.2.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
         <PackageReference Include="System.Text.Json" Version="9.0.3"/>
