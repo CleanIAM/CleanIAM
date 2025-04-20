@@ -4,6 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "ClearIAM",
   description: "New IAM solution for dotnet",
+  base: '/ClearIAM/',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
