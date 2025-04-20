@@ -19,7 +19,6 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 
 // Configure views locations
-// Configure views locations
 builder.Services.Configure<RazorViewEngineOptions>(options =>
 {
     options.ViewLocationFormats.Clear();
@@ -33,6 +32,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDatabases(builder.Configuration);
 builder.Services.AddOpenIddict(builder.Configuration);
+builder.Services.AddOidcAuthentication(builder.Configuration);
 builder.Services.AddUtils(builder.Configuration);
 
 // Configure Mapster
@@ -43,9 +43,14 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
+    app.UseStatusCodePagesWithReExecute("/error");
+    app.UseExceptionHandler("/error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+else
+{
+    app.UseDeveloperExceptionPage();
 }
 
 
@@ -61,6 +66,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
-app.MapControllers();
+
+app.MapControllers().RequireAuthorization(); // This makes all controllers require authentication by default
 
 app.Run();
