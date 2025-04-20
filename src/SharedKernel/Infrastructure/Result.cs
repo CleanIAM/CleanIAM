@@ -1,3 +1,5 @@
+using System.Net;
+
 namespace SharedKernel.Infrastructure;
 
 /// <summary>
@@ -7,9 +9,9 @@ namespace SharedKernel.Infrastructure;
 /// </summary>
 public class Result
 {
-    private bool Success { get; set; }
-    private string? ErrorMessage { get; set; }
-    private int? ErrorCode { get; set; }
+    internal bool Success { get; set; }
+    internal string? ErrorMessage { get; set; }
+    internal int? ErrorCode { get; set; }
 
     public Error ErrorValue => !Success
         ? new Error { Message = ErrorMessage ?? string.Empty, Code = ErrorCode ?? 0 }
@@ -25,6 +27,31 @@ public class Result
     }
 
     /// <summary>
+    /// Helper function to automatically infer generics type with explicitly specifying it 
+    /// </summary>
+    /// <param name="value">Value of the success</param>
+    /// <typeparam name="T">Type for the generics Result</typeparam>
+    /// <returns></returns>
+    public static Result<T> Ok<T>(T value) where T : class => Result<T>.Ok(value);
+    
+    /// <summary>
+    /// Function to convert generics Result to non-generics result 
+    /// </summary>
+    /// <param name="result"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    /// <remarks> When mapping success result the successValue will be lost</remarks>
+    public static Result From<T>(Result<T> result) where T : class
+    {
+        return new Result
+        {
+            Success = result.Success,
+            ErrorMessage = result.ErrorMessage,
+            ErrorCode = result.ErrorCode,
+        };
+    }
+    
+    /// <summary>
     /// Creates a new Result object representing an error without description.
     /// </summary>
     /// <returns>Result object representing an error</returns>
@@ -39,9 +66,20 @@ public class Result
     /// <param name="errorMessage">Error message</param>
     /// <param name="errorCode">Error code</param>
     /// <returns>Result object representing an error</returns>
-    public static Result Error(string? errorMessage, int errorCode)
+    public static Result Error(string errorMessage, int errorCode)
     {
         return new Result { Success = false, ErrorMessage = errorMessage, ErrorCode = errorCode };
+    }
+
+    /// <summary>
+    /// Creates a new Result object representing an error.
+    /// </summary>
+    /// <param name="errorMessage">Error message</param>
+    /// <param name="errorCode">Error code</param>
+    /// <returns>Result object representing an error</returns>
+    public static Result Error(string errorMessage, HttpStatusCode errorCode)
+    {
+        return new Result { Success = false, ErrorMessage = errorMessage, ErrorCode = (int)errorCode };
     }
 
 
@@ -81,11 +119,47 @@ public class Result
 /// </summary>
 public class Result<T> where T : class
 {
-    private bool Success { get; set; }
-    private T? SuccessValue { get; set; }
-    private string? ErrorMessage { get; set; }
-    private int? ErrorCode { get; set; }
+    internal bool Success { get; set; }
+    internal T? SuccessValue { get; set; }
+    internal string? ErrorMessage { get; set; }
+    internal int? ErrorCode { get; set; }
 
+
+    /// <summary>
+    /// This method allows to implicitly convert non-generics error result to generics error result
+    /// to make the code cleaner.
+    /// </summary>
+    /// <param name="result">Non-generics result to convert from</param>
+    /// <returns>Converted generics result</returns>
+    /// <remarks>
+    /// This conversion should only be applied if the result represents error!
+    /// If it represents success, then the generics result should be created using `Result.Ok(object)`
+    /// that automatically converts to generics error if given some parameter. 
+    /// </remarks>
+    public static implicit operator Result<T>(Result result) => new()
+    {
+        Success = result.Success,
+        ErrorMessage = result.ErrorMessage,
+        ErrorCode = result.ErrorCode,
+        SuccessValue = null
+    };
+
+
+    public static Result<T> From<T1>(Result<T1> result) where T1 : class
+    {
+        if (result.Success)
+            throw new InvalidOperationException(
+                "Cannot convert one generics success result to another (only error results are possible)!");
+
+        return new Result<T>
+        {
+            Success = result.Success,
+            ErrorMessage = result.ErrorMessage,
+            ErrorCode = result.ErrorCode,
+            SuccessValue = null
+        };
+    }
+    
     /// <summary>
     /// Value of the result if it represents success.
     /// </summary>
@@ -120,6 +194,18 @@ public class Result<T> where T : class
     public static Result<T> Error(string errorMessage, int errorCode)
     {
         return new Result<T> { Success = false, ErrorMessage = errorMessage, ErrorCode = errorCode };
+    }
+
+
+    /// <summary>
+    /// Creates a new Result object representing an error.
+    /// </summary>
+    /// <param name="errorMessage">Error message</param>
+    /// <param name="errorCode">Error code</param>
+    /// <returns>Result object representing an error</returns>
+    public static Result<T> Error(string errorMessage, HttpStatusCode errorCode)
+    {
+        return new Result<T> { Success = false, ErrorMessage = errorMessage, ErrorCode = (int)errorCode };
     }
 
 

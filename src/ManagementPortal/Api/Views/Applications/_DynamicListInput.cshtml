@@ -1,0 +1,31 @@
+@model DynamicListInput
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+<div>
+    <div class="flex space-x-2 relative" id="redirect-uri-form">
+        <div class="htmx-indicator absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center hidden">
+            <svg class="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+        </div>
+        <input type="text" id="@Model.InputName"
+               name="@Model.InputName"
+               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+               placeholder="@Model.Placeholder"/>
+        
+        <button type="button"
+                hx-post="@Model.HxPostUrl"
+                hx-params="@Model.InputName"
+                hx-target="@Model.HxTarget"
+                hx-target-4*="#redirect-uri-error"
+                hx-swap="beforeend"
+                hx-indicator=".htmx-indicator"
+                hx-headers='{"RequestVerificationToken": "@(Antiforgery.GetAndStoreTokens(ViewContext.HttpContext).RequestToken)"}'
+                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Add
+        </button>
+
+    </div>
+    <div id="redirect-uri-error" class="text-sm text-red-600 mt-2 p-2 rounded-md"></div>
+</div>

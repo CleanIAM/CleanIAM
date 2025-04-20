@@ -30,8 +30,7 @@ public class OpenIdApplication
     // Note: depending on the application manager used when creating it,
     // this property may be hashed or encrypted for security reasons.
     // </summary>
-    // TODO: Do something with secret
-    // public string? ClientSecret { get; set; }
+    public string? ClientSecret { get; set; }
 
     /// <summary>
     /// Gets or sets the client type associated with the application.

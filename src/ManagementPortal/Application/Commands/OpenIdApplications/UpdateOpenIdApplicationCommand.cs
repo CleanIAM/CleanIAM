@@ -1,13 +1,26 @@
+using ManagementPortal.Core.Events.OpenIdApplications;
 using ManagementPortal.Core.OpenIdApplication;
 using Mapster;
 using OpenIddict.Abstractions;
 using OpenIddict.Core;
 using OpenIddict.EntityFrameworkCore.Models;
 using SharedKernel.Infrastructure;
+using Wolverine;
 
 namespace ManagementPortal.Application.Commands.OpenIdApplications;
 
-public record UpdateOpenIdApplicationCommand(OpenIdApplication Application);
+public record UpdateOpenIdApplicationCommand(
+    Guid Id,
+    ApplicationType? ApplicationType,
+    string ClientId,
+    ClientType? ClientType,
+    ConsentType? ConsentType,
+    string? DisplayName,
+    HashSet<string> Permissions,
+    HashSet<Uri> PostLogoutRedirectUris,
+    HashSet<Uri> RedirectUris,
+    HashSet<string> Requirements,
+    Dictionary<string, string> Settings);
 
 public class UpdateOpenIdClientCommandHandler
 {
@@ -15,29 +28,36 @@ public class UpdateOpenIdClientCommandHandler
         OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager, CancellationToken cancellationToken)
     {
         // Find application by its Guid Id property
-        var application = await applicationManager.FindByIdAsync(command.Application.Id.ToString(), cancellationToken);
+        var application = await applicationManager.FindByIdAsync(command.Id.ToString(), cancellationToken);
         if (application is null)
         {
-            return Result<OpenIddictEntityFrameworkCoreApplication<Guid>>.Error($"Client with ID {command.Application.Id} not found", 400);
+            return Result.Error($"Client with ID {command.Id} not found", 400);
         }   
         
-        return Result<OpenIddictEntityFrameworkCoreApplication<Guid>>.Ok(application);
+        return Result.Ok(application);
     }
     
-    public static async Task<Result> Handle(UpdateOpenIdApplicationCommand command,
-        Result<OpenIddictEntityFrameworkCoreApplication<Guid>> result, 
-        IOpenIddictApplicationManager applicationManager, CancellationToken cancellationToken)
+    public static async Task<Result<OpenIdApplicationUpdated>> Handle(UpdateOpenIdApplicationCommand command,
+        Result<OpenIddictEntityFrameworkCoreApplication<Guid>> loadResult, 
+        IMessageBus bus,
+        OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager
+        ,CancellationToken cancellationToken)
     {
-        if (result.IsError())
-            return result.Adapt<Result>();
+        if (loadResult.IsError())
+            return Result.From(loadResult);
 
-        var descriptor = command.Application.ToDescriptor();
+
+        var descriptor = command.Adapt<OpenIddictApplicationDescriptor>();
+        descriptor.ClientSecret = loadResult.Value.ClientSecret;
         
         try
         {
-            // Update the application
-            await applicationManager.UpdateAsync(result.Value, descriptor, cancellationToken);
-            return Result.Ok();
+            await applicationManager.UpdateAsync(loadResult.Value, descriptor, cancellationToken);
+            
+            // On success publish event and return Ok with that event
+            var applicationUpdatedEvent = command.Adapt<OpenIdApplicationUpdated>();
+            await bus.PublishAsync(applicationUpdatedEvent);
+            return Result.Ok(applicationUpdatedEvent);
         }
         catch (OpenIddictExceptions.ValidationException ex)
         {

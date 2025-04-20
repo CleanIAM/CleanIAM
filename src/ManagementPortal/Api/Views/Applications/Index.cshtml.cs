@@ -1,19 +1,9 @@
-using ManagementPortal.Application.Queries.OpenIdApplications;
-using ManagementPortal.Core;
 using ManagementPortal.Core.OpenIdApplication;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Wolverine;
 
-namespace ManagementPortal.Api.Views.Clients;
+namespace ManagementPortal.Api.Views.Applications;
 
-public class Index(IMessageBus bus) : PageModel
+public class ApplicationPageModel
 {
-    public OpenIdApplication[] Applications { get; set; }
-
-    public async Task OnGetAsync()
-    {
-        var query = new GetAllOpenIdApplicationsQuery();
-        var applications = await bus.InvokeAsync<IEnumerable<OpenIdApplication>>(query);
-        Applications = applications.ToArray();
-    }
+    public required OpenIdApplication[] Applications { get; set; }
+    
 }

@@ -2,7 +2,6 @@ using System.Linq.Expressions;
 using Mapster;
 using Lamar.Microsoft.DependencyInjection;
 using ManagementPortal;
-using MapsterMapper;
 using Microsoft.AspNetCore.Mvc.Razor;
 using SharedKernel;
 
@@ -18,11 +17,9 @@ builder.Host.UseProjects(assemblies);
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
-// Add services to the container.
-builder.Services.AddRazorPages().WithRazorPagesRoot("/Api/Views");
 
-builder.Services.AddControllersWithViews();
-// Configure Razor view locations
+// Configure views locations
+// Configure views locations
 builder.Services.Configure<RazorViewEngineOptions>(options =>
 {
     options.ViewLocationFormats.Clear();
@@ -30,6 +27,7 @@ builder.Services.Configure<RazorViewEngineOptions>(options =>
     options.ViewLocationFormats.Add("/Api/Views/Shared/{0}.cshtml");
 });
 
+builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -63,7 +61,6 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
-
-app.MapRazorPages();
+app.MapControllers();
 
 app.Run();

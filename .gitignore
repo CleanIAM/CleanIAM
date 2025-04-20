@@ -47,3 +47,8 @@ src/**/bin/
 src/**/obj/
 src/Identity/bin
 src/Identity/obj
+
+# Documentation
+docs/.vitepress/dist
+docs/.vitepress/cache 
+node_modules

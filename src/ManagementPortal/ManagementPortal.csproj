@@ -16,8 +16,8 @@
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11"/>
         <PackageReference Include="Npgsql" Version="9.0.3"/>
         <PackageReference Include="NSec.Cryptography" Version="24.4.0"/>
-        <PackageReference Include="OpenIddict.AspNetCore" Version="6.1.1"/>
-        <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="6.1.1"/>
+        <PackageReference Include="OpenIddict.AspNetCore" Version="6.2.0" />
+        <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="6.2.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
         <PackageReference Include="System.Text.Json" Version="9.0.3"/>
@@ -50,14 +50,6 @@
     <ItemGroup>
         <ProjectReference Include="..\Identity.AnticorrutptionLayer\Identity.AnticorrutptionLayer.csproj"/>
         <ProjectReference Include="..\SharedKernel\SharedKernel.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <AdditionalFiles Include="Api\Views\Shared\Error.cshtml"/>
-        <AdditionalFiles Include="Api\Views\Shared\_Layout.cshtml"/>
-        <AdditionalFiles Include="Api\Views\Shared\_ValidationScriptsPartial.cshtml"/>
-        <AdditionalFiles Include="Api\Views\_ViewImports.cshtml"/>
-        <AdditionalFiles Include="Api\Views\_ViewStart.cshtml"/>
     </ItemGroup>
 
     <Target Name="Tailwind" BeforeTargets="Build">
