@@ -1,31 +1,8 @@
 using System.Text;
 using CommunityToolkit.Diagnostics;
-using Identity.Core;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
-using System.Reflection;
-using System.Text;
-using System.Text.Json.Serialization;
-using CommunityToolkit.Diagnostics;
-using JasperFx.CodeGeneration;
-using Marten;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using OpenTelemetry.Trace;
 using SharedKernel.Core.Database;
-using Wolverine;
-using Wolverine.FluentValidation;
-using Wolverine.Http;
-using Wolverine.Http.FluentValidation;
-using Wolverine.Http.Marten;
-using Wolverine.Marten;
 
 namespace Identity;
 
@@ -49,7 +26,8 @@ public static class DependencyInjection
                 options.SetAuthorizationEndpointUris("/connect/authorize")
                     .SetTokenEndpointUris("/connect/token")
                     .SetIntrospectionEndpointUris("connect/introspect")
-                    .SetEndSessionEndpointUris("/connect/endsession");
+                    .SetEndSessionEndpointUris("/connect/endsession").
+                    SetUserInfoEndpointUris("/connect/userinfo");
 
                 // .SetDeviceAuthorizationEndpointUris("connect/device")
                 // .SetEndUserVerificationEndpointUris("connect/verify")
@@ -66,13 +44,16 @@ public static class DependencyInjection
 
                 options.UseAspNetCore()
                     .EnableAuthorizationEndpointPassthrough()
-                    .EnableErrorPassthrough()
-                    .EnableEndSessionEndpointPassthrough();
+                    .EnableEndSessionEndpointPassthrough()
+                    .EnableUserInfoEndpointPassthrough()
+                    .EnableStatusCodePagesIntegration();
 
                 options.DisableAccessTokenEncryption();
 
                 options.AddEncryptionKey(new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(encryptionKey)));
+
+                
             });
         return serviceCollection;
     }
@@ -85,6 +66,7 @@ public static class DependencyInjection
         await context.Database.EnsureCreatedAsync();
 
         await CreateExampleOidcClient(scope);
+        await CreateDefaultOidcScopes(scope);
     }
 
     private static async Task CreateExampleOidcClient(AsyncServiceScope scope)
@@ -136,26 +118,58 @@ public static class DependencyInjection
         if (await applicationManager.FindByClientIdAsync("example-BE-client") is null)
             await applicationManager.CreateAsync(beClient);
 
-        var scopeManager = scope.ServiceProvider.GetRequiredService<IOpenIddictScopeManager>();
-
-        if (await scopeManager.FindByNameAsync("BE1") is null)
-            await scopeManager.CreateAsync(new OpenIddictScopeDescriptor
+        var managementPortal = new OpenIddictApplicationDescriptor
+        {
+            ClientId = "management-portal",
+            ClientSecret = "management-portal-secret",
+            ClientType = OpenIddictConstants.ClientTypes.Confidential,
+            RedirectUris =
             {
-                Name = "BE1",
-                Resources =
-                {
-                    "example-BE-client"
-                }
-            });
-
-        if (await scopeManager.FindByNameAsync("api2") is null)
-            await scopeManager.CreateAsync(new OpenIddictScopeDescriptor
+                new Uri("https://localhost:5001/signin-oidc")
+            },
+            Permissions =
             {
-                Name = "api2",
-                Resources =
-                {
-                    "resource_server_2"
+                OpenIddictConstants.Permissions.Endpoints.Authorization,
+                OpenIddictConstants.Permissions.Endpoints.Token,
+                OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
+                OpenIddictConstants.Permissions.ResponseTypes.Code,
+                OpenIddictConstants.Permissions.Scopes.Email,
+                OpenIddictConstants.Permissions.Scopes.Profile,
+                OpenIddictConstants.Permissions.Scopes.Roles
                 }
-            });
+        };
+
+        if (await applicationManager.FindByClientIdAsync("management-portal") is null)
+            await applicationManager.CreateAsync(managementPortal);
+        
     }
+
+    private static async Task CreateDefaultOidcScopes(AsyncServiceScope serviceScope)
+    {
+        var scopeManager = serviceScope.ServiceProvider.GetRequiredService<IOpenIddictScopeManager>();
+
+        var defaultScopes = new[]
+        {
+            OpenIddictConstants.Scopes.Address,
+            OpenIddictConstants.Scopes.Email,
+            OpenIddictConstants.Scopes.OfflineAccess,
+            OpenIddictConstants.Scopes.Profile,
+            OpenIddictConstants.Scopes.OpenId,
+            OpenIddictConstants.Scopes.Phone,
+            OpenIddictConstants.Scopes.Profile,
+            OpenIddictConstants.Scopes.Roles
+        };
+        
+        foreach (var defaultScope in defaultScopes)
+        {
+            if (await scopeManager.FindByNameAsync(defaultScope) is null)
+                await scopeManager.CreateAsync(new OpenIddictScopeDescriptor
+                {
+                    Name = defaultScope
+                });
+        }
+    }
+    
+    
 }

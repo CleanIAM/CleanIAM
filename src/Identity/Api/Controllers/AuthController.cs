@@ -4,17 +4,18 @@ using Identity.Application.Interfaces;
 using Identity.Core;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
+using Wolverine;
 
 namespace Identity.Api.Controllers;
 
 [Route("/connect")]
 public class AuthController(
     ISigninRequestService signinRequestService,
-    IIdentityBuilderService identityBuilderService,
-    IOpenIddictScopeManager scopeManager)
+    IIdentityBuilderService identityBuilderService)
     : Controller
 {
     [HttpGet("authorize")]
@@ -45,9 +46,14 @@ public class AuthController(
 
 
         var principal = await identityBuilderService.BuildClaimsPrincipalAsync(oidcRequest, userId);
+        if (principal.IsError())
+            return BadRequest(new OpenIddictResponse
+            {
+                Error = OpenIddictConstants.Errors.InvalidRequest,
+                ErrorDescription = principal.ErrorValue.Message
+            });
 
-
-        return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+        return SignIn(principal.Value, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
     }
 
     [HttpGet("endsession")]
@@ -67,7 +73,7 @@ public class AuthController(
         var oidcRequest = HttpContext.GetOpenIddictServerRequest();
 
         if (oidcRequest == null)
-            return View("Error", new ErrorViewModel { Title = "Error", Message = "Invalid end session request." });
+            return View("Error", new ErrorViewModel { Error = "Error", ErrorDescription = "Invalid end session request." });
 
         // if (oidcRequest.IdTokenHint == null)
         // {
@@ -117,4 +123,28 @@ public class AuthController(
 
         return Redirect("https://localhost:3000/");
     }
+    
+    [HttpGet("userinfo")]
+    [HttpPost("userinfo")]
+    [Produces("application/json")]
+    [Authorize(AuthenticationSchemes = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> Userinfo()
+    {
+        // Get user id from claims
+        var userIdRaw = User.GetClaim(OpenIddictConstants.Claims.Subject);
+        if (!Guid.TryParse(userIdRaw, out var userId))
+            return BadRequest("Invalid sub claim, expected UUID format.");
+
+        var scopes = User.GetScopes();
+        
+        var claims = await identityBuilderService.BuildClaimsAsync(userId, scopes);
+
+        if (claims.IsError())
+            return BadRequest(claims.ErrorValue.Message);
+        
+        var parsableClaims = claims.Value.Select(claim => (claim.Type, claim.Value)).ToDictionary();
+        
+        return Ok(parsableClaims);
+    }
+    
 }

@@ -32,7 +32,7 @@ public class SigninController(
         // TODO: If no oidc request, redirect to console signin.
         // If signin without oidc request, show error
         if (signinRequest == null)
-            return View("Error", new ErrorViewModel { Title = "Error", Message = "Request not found" });
+            return View("Error", new ErrorViewModel { Error = "Error", ErrorDescription = "Request not found" });
 
         // If user already authenticated redirect to authorize
         return RedirectToAction("Authorize", "Auth", signinRequestService.CreateOidcQueryObject(signinRequest));

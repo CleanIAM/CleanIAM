@@ -1,28 +1,76 @@
+using System.Collections.Immutable;
+using System.Net;
 using System.Security.Claims;
 using Identity.Application.Interfaces;
+using Identity.Application.Queries.Users;
+using Identity.Core.Users;
 using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
+using SharedKernel.Infrastructure;
+using Wolverine;
 
 namespace Identity.Infrastructure.Services;
 
-public class IdentityBuilderService(IOpenIddictScopeManager scopeManager) : IIdentityBuilderService
+public class IdentityBuilderService(IOpenIddictScopeManager scopeManager, IMessageBus bus) : IIdentityBuilderService
 {
-    public async Task<ClaimsPrincipal> BuildClaimsPrincipalAsync(OpenIddictRequest request, Guid userId)
+    public async Task<Result<ClaimsPrincipal>> BuildClaimsPrincipalAsync(OpenIddictRequest request, Guid userId)
     {
         var identity = new ClaimsIdentity(
             TokenValidationParameters.DefaultAuthenticationType,
             OpenIddictConstants.Claims.Name,
             OpenIddictConstants.Claims.Role);
+        
+        var scopes = request.GetScopes();
+
+        var claims = await BuildClaimsAsync(userId, scopes);
+        if (claims.IsError())
+            return Result.From(claims);
 
         // Add the claims that will be persisted in the tokens.
-        identity.AddClaim(new Claim(OpenIddictConstants.Claims.Subject, Guid.NewGuid().ToString()));
-        identity.AddClaim(new Claim(OpenIddictConstants.Claims.Name, "John Doe"));
+        identity.AddClaims(claims.Value);
         identity.SetScopes(request.GetScopes());
         identity.SetResources(await scopeManager.ListResourcesAsync(identity.GetScopes()).ToListAsync());
 
         // Allow all claims to be added in the access tokens.
         identity.SetDestinations(_ => [OpenIddictConstants.Destinations.AccessToken]);
 
-        return new ClaimsPrincipal(identity);
+        return Result.Ok(new ClaimsPrincipal(identity));
+    }
+    
+    public async Task<Result<IEnumerable<Claim>>> BuildClaimsAsync(Guid userId, ImmutableArray<string> scopes)
+    {
+        // Get user from database
+        var query = new GetUserByIdQuery(userId);
+        var user = await bus.InvokeAsync<User?>(query);
+        if (user == null)
+            return Result.Error("User not found", HttpStatusCode.BadRequest);
+        
+        // Build user info claims
+        var claims = new List<Claim>
+        {
+            // Note: the "sub" claim is a mandatory claim and must be included in the JSON response.
+            new(OpenIddictConstants.Claims.Subject, user.Id.ToString()),
+        };
+        
+        if (scopes.Contains(OpenIddictConstants.Scopes.Profile))
+        {
+            claims.Add(new(OpenIddictConstants.Claims.Name, $"{user.FirstName} {user.LastName}"));
+            claims.Add(new(OpenIddictConstants.Claims.GivenName, user.FirstName));
+            claims.Add(new(OpenIddictConstants.Claims.FamilyName, user.LastName));
+        }
+
+        if (scopes.Contains(OpenIddictConstants.Scopes.Email))
+        {
+            claims.Add(new(OpenIddictConstants.Claims.Email, user.Email));
+            claims.Add(new (OpenIddictConstants.Claims.EmailVerified, user.EmailVerified.ToString()));
+        }
+
+        if (scopes.Contains(OpenIddictConstants.Scopes.Roles))
+        {
+            foreach (var role in user.Roles)
+                claims.Add(new (OpenIddictConstants.Claims.Role, role.ToString()));
+        }
+        
+        return Result.Ok((IEnumerable<Claim>)claims);
     }
 }

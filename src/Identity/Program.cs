@@ -46,7 +46,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(
-    opts => opts.Cookie.SameSite = SameSiteMode.Strict);
+    opts =>
+    {
+        opts.Cookie.SameSite = SameSiteMode.Strict;
+        opts.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        opts.Cookie.HttpOnly = true;
+    }
+    );
 
 builder.Services.AddDatabases(builder.Configuration);
 builder.Services.AddOpenIddict(builder.Configuration);
