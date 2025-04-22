@@ -65,6 +65,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers().RequireAuthorization(); // This makes all controllers require authentication by default

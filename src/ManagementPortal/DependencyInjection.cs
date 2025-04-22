@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using SharedKernel.Core.Database;
-using Microsoft.IdentityModel.Tokens;
 
 namespace ManagementPortal;
 
@@ -34,7 +33,7 @@ public static class DependencyInjection
             .AddCookie(
                 opts =>
                 {
-                    opts.Cookie.SameSite = SameSiteMode.Strict;
+                    opts.Cookie.SameSite = SameSiteMode.None; // Changed from Strict to None for cross-site redirects
                     opts.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                     opts.Cookie.HttpOnly = true;
                 }
@@ -46,49 +45,12 @@ public static class DependencyInjection
                 options.ClientId = "management-portal";
                 options.ClientSecret = "management-portal-secret";
                 options.NonceCookie.SameSite = SameSiteMode.None;
-                
-                //
-                // options.Authority = oidcConfig["Authority"];
-                // options.ClientId = oidcConfig["ClientId"];
-                // options.ClientSecret = oidcConfig["ClientSecret"];
-
+                options.ResponseType = OpenIdConnectResponseType.Code;
+                options.ProtocolValidator.RequireNonce = false; //NOTE: Remove inn prod
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.ResponseType = OpenIdConnectResponseType.Code;
 
-                options.SaveTokens = true;
-                options.GetClaimsFromUserInfoEndpoint = true;
-                
-                options.MapInboundClaims = false;
-                options.TokenValidationParameters.NameClaimType = JwtRegisteredClaimNames.Name;
-                options.TokenValidationParameters.RoleClaimType = "roles";
-                
-                options.ResponseType = OpenIdConnectResponseType.Code;
-                // options.ResponseMode = OpenIdConnectResponseMode.FormPost;
-                // options.SaveTokens = true;
-                // options.UseTokenLifetime = true;
-                options.Scope.Clear();
-                options.Scope.Add("openid");
-                options.Scope.Add("profile");
                 options.Scope.Add("email");
                 options.Scope.Add("roles");
-                //
-                // // Map claims
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    NameClaimType = "name",
-                    RoleClaimType = "role"
-                };
-                //
-                // // Handle events
-                // options.Events = new OpenIdConnectEvents
-                // {
-                //     OnAccessDenied = context =>
-                //     {
-                //         context.Response.Redirect("/");
-                //         context.HandleResponse();
-                //         return Task.CompletedTask;
-                //     }
-                // };
             });
         
         return services;
