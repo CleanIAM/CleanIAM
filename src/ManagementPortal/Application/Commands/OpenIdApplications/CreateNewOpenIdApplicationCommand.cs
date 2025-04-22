@@ -17,7 +17,10 @@ public record CreateNewOpenIdApplicationCommand(
     ClientType? ClientType,
     ConsentType? ConsentType,
     string? DisplayName,
-    HashSet<string> Permissions,
+    HashSet<string> Scopes,
+    HashSet<string> Endpoints,
+    HashSet<string> GrantTypes,
+    HashSet<string> ResponseTypes,
     HashSet<Uri> PostLogoutRedirectUris,
     HashSet<Uri> RedirectUris,
     HashSet<string> Requirements,
@@ -49,7 +52,7 @@ public class CreateNewOpenIdApplicationCommandHandler
         //TODO: Create new app
         var application = command.Adapt<OpenIdApplication>();
         
-        // Generate a client secter only if the application type is confidential
+        // Generate a client secret only if the application type is confidential
         if (application.ClientType == ClientType.Confidential)
             application.ClientSecret = Guid.NewGuid().ToString();
             

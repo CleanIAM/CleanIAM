@@ -45,17 +45,7 @@ public class ApplicationFormModel
     /// Gets the localized display names associated with the application.
     /// </summary>
     public Dictionary<CultureInfo, string> DisplayNames { get; set; } = [];
-
-    /// <summary>
-    /// Gets or sets the JSON Web Key Set associated with the application.
-    /// </summary>
-    public JsonWebKeySet? JsonWebKeySet { get; set; }
-
-    /// <summary>
-    /// Gets the permissions associated with the application.
-    /// </summary>
-    public HashSet<string> Permissions { get; set; } = new(StringComparer.Ordinal);
-
+    
     /// <summary>
     /// Gets the post-logout redirect URIs associated with the application.
     /// </summary>
@@ -70,14 +60,10 @@ public class ApplicationFormModel
     /// Gets the redirect URIs associated with the application.
     /// </summary>
     public HashSet<Uri> RedirectUris { get; set; } = [];
-
-    /// <summary>
-    /// Gets the requirements associated with the application.
-    /// </summary>
-    public HashSet<string> Requirements { get; set; } = new(StringComparer.Ordinal);
-
-    /// <summary>
-    /// Gets the settings associated with the application.
-    /// </summary>
-    public Dictionary<string, string> Settings { get; set; } = new(StringComparer.Ordinal);
+    
+    
+    public HashSet<string> Scopes { get; set; } = [];
+    public HashSet<string> Endpoints { get; set; } = [];
+    public HashSet<string> GrantTypes { get; set; } = [];
+    public HashSet<string> ResponseTypes { get; set; } = [];
 }

@@ -1,3 +1,4 @@
+@using Mapster
 @model EditApplicationModel
 
 @{
@@ -5,24 +6,8 @@
     ViewData["Title"] = "Edit Client";
     
     // Map the model to the shared form model
-    var formModel = new ApplicationFormModel
-    {
-        IsEditMode = true,
-        Id = Model.Id,
-        ApplicationType = Model.ApplicationType,
-        ClientId = Model.ClientId,
-        ClientType = Model.ClientType,
-        ConsentType = Model.ConsentType,
-        DisplayName = Model.DisplayName,
-        DisplayNames = Model.DisplayNames,
-        JsonWebKeySet = Model.JsonWebKeySet,
-        Permissions = Model.Permissions,
-        PostLogoutRedirectUris = Model.PostLogoutRedirectUris,
-        Properties = Model.Properties,
-        RedirectUris = Model.RedirectUris,
-        Requirements = Model.Requirements,
-        Settings = Model.Settings
-    };
+    var formModel = Model.Adapt<ApplicationFormModel>();
+    formModel.IsEditMode = true;
 }
 
 <div class="bg-white shadow overflow-hidden sm:rounded-lg">

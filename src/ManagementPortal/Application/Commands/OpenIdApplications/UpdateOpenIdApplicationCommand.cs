@@ -16,11 +16,13 @@ public record UpdateOpenIdApplicationCommand(
     ClientType? ClientType,
     ConsentType? ConsentType,
     string? DisplayName,
-    HashSet<string> Permissions,
+    HashSet<string> Scopes,
+    HashSet<string> Endpoints,
+    HashSet<string> GrantTypes,
+    HashSet<string> ResponseTypes,
     HashSet<Uri> PostLogoutRedirectUris,
     HashSet<Uri> RedirectUris,
-    HashSet<string> Requirements,
-    Dictionary<string, string> Settings);
+    HashSet<string> Requirements);
 
 public class UpdateOpenIdClientCommandHandler
 {
@@ -48,6 +50,7 @@ public class UpdateOpenIdClientCommandHandler
 
 
         var descriptor = command.Adapt<OpenIddictApplicationDescriptor>();
+        // Since the client secret is hidden in the UI, we need to load it from the existing application
         descriptor.ClientSecret = loadResult.Value.ClientSecret;
         
         try

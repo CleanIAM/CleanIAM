@@ -1,7 +1,6 @@
 using System.Globalization;
 using System.Text.Json;
 using Mapster;
-using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
 using OpenIddict.Core;
 using OpenIddict.EntityFrameworkCore.Models;
@@ -53,14 +52,24 @@ public class OpenIdApplication
     public Dictionary<CultureInfo, string> DisplayNames { get; set; } = [];
 
     /// <summary>
-    /// Gets or sets the JSON Web Key Set associated with the application.
+    /// Allowed scopes for the application.
     /// </summary>
-    public JsonWebKeySet? JsonWebKeySet { get; set; }
-
+    public HashSet<string> Scopes { get; set; } = [];
+    
     /// <summary>
-    /// Gets the permissions associated with the application.
+    /// Allowed endpoints for the application.
     /// </summary>
-    public HashSet<string> Permissions { get; set; } = new(StringComparer.Ordinal);
+    public HashSet<string> Endpoints { get; set; } = [];
+    
+    /// <summary>
+    /// Allowed grant types for the application.
+    /// </summary>
+    public HashSet<string> GrantTypes { get; set; } = [];
+    
+    /// <summary>
+    /// Allowed response types for the application.
+    /// </summary>
+    public HashSet<string> ResponseTypes { get; set; } = [];
 
     /// <summary>
     /// Gets the post-logout redirect URIs associated with the application.
@@ -81,11 +90,6 @@ public class OpenIdApplication
     /// Gets the requirements associated with the application.
     /// </summary>
     public HashSet<string> Requirements { get; set; } = new(StringComparer.Ordinal);
-
-    /// <summary>
-    /// Gets the settings associated with the application.
-    /// </summary>
-    public Dictionary<string, string> Settings { get; set; } = new(StringComparer.Ordinal);
     
     
     public OpenIddictApplicationDescriptor ToDescriptor()
@@ -97,8 +101,6 @@ public class OpenIdApplication
         OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager)
     {
         var dest = application.Adapt<OpenIdApplication>();
-        
-        dest.Permissions = new(await applicationManager.GetPermissionsAsync(application, CancellationToken.None));
         dest.PostLogoutRedirectUris = new((
                 await applicationManager.GetPostLogoutRedirectUrisAsync(application, CancellationToken.None))
             .Select(uri => new Uri(uri)));
@@ -107,10 +109,27 @@ public class OpenIdApplication
             .Select(uri => new Uri(uri)));
         dest.Requirements = new(await applicationManager.GetRequirementsAsync(application, CancellationToken.None));
         dest.Properties = new(await applicationManager.GetPropertiesAsync(application, CancellationToken.None));
-        dest.Settings = new(await applicationManager.GetSettingsAsync(application, CancellationToken.None));
         dest.DisplayNames = new(await applicationManager.GetDisplayNamesAsync(application, CancellationToken.None));
-        dest.JsonWebKeySet = await applicationManager.GetJsonWebKeySetAsync(application, CancellationToken.None);
 
+        
+        var permissionsRaw = await applicationManager.GetPermissionsAsync(application, CancellationToken.None);
+        dest.Scopes = new(permissionsRaw
+            .Where(permission => permission.StartsWith(OpenIddictConstants.Permissions.Prefixes.Scope, StringComparison.OrdinalIgnoreCase))
+            .Select(permission => permission[OpenIddictConstants.Permissions.Prefixes.Scope.Length..]));
+        
+        dest.Endpoints = new(permissionsRaw
+            .Where(permission => permission.StartsWith(OpenIddictConstants.Permissions.Prefixes.Endpoint, StringComparison.OrdinalIgnoreCase))
+            .Select(permission => permission[OpenIddictConstants.Permissions.Prefixes.Endpoint.Length..]));
+        
+        dest.GrantTypes = new(permissionsRaw
+            .Where(permission => permission.StartsWith(OpenIddictConstants.Permissions.Prefixes.GrantType, StringComparison.OrdinalIgnoreCase))
+            .Select(permission => permission[OpenIddictConstants.Permissions.Prefixes.GrantType.Length..]));
+        
+        dest.ResponseTypes = new(permissionsRaw
+            .Where(permission => permission.StartsWith(OpenIddictConstants.Permissions.Prefixes.ResponseType, StringComparison.OrdinalIgnoreCase))
+            .Select(permission => permission[OpenIddictConstants.Permissions.Prefixes.ResponseType.Length..]))
+;
+        
         return dest;
     }
 }
