@@ -22,9 +22,7 @@ public record CreateNewOpenIdApplicationCommand(
     HashSet<string> GrantTypes,
     HashSet<string> ResponseTypes,
     HashSet<Uri> PostLogoutRedirectUris,
-    HashSet<Uri> RedirectUris,
-    HashSet<string> Requirements,
-    Dictionary<string, string> Settings
+    HashSet<Uri> RedirectUris
 );
 
 public class CreateNewOpenIdApplicationCommandHandler
@@ -51,25 +49,27 @@ public class CreateNewOpenIdApplicationCommandHandler
 
         //TODO: Create new app
         var application = command.Adapt<OpenIdApplication>();
-        
-        // Generate a client secret only if the application type is confidential
-        if (application.ClientType == ClientType.Confidential)
-            application.ClientSecret = Guid.NewGuid().ToString();
-            
+
 
         var descriptor = application.ToDescriptor();
+
+        // Generate a client secret only if the application type is confidential
+        if (application.ClientType == ClientType.Confidential)
+            descriptor.ClientSecret = Guid.NewGuid().ToString();
 
         try
         {
             await applicationManager.CreateAsync(descriptor);
 
-            var applicationCreatedEvent = application.Adapt<OpenIdApplicationCreated>();
+            var applicationCreatedEvent = application.Adapt<OpenIdApplicationCreated>() with
+            {
+                ClientSecret = descriptor.ClientSecret
+            };
             await bus.PublishAsync(applicationCreatedEvent);
             return Result.Ok(applicationCreatedEvent);
         }
         catch (Exception e)
         {
-
             return Result.Error("Creating new application failed",
                 HttpStatusCode.InternalServerError);
         }

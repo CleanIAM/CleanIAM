@@ -21,8 +21,7 @@ public record UpdateOpenIdApplicationCommand(
     HashSet<string> GrantTypes,
     HashSet<string> ResponseTypes,
     HashSet<Uri> PostLogoutRedirectUris,
-    HashSet<Uri> RedirectUris,
-    HashSet<string> Requirements);
+    HashSet<Uri> RedirectUris);
 
 public class UpdateOpenIdClientCommandHandler
 {

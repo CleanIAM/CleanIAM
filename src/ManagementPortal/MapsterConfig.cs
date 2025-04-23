@@ -13,7 +13,7 @@ public static class MapsterConfig
         // Configure special properties mapping for OpenIddict application objects
         // This special mappings uses IOpenIddictApplicationManager to use its implicit cache for parsing value strings
         TypeAdapterConfig<OpenIddictEntityFrameworkCoreApplication<Guid>, OpenIdApplication>.ForType()
-            .AfterMapping((src, dest) =>
+            .BeforeMapping((_, _) =>
                 throw new InvalidOperationException(
                     "This mapping should not be used. Use OpenIdApplication.From instead."));
 
@@ -33,7 +33,6 @@ public static class MapsterConfig
                     OpenIddictConstants.Permissions.Prefixes.ResponseType + responseType));
                 dest.RedirectUris.UnionWith(src.RedirectUris);
                 dest.PostLogoutRedirectUris.UnionWith(src.PostLogoutRedirectUris);
-                dest.Requirements.UnionWith(src.Requirements);
             });
 
         TypeAdapterConfig<UpdateOpenIdApplicationCommand, OpenIddictApplicationDescriptor>.ForType()
@@ -50,7 +49,6 @@ public static class MapsterConfig
 
                 dest.RedirectUris.UnionWith(src.RedirectUris);
                 dest.PostLogoutRedirectUris.UnionWith(src.PostLogoutRedirectUris);
-                dest.Requirements.UnionWith(src.Requirements);
             });
 
         TypeAdapterConfig<CreateNewOpenIdApplicationCommand, OpenIddictApplicationDescriptor>.ForType()
@@ -67,7 +65,6 @@ public static class MapsterConfig
 
                 dest.RedirectUris.UnionWith(src.RedirectUris);
                 dest.PostLogoutRedirectUris.UnionWith(src.PostLogoutRedirectUris);
-                dest.Requirements.UnionWith(src.Requirements);
             });
     }
 }

@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Text.Json;
 using Mapster;
 using OpenIddict.Abstractions;
@@ -22,14 +21,7 @@ public class OpenIdApplication
     /// <summary>
     /// Gets or sets the client identifier associated with the application.
     /// </summary>
-    public string ClientId { get; set; }
-
-    // <summary>
-    // Gets or sets the client secret associated with the application.
-    // Note: depending on the application manager used when creating it,
-    // this property may be hashed or encrypted for security reasons.
-    // </summary>
-    public string? ClientSecret { get; set; }
+    public required string ClientId { get; set; }
 
     /// <summary>
     /// Gets or sets the client type associated with the application.
@@ -47,25 +39,20 @@ public class OpenIdApplication
     public string? DisplayName { get; set; }
 
     /// <summary>
-    /// Gets the localized display names associated with the application.
-    /// </summary>
-    public Dictionary<CultureInfo, string> DisplayNames { get; set; } = [];
-
-    /// <summary>
     /// Allowed scopes for the application.
     /// </summary>
     public HashSet<string> Scopes { get; set; } = [];
-    
+
     /// <summary>
     /// Allowed endpoints for the application.
     /// </summary>
     public HashSet<string> Endpoints { get; set; } = [];
-    
+
     /// <summary>
     /// Allowed grant types for the application.
     /// </summary>
     public HashSet<string> GrantTypes { get; set; } = [];
-    
+
     /// <summary>
     /// Allowed response types for the application.
     /// </summary>
@@ -86,50 +73,87 @@ public class OpenIdApplication
     /// </summary>
     public HashSet<Uri> RedirectUris { get; set; } = [];
 
-    /// <summary>
-    /// Gets the requirements associated with the application.
-    /// </summary>
-    public HashSet<string> Requirements { get; set; } = new(StringComparer.Ordinal);
-    
-    
     public OpenIddictApplicationDescriptor ToDescriptor()
     {
         return this.Adapt<OpenIddictApplicationDescriptor>();
     }
-    
-    public static async Task<OpenIdApplication> FromOpenIdDictApplication(OpenIddictEntityFrameworkCoreApplication<Guid> application,
+
+    public static async Task<OpenIdApplication> FromOpenIdDictApplication(
+        OpenIddictEntityFrameworkCoreApplication<Guid> application,
         OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager)
     {
-        var dest = application.Adapt<OpenIdApplication>();
-        dest.PostLogoutRedirectUris = new((
-                await applicationManager.GetPostLogoutRedirectUrisAsync(application, CancellationToken.None))
-            .Select(uri => new Uri(uri)));
-        dest.RedirectUris = new((
-                await applicationManager.GetRedirectUrisAsync(application, CancellationToken.None))
-            .Select(uri => new Uri(uri)));
-        dest.Requirements = new(await applicationManager.GetRequirementsAsync(application, CancellationToken.None));
-        dest.Properties = new(await applicationManager.GetPropertiesAsync(application, CancellationToken.None));
-        dest.DisplayNames = new(await applicationManager.GetDisplayNamesAsync(application, CancellationToken.None));
+        var permissions = await applicationManager.GetPermissionsAsync(application, CancellationToken.None);
 
-        
-        var permissionsRaw = await applicationManager.GetPermissionsAsync(application, CancellationToken.None);
-        dest.Scopes = new(permissionsRaw
-            .Where(permission => permission.StartsWith(OpenIddictConstants.Permissions.Prefixes.Scope, StringComparison.OrdinalIgnoreCase))
-            .Select(permission => permission[OpenIddictConstants.Permissions.Prefixes.Scope.Length..]));
-        
-        dest.Endpoints = new(permissionsRaw
-            .Where(permission => permission.StartsWith(OpenIddictConstants.Permissions.Prefixes.Endpoint, StringComparison.OrdinalIgnoreCase))
-            .Select(permission => permission[OpenIddictConstants.Permissions.Prefixes.Endpoint.Length..]));
-        
-        dest.GrantTypes = new(permissionsRaw
-            .Where(permission => permission.StartsWith(OpenIddictConstants.Permissions.Prefixes.GrantType, StringComparison.OrdinalIgnoreCase))
-            .Select(permission => permission[OpenIddictConstants.Permissions.Prefixes.GrantType.Length..]));
-        
-        dest.ResponseTypes = new(permissionsRaw
-            .Where(permission => permission.StartsWith(OpenIddictConstants.Permissions.Prefixes.ResponseType, StringComparison.OrdinalIgnoreCase))
-            .Select(permission => permission[OpenIddictConstants.Permissions.Prefixes.ResponseType.Length..]))
-;
-        
+        var dest = new OpenIdApplication
+        {
+            Id = application.Id,
+
+
+            ApplicationType = application.ApplicationType switch
+            {
+                OpenIddictConstants.ApplicationTypes.Native => Core.OpenIdApplication.ApplicationType.Native,
+                OpenIddictConstants.ApplicationTypes.Web => Core.OpenIdApplication.ApplicationType.Web,
+                _ => null
+            },
+
+            ClientId = application.ClientId ?? string.Empty,
+            ClientType = application.ClientType switch
+            {
+                OpenIddictConstants.ClientTypes.Public => Core.OpenIdApplication.ClientType.Public,
+                OpenIddictConstants.ClientTypes.Confidential => Core.OpenIdApplication.ClientType.Confidential,
+                var value =>  throw new InvalidDataException($"Invalid client type: {value}")
+            },
+            ConsentType = application.ConsentType switch
+            {
+                OpenIddictConstants.ConsentTypes.Implicit => Core.OpenIdApplication.ConsentType.Implicit,
+                OpenIddictConstants.ConsentTypes.Explicit => Core.OpenIdApplication.ConsentType.Explicit,
+                _ => null
+            },
+            DisplayName = application.DisplayName,
+
+            PostLogoutRedirectUris =
+            [
+                ..(
+                    await applicationManager.GetPostLogoutRedirectUrisAsync(application, CancellationToken.None))
+                .Select(uri => new Uri(uri))
+            ],
+            RedirectUris =
+            [
+                ..(
+                    await applicationManager.GetRedirectUrisAsync(application, CancellationToken.None))
+                .Select(uri => new Uri(uri))
+            ],
+            Properties = new(await applicationManager.GetPropertiesAsync(application, CancellationToken.None)),
+
+            Scopes =
+            [
+                ..permissions
+                    .Where(permission => permission.StartsWith(OpenIddictConstants.Permissions.Prefixes.Scope,
+                        StringComparison.OrdinalIgnoreCase))
+                    .Select(permission => permission[OpenIddictConstants.Permissions.Prefixes.Scope.Length..])
+            ],
+
+            Endpoints =
+            [
+                ..permissions
+                    .Where(permission => permission.StartsWith(OpenIddictConstants.Permissions.Prefixes.Endpoint,
+                        StringComparison.OrdinalIgnoreCase))
+                    .Select(permission => permission[OpenIddictConstants.Permissions.Prefixes.Endpoint.Length..])
+            ],
+
+            GrantTypes =
+            [
+                ..permissions
+                    .Where(permission => permission.StartsWith(OpenIddictConstants.Permissions.Prefixes.GrantType,
+                        StringComparison.OrdinalIgnoreCase))
+                    .Select(permission => permission[OpenIddictConstants.Permissions.Prefixes.GrantType.Length..])
+            ],
+
+            ResponseTypes = new(permissions
+                .Where(permission => permission.StartsWith(OpenIddictConstants.Permissions.Prefixes.ResponseType,
+                    StringComparison.OrdinalIgnoreCase))
+                .Select(permission => permission[OpenIddictConstants.Permissions.Prefixes.ResponseType.Length..]))
+        };
         return dest;
     }
 }
