@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using CommunityToolkit.Diagnostics;
 using JasperFx.CodeGeneration;
@@ -84,7 +85,7 @@ public static class DependencyInjection
         services.AddControllers()
             .AddJsonOptions(options =>
             {
-                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
             });
         return services;
     }

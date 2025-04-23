@@ -1,4 +1,5 @@
 using System.Net;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SharedKernel.Infrastructure;
 
@@ -7,7 +8,11 @@ namespace SharedKernel.Infrastructure;
 ///
 /// It is inspired by Rust's Result type.
 /// </summary>
-public class Result
+///
+/// <remarks>
+/// This Type also implements <see cref="IActionResult"/>, so it can be user as a return type in endpoints
+/// </remarks>
+public class Result: IActionResult
 {
     internal bool Success { get; set; }
     internal string? ErrorMessage { get; set; }
@@ -110,6 +115,26 @@ public class Result
     {
         return !Success;
     }
+
+    public async Task ExecuteResultAsync(ActionContext context)
+    {
+        if (Success)
+        {
+            context.HttpContext.Response.StatusCode = StatusCodes.Status204NoContent;
+            return;
+        }
+        // Error
+        context.HttpContext.Response.StatusCode = ErrorCode ?? StatusCodes.Status500InternalServerError;
+        context.HttpContext.Response.ContentType = "application/json";
+        await context.HttpContext.Response.WriteAsJsonAsync(new
+        {
+            error = new Error
+            {
+                Message = ErrorMessage ?? string.Empty,
+                Code = ErrorCode ?? 0
+            }
+        });
+    }
 }
 
 /// <summary>
@@ -117,7 +142,7 @@ public class Result
 ///
 /// It is inspired by Rust's Result type.
 /// </summary>
-public class Result<T> where T : class
+public class Result<T>: IActionResult where T : class
 {
     internal bool Success { get; set; }
     internal T? SuccessValue { get; set; }
@@ -235,6 +260,28 @@ public class Result<T> where T : class
     public bool IsError()
     {
         return !Success;
+    }
+
+    public async Task ExecuteResultAsync(ActionContext context)
+    {
+        if (Success)
+        {
+            context.HttpContext.Response.StatusCode = StatusCodes.Status200OK;
+            context.HttpContext.Response.ContentType = "application/json";
+            await context.HttpContext.Response.WriteAsJsonAsync(SuccessValue);
+            return;
+        }
+        // Error
+        context.HttpContext.Response.StatusCode = ErrorCode ?? StatusCodes.Status500InternalServerError;
+        context.HttpContext.Response.ContentType = "application/json";
+        await context.HttpContext.Response.WriteAsJsonAsync(new
+        {
+            error = new Error
+            {
+                Message = ErrorMessage ?? string.Empty,
+                Code = ErrorCode ?? 0
+            }
+        });
     }
 }
 
