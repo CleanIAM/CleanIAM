@@ -161,40 +161,6 @@
 
         </div>
     </div>
-
-    @* Permissions edit *@
-    <div class="sm:col-span-6">
-        <label for="permission" class="block text-sm font-medium text-gray-700">Permissions</label>
-        <p class="text-xs text-gray-500 mb-1">Add permissions for this client</p>
-
-        <div id="permissions-container" class="mt-1 space-y-2">
-            <input type="hidden" id="PermissionsString" name="PermissionsString"
-                   value="@(string.Join(Environment.NewLine, Model.Permissions))"/>
-
-            <!-- List of current permissions -->
-            <div id="permissions-list" class="space-y-2">
-                @foreach (var permission in Model.Permissions)
-                {
-                    <partial name="_DynamicListItem" model="@(new DynamicListItem
-                                                            {
-                                                                Name = "Permissions",
-                                                                Id = Model.Id,
-                                                                Value = permission
-                                                            })"/>
-                }
-            </div>
-
-            <!-- Add new permission form -->
-            <partial name="_DynamicListInput" model="@(new DynamicListInput
-                                                     {
-                                                         InputName = "permission",
-                                                         Placeholder = "New permission",
-                                                         HxPostUrl = Url.Action("AddPermission", "Applications", new { Model.Id }),
-                                                         HxTarget = "#permissions-list"
-                                                     })"/>
-        </div>
-    </div>
-
 </div>
 
 <div class="pt-5">
