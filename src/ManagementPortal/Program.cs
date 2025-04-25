@@ -29,7 +29,7 @@ builder.Services.Configure<RazorViewEngineOptions>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwagger("CleanIAM", assemblies);
 builder.Services.AddDatabases(builder.Configuration);
 builder.Services.AddOpenIddict(builder.Configuration);
 builder.Services.AddOidcAuthentication(builder.Configuration);

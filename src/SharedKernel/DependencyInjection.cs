@@ -6,6 +6,8 @@ using JasperFx.CodeGeneration;
 using Mapster;
 using Marten;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using SharedKernel.Application.Swagger;
 using SharedKernel.Core.Database;
 using Wolverine;
 using Wolverine.FluentValidation;
@@ -74,6 +76,63 @@ public static class DependencyInjection
         //     opts.DefaultIs("default_tenant");
         // });
 
+        return services;
+    }
+
+    public static IServiceCollection AddSwagger(this IServiceCollection services, string title,
+        string[] assemblies)
+    {
+        services.AddSwaggerGen(options =>
+        {
+            // Configure basic swagger info 
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = title,
+                Version = "v1",
+                Description = "CleanIAM API",
+            });
+            
+            // Create swagger auth definition
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Enter your token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT"
+            });
+            
+            // Apply auth swagger definition
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+            
+            // Add xml comments from all assemblies to swagger
+            foreach (var assembly in assemblies)
+            {
+                var assemblyXmlPath = Path.Combine(AppContext.BaseDirectory, $"{assembly}.xml");
+                options.IncludeXmlComments(assemblyXmlPath);
+            }
+            
+            // Make all strings nullable by defaults
+            options.SupportNonNullableReferenceTypes();
+
+            options.SchemaFilter<MakeAllPropertiesRequiredFilter>();
+
+        });
+        
         return services;
     }
 
