@@ -7,10 +7,20 @@
 <div class="flex min-h-screen items-center justify-center bg-gray-50 p-6">
     <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-xl ring-1 ring-gray-200">
         <h1 class="text-3xl font-semibold text-center text-gray-900 mb-6">Sign in</h1>
-        <a asp-action="ExternalSignin" asp-controller="ExternalSigninProviders" asp-route-provider="Microsoft"
-           asp-route-request=@ViewData["Request"]>Signin with microsoft</a>
-        <a asp-action="ExternalSignin" asp-controller="ExternalSigninProviders" asp-route-provider="Google"
-           asp-route-request=@ViewData["Request"]>Signin with google</a>
+        <div class="flex flex-col space-y-2 mb-4 gap-4">
+            <a asp-action="ExternalSignin" asp-controller="ExternalSigninProviders" asp-route-provider="Microsoft"
+               asp-route-request=@ViewData["Request"]
+               class="flex items-center justify-center w-full px-3 py-2 bg-gray-100 text-gray-800 text-sm font-medium rounded-md border border-gray-300 hover:bg-gray-200 transition duration-200 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:ring-offset-1">
+                <img src="/svg/microsoft-logo.svg" alt="Microsoft logo" class="w-4 h-4 mr-2" />
+                Microsoft
+            </a>
+            <a asp-action="ExternalSignin" asp-controller="ExternalSigninProviders" asp-route-provider="Google"
+               asp-route-request=@ViewData["Request"]
+               class="flex items-center justify-center w-full px-3 py-2 bg-gray-100 text-gray-800 text-sm font-medium rounded-md border border-gray-300 hover:bg-gray-200 transition duration-200 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:ring-offset-1">
+                <img src="/svg/google-logo.svg" alt="Google logo" class="w-4 h-4 mr-2" />
+                Google
+            </a>
+        </div>
         <form method="post" class="space-y-6">
             <div>
                 <label asp-for="Email" class="block text-sm font-medium text-gray-700">Email</label>
