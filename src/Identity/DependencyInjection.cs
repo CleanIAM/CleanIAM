@@ -12,8 +12,31 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         var encryptionKey = configuration.GetSection("OpenIddict")["EncryptionKey"];
-        Guard.IsNotNullOrEmpty(encryptionKey, "Encryption key");
+        var identityBaseUrl = configuration.GetSection("HttpRoutes")["IdentityBaseUrl"];
 
+        // External signin provides
+        var microsoftClientId =
+            configuration.GetSection("Authentication:OpenIddict:ExternalProviders:Microsoft")["ClientId"];
+        microsoftClientId = Environment.GetEnvironmentVariable("OpenIddict__ExternalProviders__Microsoft__ClientId");
+        var microsoftClientSecret =
+            configuration.GetSection("Authentication:OpenIddict:ExternalProviders:Microsoft")["ClientSecret"];
+        microsoftClientSecret = Environment.GetEnvironmentVariable("OpenIddict__ExternalProviders__Microsoft__ClientSecret");
+
+        var googleClientId = configuration.GetSection("Authentication:OpenIddict:ExternalProviders:Google")["ClientId"];
+        googleClientId = Environment.GetEnvironmentVariable("OpenIddict__ExternalProviders__Google__ClientId");
+        var googleClientSecret =
+            configuration.GetSection("Authentication:OpenIddict:ExternalProviders:Google")["ClientSecret"];
+        googleClientSecret = Environment.GetEnvironmentVariable("OpenIddict__ExternalProviders__Google__ClientSecret");
+        
+        
+        Guard.IsNotNullOrEmpty(encryptionKey, "Encryption key");
+        Guard.IsNotNullOrEmpty(identityBaseUrl, "Identity Base Url");
+        Guard.IsNotNullOrEmpty(microsoftClientId, "Microsoft Client Id");
+        Guard.IsNotNullOrEmpty(microsoftClientSecret, "Microsoft Client Secret");
+        Guard.IsNotNullOrEmpty(googleClientId, "Google Client Id");
+        Guard.IsNotNullOrEmpty(googleClientSecret, "Google Client Secret");
+        
+        
         serviceCollection.AddOpenIddict()
             .AddCore(options =>
             {
@@ -52,8 +75,34 @@ public static class DependencyInjection
 
                 options.AddEncryptionKey(new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(encryptionKey)));
+            })
+            .AddClient(options =>
+            {
+                // Allow the OpenIddict client to negotiate the authorization code flow.
+                options.AllowAuthorizationCodeFlow();
 
+                options.AddDevelopmentEncryptionCertificate()
+                    .AddDevelopmentSigningCertificate();
+
+                // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
+                options.UseAspNetCore()
+                    .EnableRedirectionEndpointPassthrough();
                 
+                options.UseWebProviders()
+                    .AddMicrosoft(config =>
+                    {
+                        config.SetClientId(microsoftClientId);
+                        config.SetClientSecret(microsoftClientSecret);
+                        config.SetRedirectUri("external-providers/callback/microsoft");
+                        config.AddScopes("email", "profile", "openid");
+                    })
+                    .AddGoogle(config =>
+                    {
+                        config.SetClientId(googleClientId);
+                        config.SetClientSecret(googleClientSecret);
+                        config.SetRedirectUri($"external-providers/callback/google");
+                        config.AddScopes("email", "profile", "openid");
+                    });
             });
         return serviceCollection;
     }
@@ -102,6 +151,36 @@ public static class DependencyInjection
 
         if (await applicationManager.FindByClientIdAsync("example-FE-client") is null)
             await applicationManager.CreateAsync(feClient);
+        
+        var managementConsoleFrontend = new OpenIddictApplicationDescriptor
+        {
+            ClientId = "management-console-fe-client",
+            ClientType = OpenIddictConstants.ClientTypes.Public,
+            RedirectUris =
+            {
+                new Uri("https://localhost:3000/signin-callback")
+            },
+            PostLogoutRedirectUris = { new Uri("https://localhost:3000/signout-callback") },
+            Permissions =
+            {
+                OpenIddictConstants.Permissions.Endpoints.Authorization,
+                OpenIddictConstants.Permissions.Endpoints.Token,
+                OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
+                OpenIddictConstants.Permissions.ResponseTypes.Code,
+                OpenIddictConstants.Permissions.Scopes.Email,
+                OpenIddictConstants.Permissions.Scopes.Profile,
+                OpenIddictConstants.Permissions.Scopes.Roles,
+                OpenIddictConstants.Permissions.Prefixes.Scope + "BE1"
+            },
+            Requirements =
+            {
+                OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange
+            }
+        };
+
+        if (await applicationManager.FindByClientIdAsync("management-console-fe-client") is null)
+            await applicationManager.CreateAsync(managementConsoleFrontend);
 
 
         var beClient = new OpenIddictApplicationDescriptor
@@ -168,6 +247,19 @@ public static class DependencyInjection
                 {
                     Name = defaultScope
                 });
+        }
+        
+        var testingScope = "BE1";
+        if (await scopeManager.FindByNameAsync(testingScope) is null)
+        {
+            await scopeManager.CreateAsync(new OpenIddictScopeDescriptor
+            {
+                Name = testingScope,
+                Resources =
+                {
+                    "example-BE-client"
+                }
+            });
         }
     }
     

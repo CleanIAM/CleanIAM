@@ -1,3 +1,4 @@
+using DotNetEnv;
 using Identity;
 using Identity.Application.Interfaces;
 using Identity.Infrastructure.Services;
@@ -8,8 +9,12 @@ using SharedKernel;
 using Wolverine.Http;
 
 var builder = WebApplication.CreateBuilder(args);
+// If in dev mode, load .env file
+if (builder.Environment.IsDevelopment())
+{
+    Env.Load();
+}
 builder.Host.UseLamar();
-
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -48,7 +53,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(
     opts =>
     {
-        opts.Cookie.SameSite = SameSiteMode.Strict;
+        opts.Cookie.SameSite = SameSiteMode.Lax;
         opts.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         opts.Cookie.HttpOnly = true;
     }

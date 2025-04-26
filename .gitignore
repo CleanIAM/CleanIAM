@@ -52,3 +52,4 @@ src/Identity/obj
 docs/.vitepress/dist
 docs/.vitepress/cache 
 node_modules
+src/Identity/.env

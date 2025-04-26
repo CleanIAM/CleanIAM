@@ -7,6 +7,10 @@
 <div class="flex min-h-screen items-center justify-center bg-gray-50 p-6">
     <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-xl ring-1 ring-gray-200">
         <h1 class="text-3xl font-semibold text-center text-gray-900 mb-6">Sign in</h1>
+        <a asp-action="ExternalSignin" asp-controller="ExternalSigninProviders" asp-route-provider="Microsoft"
+           asp-route-request=@ViewData["Request"]>Signin with microsoft</a>
+        <a asp-action="ExternalSignin" asp-controller="ExternalSigninProviders" asp-route-provider="Google"
+           asp-route-request=@ViewData["Request"]>Signin with google</a>
         <form method="post" class="space-y-6">
             <div>
                 <label asp-for="Email" class="block text-sm font-medium text-gray-700">Email</label>
@@ -22,6 +26,7 @@
                        placeholder="Enter your password"/>
                 <span asp-validation-for="Password" class="text-red-500 text-sm"></span>
             </div>
+            <span class="text-red-500 text-sm">@ViewData["error"]</span>
             <button type="submit"
                     class="w-full px-4 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                 Sign in
