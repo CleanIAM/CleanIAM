@@ -1,3 +1,4 @@
+using Coravel;
 using DotNetEnv;
 using Identity;
 using Identity.Application.Interfaces;
@@ -8,12 +9,9 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using SharedKernel;
 using Wolverine.Http;
 
+Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 // If in dev mode, load .env file
-if (builder.Environment.IsDevelopment())
-{
-    Env.Load();
-}
 builder.Host.UseLamar();
 builder.Services.AddCors(options =>
 {
@@ -29,12 +27,16 @@ builder.Services.AddCors(options =>
 string[] assemblies = ["Identity"];
 builder.Services.AddWolverineHttp();
 
+builder.Services.AddLogging();
 builder.Services.AddScoped<ISigninRequestService, SigninRequestService>();
 builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
 builder.Services.AddTransient<IIdentityBuilderService, IdentityBuilderService>();
+builder.Services.AddScoped<IMailService, CoravelMailService>();
+
+// Register the Coravel's mailer service
+builder.AddMailer();
 
 builder.Host.UseProjects(assemblies);
-
 builder.Services.AddControllersWithViews();
 // Configure Razor view locations
 builder.Services.Configure<RazorViewEngineOptions>(options =>

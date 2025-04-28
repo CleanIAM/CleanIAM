@@ -17,26 +17,22 @@ public static class DependencyInjection
         // External signin provides
         var microsoftClientId =
             configuration.GetSection("Authentication:OpenIddict:ExternalProviders:Microsoft")["ClientId"];
-        microsoftClientId = Environment.GetEnvironmentVariable("OpenIddict__ExternalProviders__Microsoft__ClientId");
         var microsoftClientSecret =
             configuration.GetSection("Authentication:OpenIddict:ExternalProviders:Microsoft")["ClientSecret"];
-        microsoftClientSecret = Environment.GetEnvironmentVariable("OpenIddict__ExternalProviders__Microsoft__ClientSecret");
-
-        var googleClientId = configuration.GetSection("Authentication:OpenIddict:ExternalProviders:Google")["ClientId"];
-        googleClientId = Environment.GetEnvironmentVariable("OpenIddict__ExternalProviders__Google__ClientId");
+        var googleClientId =
+            configuration.GetSection("Authentication:OpenIddict:ExternalProviders:Google")["ClientId"];
         var googleClientSecret =
             configuration.GetSection("Authentication:OpenIddict:ExternalProviders:Google")["ClientSecret"];
-        googleClientSecret = Environment.GetEnvironmentVariable("OpenIddict__ExternalProviders__Google__ClientSecret");
-        
-        
+
+
         Guard.IsNotNullOrEmpty(encryptionKey, "Encryption key");
         Guard.IsNotNullOrEmpty(identityBaseUrl, "Identity Base Url");
         Guard.IsNotNullOrEmpty(microsoftClientId, "Microsoft Client Id");
         Guard.IsNotNullOrEmpty(microsoftClientSecret, "Microsoft Client Secret");
         Guard.IsNotNullOrEmpty(googleClientId, "Google Client Id");
         Guard.IsNotNullOrEmpty(googleClientSecret, "Google Client Secret");
-        
-        
+
+
         serviceCollection.AddOpenIddict()
             .AddCore(options =>
             {
@@ -49,8 +45,7 @@ public static class DependencyInjection
                 options.SetAuthorizationEndpointUris("/connect/authorize")
                     .SetTokenEndpointUris("/connect/token")
                     .SetIntrospectionEndpointUris("connect/introspect")
-                    .SetEndSessionEndpointUris("/connect/endsession").
-                    SetUserInfoEndpointUris("/connect/userinfo");
+                    .SetEndSessionEndpointUris("/connect/endsession").SetUserInfoEndpointUris("/connect/userinfo");
 
                 // .SetDeviceAuthorizationEndpointUris("connect/device")
                 // .SetEndUserVerificationEndpointUris("connect/verify")
@@ -87,7 +82,7 @@ public static class DependencyInjection
                 // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
                 options.UseAspNetCore()
                     .EnableRedirectionEndpointPassthrough();
-                
+
                 options.UseWebProviders()
                     .AddMicrosoft(config =>
                     {
@@ -151,7 +146,7 @@ public static class DependencyInjection
 
         if (await applicationManager.FindByClientIdAsync("example-FE-client") is null)
             await applicationManager.CreateAsync(feClient);
-        
+
         var managementConsoleFrontend = new OpenIddictApplicationDescriptor
         {
             ClientId = "management-console-fe-client",
@@ -216,12 +211,11 @@ public static class DependencyInjection
                 OpenIddictConstants.Permissions.Scopes.Email,
                 OpenIddictConstants.Permissions.Scopes.Profile,
                 OpenIddictConstants.Permissions.Scopes.Roles
-                }
+            }
         };
 
         if (await applicationManager.FindByClientIdAsync("management-portal") is null)
             await applicationManager.CreateAsync(managementPortal);
-        
     }
 
     private static async Task CreateDefaultOidcScopes(AsyncServiceScope serviceScope)
@@ -239,7 +233,7 @@ public static class DependencyInjection
             OpenIddictConstants.Scopes.Profile,
             OpenIddictConstants.Scopes.Roles
         };
-        
+
         foreach (var defaultScope in defaultScopes)
         {
             if (await scopeManager.FindByNameAsync(defaultScope) is null)
@@ -248,7 +242,7 @@ public static class DependencyInjection
                     Name = defaultScope
                 });
         }
-        
+
         var testingScope = "BE1";
         if (await scopeManager.FindByNameAsync(testingScope) is null)
         {
@@ -262,6 +256,4 @@ public static class DependencyInjection
             });
         }
     }
-    
-    
 }
