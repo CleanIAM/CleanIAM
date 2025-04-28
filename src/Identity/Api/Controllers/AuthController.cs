@@ -1,5 +1,4 @@
 using Identity.Api.ViewModels.Auth;
-using Identity.Api.ViewModels.Shared;
 using Identity.Application.Interfaces;
 using Identity.Core;
 using Microsoft.AspNetCore;
@@ -8,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
-using Wolverine;
 
 namespace Identity.Api.Controllers;
 
@@ -71,57 +69,18 @@ public class AuthController(
     public async Task<IActionResult> EndSession(OpenIddictRequest request)
     {
         var oidcRequest = HttpContext.GetOpenIddictServerRequest();
-
-        if (oidcRequest == null)
-            return View("Error", new ErrorViewModel { Error = "Error", ErrorDescription = "Invalid end session request." });
-
-        // if (oidcRequest.IdTokenHint == null)
-        // {
-        //     
-        //     return View("Error", new ErrorViewModel { Title = "Error", Message = "Invalid id_token_hint." });
-        // }
-
-        // var token = await tokenManager.FindByReferenceIdAsync(oidcRequest.IdTokenHint);
-
-
-        //
-        // // Extract client ID from the id_token_hint
-        // var clientId = string.Empty;
-        //
-        // if (!string.IsNullOrEmpty(request.IdTokenHint))
-        // {
-        //     // Validate the ID token hint
-        //     var validationResult = await _tokenValidator.ValidateTokenAsync(request.IdTokenHint);
-        //     if (validationResult.IsValid)
-        //         // Extract the client ID from the validated token
-        //         clientId = validationResult.Claims.FirstOrDefault(c => c.Type == "aud")?.Value;
-        // }
-        //
-        // // If we couldn't get a client ID, reject the request
-        // if (string.IsNullOrEmpty(clientId)) return BadRequest("Invalid id_token_hint");
-        //
-        // // Get the application/client information
-        // var application = await _applicationManager.FindByClientIdAsync(clientId);
-        //
-        // if (application == null) return BadRequest("Invalid client");
-        //
-        // // Retrieve the registered post-logout redirect URIs for this client
-        // var postLogoutRedirectUris = await _applicationManager.GetPostLogoutRedirectUrisAsync(application);
-        //
-        // // Check if the requested URI is registered
-        // var requestedUri = request.PostLogoutRedirectUri;
-        //
-        // if (string.IsNullOrEmpty(requestedUri) || !postLogoutRedirectUris.Contains(requestedUri))
-        //     // Either use a default URI or reject the request
-        //     return BadRequest("Invalid post_logout_redirect_uri");
-
-        // Continue with the logout process
-        // ...
-
-
+        
+        // Sign out from local identity server session
         await HttpContext.SignOutAsync();
 
-        return Redirect("https://localhost:3000/");
+        // Sign out from OpenIddict session
+        return SignOut(
+            authenticationSchemes: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
+            properties: new AuthenticationProperties
+            {
+                RedirectUri = oidcRequest?.RedirectUri ?? "/",
+            });
+        
     }
     
     [HttpGet("userinfo")]

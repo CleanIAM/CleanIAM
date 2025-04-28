@@ -1,12 +1,24 @@
 @model Identity.Api.ViewModels.Auth.EndSessionViewModel
 
+<div class="w-full h-screen flex justify-center items-center bg-gray-50">
+    <div class="bg-white rounded-lg shadow-md p-8 w-full max-w-md">
+        <div class="text-center mb-6">
+            <h2 class="text-3xl font-bold">Sign Out</h2>
+        </div>
 
-<form method="post">
-    @foreach (var parameter in Model.Parameters)
-    {
-        <input type="hidden" name="@parameter.Key" value="@parameter.Value"/>
-    }
+        <p class="text-center text-gray-600 mb-8 text-lg">Are you sure you want to sign out?</p>
 
-    <button type="submit">Sign out</button>
+        <form method="post">
+            @foreach (var parameter in Model.Parameters)
+            {
+                <input type="hidden" name="@parameter.Key" value="@parameter.Value" />
+            }
 
-</form>
+            <div class="space-y-4">
+                <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md transition duration-200">
+                    Yes, Sign Out
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
