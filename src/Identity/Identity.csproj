@@ -48,7 +48,6 @@
         <Folder Include="Application\"/>
         <Folder Include="Core\"/>
         <Folder Include="Infrastructure\"/>
-        <Folder Include="Mailables\" />
     </ItemGroup>
 
     <ItemGroup>

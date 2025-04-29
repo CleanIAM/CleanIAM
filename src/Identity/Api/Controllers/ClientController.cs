@@ -21,7 +21,7 @@ public class ClientController(IOpenIddictApplicationManager applicationManager, 
     public async Task<IActionResult> EmailTest()
     {
         var res = await mailService.SendVerificationEmailAsync(
-            new() { Email = "milos.hegr@lifeliqe.com", Name = "Milos Hegr" }, "asdf");
+            new() { Email = "a@a.a", Name = "X Y" }, Guid.Empty);
         return res;
     }
 }
