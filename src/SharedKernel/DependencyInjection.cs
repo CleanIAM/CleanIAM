@@ -7,8 +7,10 @@ using Mapster;
 using Marten;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using SharedKernel.Application.Interfaces;
 using SharedKernel.Application.Swagger;
 using SharedKernel.Core.Database;
+using SharedKernel.Infrastructure.Services;
 using Wolverine;
 using Wolverine.FluentValidation;
 using Wolverine.Marten;
@@ -40,10 +42,7 @@ public static class DependencyInjection
         var dbConnectionString = configuration.GetSection("DbSettings:ConnectionStrings")["oidc"];
         Guard.IsNotNullOrEmpty(dbConnectionString, "Connection string not provided");
 
-        serviceCollection.AddDbContext<ApplicationDbContext>(options =>
-        {
-            options.UseNpgsql(dbConnectionString);
-        });
+        serviceCollection.AddDbContext<ApplicationDbContext>(options => { options.UseNpgsql(dbConnectionString); });
 
         serviceCollection.AddMarten(configuration);
 
@@ -91,7 +90,7 @@ public static class DependencyInjection
                 Version = "v1",
                 Description = "CleanIAM API",
             });
-            
+
             // Create swagger auth definition
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
@@ -102,7 +101,7 @@ public static class DependencyInjection
                 Scheme = "bearer",
                 BearerFormat = "JWT"
             });
-            
+
             // Apply auth swagger definition
             options.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
@@ -118,21 +117,20 @@ public static class DependencyInjection
                     Array.Empty<string>()
                 }
             });
-            
+
             // Add xml comments from all assemblies to swagger
             foreach (var assembly in assemblies)
             {
                 var assemblyXmlPath = Path.Combine(AppContext.BaseDirectory, $"{assembly}.xml");
                 options.IncludeXmlComments(assemblyXmlPath);
             }
-            
+
             // Make all strings nullable by defaults
             options.SupportNonNullableReferenceTypes();
 
             options.SchemaFilter<MakeAllPropertiesRequiredFilter>();
-
         });
-        
+
         return services;
     }
 
@@ -140,12 +138,38 @@ public static class DependencyInjection
     public static IServiceCollection AddUtils(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMapster();
-        
+
+        services.AddTransient<IAppConfiguration>(_ => ParseConfiguration(configuration));
+
         services.AddControllers()
             .AddJsonOptions(options =>
             {
-                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+                options.JsonSerializerOptions.Converters.Add(
+                    new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
             });
         return services;
+    }
+
+
+    private static IAppConfiguration ParseConfiguration(IConfiguration configuration)
+    {
+        var identityBaseUrl = configuration.GetSection("Identity")["BaseUrl"];
+        var useUrlShortener = configuration.GetSection("UrlShortener:UseUrlShortener").Get<bool>();
+        var urlShortenerBaseUrl = configuration.GetSection("UrlShortener")["BaseUrl"];
+
+        Guard.IsNotNullOrEmpty(identityBaseUrl, "Identity base url not provided");
+        Guard.IsNotNull(useUrlShortener, "Use url shortener not provided");
+        if (useUrlShortener)
+            Guard.IsNotNullOrEmpty(urlShortenerBaseUrl, "Url shortener base url not provided");
+
+
+        var appConfiguration = new AppConfiguration
+        {
+            IdentityBaseUrl = identityBaseUrl,
+            UseUrlShortener = useUrlShortener,
+            UrlShortenerBaseUrl = urlShortenerBaseUrl
+        };
+
+        return appConfiguration;
     }
 }
