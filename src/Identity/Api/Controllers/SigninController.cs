@@ -46,9 +46,12 @@ public class SigninController(
     {
         var signinRequest = await signinRequestService.GetAsync(request);
 
-        // If signin without oidc request, show error
+        if (signinRequest == null)
+            return RedirectToAction("Error", "Error",
+                new { error = "Not found", errorDescription = "Signin request not found" });
 
-        // TODO: Validate user credentials
+
+        // Validate user credentials
         var query = model.Adapt<GetUserByEmailQuery>();
         var user = await bus.InvokeAsync<User?>(query, cancellationToken);
 
@@ -58,6 +61,7 @@ public class SigninController(
             return View();
         }
 
+        // Validate user password
         if (!passwordHasher.Compare(model.Password, user.HashedPassword))
         {
             ModelState.AddModelError("password", "Incorrect email or password");
@@ -66,7 +70,11 @@ public class SigninController(
 
 
         // Create claims for the user
-        var claims = new Claim[] { new(OpenIddictConstants.Claims.Subject, user.Id.ToString()) };
+        var claims = new Claim[]
+        {
+            new(OpenIddictConstants.Claims.Subject, user.Id.ToString()),
+            new(IdentityConstants.SigninRequestClaimName, request.ToString())
+        };
 
         var claimsIdentity = new ClaimsIdentity(
             claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -79,11 +87,18 @@ public class SigninController(
             new ClaimsPrincipal(claimsIdentity),
             authProperties);
 
+        // Update signin request
+        signinRequest.UserId = user.Id;
+        await signinRequestService.UpdateAsync(signinRequest);
+        
+
+        // Check if the user has validated email
+        if (!user.EmailVerified)
+            return RedirectToAction("VerifyEmail", "EmailVerification");
+
+        
         //TODO: If MFA is enabled redirect to the MFA handler
 
-
-        if (signinRequest == null)
-            return RedirectToAction("Home", "Console");
 
         // Redirect to authorize endpoint to authorize the client
         return RedirectToAction("Authorize", "Auth", signinRequestService.CreateOidcQueryObject(signinRequest));

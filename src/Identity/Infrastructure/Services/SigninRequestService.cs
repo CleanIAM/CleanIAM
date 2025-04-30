@@ -1,6 +1,9 @@
+using System.Net;
+using System.Security.Claims;
 using Identity.Application.Interfaces;
 using Identity.Core;
 using Marten;
+using SharedKernel.Infrastructure;
 
 namespace Identity.Infrastructure.Services;
 
@@ -8,6 +11,7 @@ public class SigninRequestService(IDocumentSession documentSession) : ISigninReq
 {
     public async Task SaveAsync(SigninRequest request)
     {
+        //TODO: Only one per user should be allowed
         documentSession.Store(request);
         await documentSession.SaveChangesAsync();
     }
@@ -15,6 +19,25 @@ public class SigninRequestService(IDocumentSession documentSession) : ISigninReq
     public async Task<SigninRequest?> GetAsync(Guid id)
     {
         return await documentSession.LoadAsync<SigninRequest>(id);
+    }
+
+    public async Task<Result<SigninRequest>> GetFromClaimsAsync(ClaimsPrincipal user)
+    {
+        if (!(user.Identity is { IsAuthenticated: true }))
+            return Result.Error("User not authenticated", HttpStatusCode.Unauthorized);
+
+        var requestIdClaim = user.Claims.FirstOrDefault(x => x.Type == IdentityConstants.SigninRequestClaimName);
+        if (requestIdClaim == null)
+            return Result.Error("Request ID claim not found", HttpStatusCode.BadRequest);
+
+        if (!Guid.TryParse(requestIdClaim.Value, out var requestId))
+            return Result.Error("Request ID claim is not valid", HttpStatusCode.BadRequest);
+
+        var request = await GetAsync(requestId);
+        if (request == null)
+            return Result.Error("Request not found", HttpStatusCode.NotFound);
+
+        return Result.Ok(request);
     }
 
 
