@@ -8,7 +8,7 @@ namespace Identity.Api.Controllers;
 public class ErrorController : Controller
 {
     [HttpGet]
-    public IActionResult Error()
+    public IActionResult Error([FromQuery] string error, [FromQuery] string errorDescription)
     {
         // If the error originated from the OpenIddict server, render the error details.
         var response = HttpContext.GetOpenIddictServerResponse();
@@ -21,6 +21,10 @@ public class ErrorController : Controller
             });
         }
 
-        return View(new ErrorViewModel());
+        return View(new ErrorViewModel
+        {
+            Error = error,
+            ErrorDescription = errorDescription
+        });
     }
 }

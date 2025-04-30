@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using Identity.Core;
+using SharedKernel.Infrastructure;
 
 namespace Identity.Application.Interfaces;
 
@@ -17,6 +19,14 @@ public interface ISigninRequestService
     /// <param name="id">ID the request</param>
     /// <returns>Request if found, null if not</returns>
     Task<SigninRequest?> GetAsync(Guid id);
+
+    /// <summary>
+    /// Ger signin request from the claims of a currently authenticated user
+    /// </summary>
+    /// <param name="user">User claims</param>
+    /// <remarks>This should be used in the later seps of the flow like MFA or email verification</remarks>
+    /// <returns>Request if user authenticated</returns>
+    Task<Result<SigninRequest>> GetFromClaimsAsync(ClaimsPrincipal user);
 
     /// <summary>
     /// Delete the request from the storage

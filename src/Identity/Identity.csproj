@@ -46,7 +46,6 @@
     <ItemGroup>
         <Folder Include="Api\"/>
         <Folder Include="Application\"/>
-        <Folder Include="Core\"/>
         <Folder Include="Infrastructure\"/>
     </ItemGroup>
 
@@ -59,6 +58,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Identity.AnticorrutptionLayer\Identity.AnticorrutptionLayer.csproj"/>
         <ProjectReference Include="..\SharedKernel\SharedKernel.csproj"/>
+        <ProjectReference Include="..\UrlShortner\UrlShortner.csproj" />
     </ItemGroup>
 
 

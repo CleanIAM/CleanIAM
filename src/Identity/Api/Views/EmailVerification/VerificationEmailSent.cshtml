@@ -1,0 +1,26 @@
+@model Identity.Api.Views.EmailVerification.VerificationEmailSentViewModel
+
+@{
+    ViewData["Title"] = "Verify Email";
+}
+
+<div class="container">
+    <div class="alert alert-success mt-4">
+        <h3>Email Sent Successfully</h3>
+        <p>A verification email has been sent to your inbox. Please check your email (and spam folder) to verify your
+            address.</p>
+    </div>
+
+    @if (TempData["EmailResent"] != null)
+    {
+        <div class="alert alert-info">
+            @TempData["EmailResent"]
+        </div>
+    }
+
+    <form method="post" action="@Url.Action("SendEmailVerification", "EmailVerification")">
+        <input hidden asp-for="RequestId" value="@Model.RequestId"/>
+        <span asp-validation-for="RequestId" class="text-red-500 text-sm"></span>
+        <button type="submit" class="btn btn-primary">Resend Verification Email</button>
+    </form>
+</div>

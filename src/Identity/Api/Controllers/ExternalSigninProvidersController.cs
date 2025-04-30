@@ -12,13 +12,13 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Client.WebIntegration;
 
-
 /// <summary>
 /// Controller with endpoints handling external providers authentication such as Microsoft or Google
 /// </summary>
 [Route("/external-providers")]
 public class ExternalSigninProvidersController(
-    IQuerySession session, ISigninRequestService signinRequestService) : Controller
+    IQuerySession session,
+    ISigninRequestService signinRequestService) : Controller
 {
     /// <summary>
     /// Initiates the authentication process with Microsoft provider
@@ -33,41 +33,44 @@ public class ExternalSigninProvidersController(
             RedirectToSignin("Request not found");
 
         TempData["RequestId"] = request;
-        
+
         // Return challenge to the external provider
         return Results.Challenge(null, [
-            provider switch
-        {
-            OpenIddictClientWebIntegrationConstants.Providers.Microsoft => OpenIddictClientWebIntegrationConstants.Providers.Microsoft,
-            OpenIddictClientWebIntegrationConstants.Providers.Google => OpenIddictClientWebIntegrationConstants.Providers.Google,
-            _ => throw new NotSupportedException("Provider not supported")
-        }]
-            );
+                provider switch
+                {
+                    OpenIddictClientWebIntegrationConstants.Providers.Microsoft =>
+                        OpenIddictClientWebIntegrationConstants.Providers.Microsoft,
+                    OpenIddictClientWebIntegrationConstants.Providers.Google => OpenIddictClientWebIntegrationConstants
+                        .Providers.Google,
+                    _ => throw new NotSupportedException("Provider not supported")
+                }
+            ]
+        );
     }
 
     /// <summary>
-    /// Finalizes the authentication process with external singin provider
+    /// Finalizes the authentication process with external signin provider
     /// </summary>
     [HttpGet("callback/{provider}")]
-    public async Task<IActionResult> ExternalSigninCallback([FromRoute]string provider)
+    public async Task<IActionResult> ExternalSigninCallback([FromRoute] string provider)
     {
         var requestId = (Guid?)TempData["RequestId"];
-        
+
         var context = HttpContext;
         var result = await context.AuthenticateAsync(OpenIddictClientWebIntegrationConstants.Providers.Microsoft);
         if (!result.Succeeded)
             return RedirectToSignin("External authentication failed", requestId);
-        
+
 
         // Validate the authentication result
         var receivedClaims = result.Principal.Claims;
         var email = receivedClaims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
         var user = await session.Query<User>().FirstOrDefaultAsync(u => u.AnyTenant() && u.Email == email);
 
-        
+
         if (user == null)
             return RedirectToSignin("User doesn't exist", requestId);
-        
+
         // Sign in user
         // Create claims for the user
         var claims = new Claim[] { new(OpenIddictConstants.Claims.Subject, user.Id.ToString()) };
@@ -84,16 +87,20 @@ public class ExternalSigninProvidersController(
             authProperties);
 
         var signinRequest = await signinRequestService.GetAsync(requestId.Value);
-        if(signinRequest == null)
+        if (signinRequest == null)
             return RedirectToSignin("Request id is invalid");
-        
+
         // Redirect to authorize endpoint to authorize the client
         return RedirectToAction("Authorize", "Auth", signinRequestService.CreateOidcQueryObject(signinRequest));
-
-        
     }
 
 
+    /// <summary>
+    /// Helper function to redirect to the signin page with the error message
+    /// </summary>
+    /// <param name="error">The error message</param>
+    /// <param name="request">Id of the signin request</param>
+    /// <returns></returns>
     private IActionResult RedirectToSignin(string? error = null, Guid? request = null)
     {
         if (error != null)

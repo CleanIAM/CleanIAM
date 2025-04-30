@@ -1,7 +1,7 @@
 using System.Net;
 using Coravel.Mailer.Mail;
 using Coravel.Mailer.Mail.Interfaces;
-using Identity.Api.Mails;
+using Identity.Api.Emails;
 using Identity.Application.Interfaces;
 using Identity.Core.Mails;
 using SharedKernel.Infrastructure;
@@ -12,42 +12,49 @@ namespace Identity.Infrastructure.Services;
 /// 
 /// </summary>
 /// <param name="mailer"></param>
-public class CoravelMailService(IMailer mailer, ILogger<CoravelMailService> logger) : IMailService
+public class CoravelEmailService(IMailer mailer, ILogger<CoravelEmailService> logger) : IEmailService
 {
-    public async Task<Result> SendVerificationEmailAsync(MailReceiver receiver, Guid verificationRequestId)
-    {    
+    public async Task<Result> SendVerificationEmailAsync(EmailRecipient recipient, string verificationUrl)
+    {
         try
         {
             await mailer.SendAsync(Mailable.AsInline<VerificationEmailViewModel>()
-                    .To(receiver)
-                    .Subject("CleanIAM - Email verification")
-                    .View("Api/Mails/VerificationEmailView.cshtml", new VerificationEmailViewModel()));
+                .To(recipient)
+                .Subject("CleanIAM - Email verification")
+                .View("Api/Emails/VerificationEmailView.cshtml", new VerificationEmailViewModel
+                {
+                    Recipient = recipient,
+                    VerificationUrl = verificationUrl
+                }));
         }
         catch (Exception ex)
         {
             logger.Log(LogLevel.Error, ex, "Failed to send email");
             return Result.Error("Failed to send email", HttpStatusCode.InternalServerError);
         }
-        
+
         return Result.Ok();
     }
-    
-    public async Task<Result> SendPasswordResetEmailAsync(MailReceiver receiver, Guid passwordResetRequestId)
+
+    public async Task<Result> SendPasswordResetEmailAsync(EmailRecipient recipient, string passwordResetUrl)
     {
-        
         try
         {
             await mailer.SendAsync(Mailable.AsInline<PasswordResetEmailViewModel>()
-                .To(receiver)
+                .To(recipient)
                 .Subject("CleanIAM - Password reset")
-                .View("Api/Mails/ResetPasswordEmailView.cshtml", new PasswordResetEmailViewModel()));
+                .View("Api/Emails/ResetPasswordEmailView.cshtml", new PasswordResetEmailViewModel
+                {
+                    Recipient = recipient,
+                    PasswordResetUrl = passwordResetUrl
+                }));
         }
         catch (Exception ex)
         {
             logger.Log(LogLevel.Error, ex, "Failed to send email");
             return Result.Error("Failed to send email", HttpStatusCode.InternalServerError);
         }
-        
+
         return Result.Ok();
     }
 }

@@ -31,7 +31,7 @@ builder.Services.AddLogging();
 builder.Services.AddScoped<ISigninRequestService, SigninRequestService>();
 builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
 builder.Services.AddTransient<IIdentityBuilderService, IdentityBuilderService>();
-builder.Services.AddScoped<IMailService, CoravelMailService>();
+builder.Services.AddScoped<IEmailService, CoravelEmailService>();
 
 // Register the Coravel's mailer service
 builder.AddMailer();
@@ -52,14 +52,13 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(
-    opts =>
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(opts =>
     {
         opts.Cookie.SameSite = SameSiteMode.Lax;
         opts.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         opts.Cookie.HttpOnly = true;
     }
-    );
+);
 
 builder.Services.AddDatabases(builder.Configuration);
 builder.Services.AddOpenIddict(builder.Configuration);

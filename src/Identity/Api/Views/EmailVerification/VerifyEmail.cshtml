@@ -1,0 +1,21 @@
+@model Identity.Api.Views.EmailVerification.VerifyEmailViewModel
+
+@{
+    ViewData["Title"] = "Verify Email";
+}
+
+<div class="container">
+    <div class="alert alert-warning mt-4">
+        <h3>Verify Your Email</h3>
+        <p>Before you can continue, you need to verify your email address. Please check your inbox (and spam folder) for
+            the verification email.</p>
+    </div>
+
+
+    <form method="post" action="@Url.Action("SendEmailVerification", "EmailVerification")">
+        <input hidden asp-for="RequestId" value="@Model.RequestId"/>
+        <span asp-validation-for="RequestId" class="text-red-500 text-sm"></span>
+        <button type="submit" class="btn btn-primary">Send Verification Email</button>
+    </form>
+</div>
+
