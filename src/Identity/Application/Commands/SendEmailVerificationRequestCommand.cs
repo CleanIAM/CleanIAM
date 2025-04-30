@@ -49,7 +49,7 @@ public class SendEmailVerificationRequestCommandHandler
             return Result.Error(
                 $"Email verification request already send, " +
                 $"you need to wait {(IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Minutes} minutes " +
-                $"before you request new email",
+                $"before you request new email.",
                 HttpStatusCode.BadRequest);
 
         return Result.Ok(request);

@@ -4,23 +4,26 @@
     ViewData["Title"] = "Verify Email";
 }
 
-<div class="container">
-    <div class="alert alert-success mt-4">
-        <h3>Email Sent Successfully</h3>
-        <p>A verification email has been sent to your inbox. Please check your email (and spam folder) to verify your
-            address.</p>
-    </div>
-
-    @if (TempData["EmailResent"] != null)
-    {
-        <div class="alert alert-info">
-            @TempData["EmailResent"]
+<div class="w-full h-screen flex justify-center items-center bg-gray-50">
+    <div class="bg-white rounded-lg shadow-md p-8 w-full max-w-md">
+        <!-- Success Message -->
+        <div class="p-4 rounded-md shadow-md mt-4">
+            <h3 class="text-lg font-semibold">Email Sent Successfully</h3>
+            <p>A verification email has been sent to your inbox. Please check your email (and spam folder) to verify
+                your address.</p>
         </div>
-    }
 
-    <form method="post" action="@Url.Action("SendEmailVerification", "EmailVerification")">
-        <input hidden asp-for="RequestId" value="@Model.RequestId"/>
-        <span asp-validation-for="RequestId" class="text-red-500 text-sm"></span>
-        <button type="submit" class="btn btn-primary">Resend Verification Email</button>
-    </form>
+        <!-- Resend Email Form -->
+        <form method="post" action="@Url.Action("SendEmailVerification", "EmailVerification")" class="mt-4">
+            <input type="hidden" asp-for="RequestId" value="@Model.RequestId"/>
+            <span asp-validation-for="RequestId" class="text-red-500 text-sm"></span>
+
+            <div class="space-y-4">
+                <button type="submit"
+                        class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md focus:outline-none transition duration-200">
+                    Resend Verification Email
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
