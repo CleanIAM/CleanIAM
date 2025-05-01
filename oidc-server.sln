@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.AnticorrutptionLay
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortner", "src\UrlShortner\UrlShortner.csproj", "{AFE0494D-735E-447F-9570-427DDC634555}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Host", "src\Host\Host.csproj", "{5A732172-C0B8-43C6-8A1F-FB38EBC3193E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{AFE0494D-735E-447F-9570-427DDC634555}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFE0494D-735E-447F-9570-427DDC634555}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFE0494D-735E-447F-9570-427DDC634555}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A732172-C0B8-43C6-8A1F-FB38EBC3193E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A732172-C0B8-43C6-8A1F-FB38EBC3193E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A732172-C0B8-43C6-8A1F-FB38EBC3193E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A732172-C0B8-43C6-8A1F-FB38EBC3193E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
