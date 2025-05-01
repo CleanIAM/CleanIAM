@@ -43,7 +43,7 @@ public class CoravelEmailService(IMailer mailer, ILogger<CoravelEmailService> lo
             await mailer.SendAsync(Mailable.AsInline<PasswordResetEmailViewModel>()
                 .To(recipient)
                 .Subject("CleanIAM - Password reset")
-                .View("Api/Emails/ResetPasswordEmailView.cshtml", new PasswordResetEmailViewModel
+                .View("Api/Emails/PasswordResetEmailView.cshtml", new PasswordResetEmailViewModel
                 {
                     Recipient = recipient,
                     PasswordResetUrl = passwordResetUrl
