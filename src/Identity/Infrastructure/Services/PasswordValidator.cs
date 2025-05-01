@@ -16,6 +16,18 @@ public class PasswordValidator : IPasswordValidator
         if (password.Length < 8)
             return Result.Error("Password must be at least 8 characters long");
 
+        if (!password.Any(char.IsUpper))
+            return Result.Error("Password must contain at least one uppercase letter");
+
+        if (!password.Any(char.IsLower))
+            return Result.Error("Password must contain at least one lowercase letter");
+
+        if (!password.Any(char.IsDigit))
+            return Result.Error("Password must contain at least one digit");
+
+        if (!password.Any(c => "!@#$%^&*()_+-=[]{}|;':\",.<>?/`~".Contains(c)))
+            return Result.Error("Password must contain at least one special character");
+
         return Result.Ok();
     }
 
