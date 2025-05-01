@@ -28,10 +28,7 @@ string[] assemblies = ["Identity"];
 builder.Services.AddWolverineHttp();
 
 builder.Services.AddLogging();
-builder.Services.AddScoped<ISigninRequestService, SigninRequestService>();
-builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
-builder.Services.AddTransient<IIdentityBuilderService, IdentityBuilderService>();
-builder.Services.AddScoped<IEmailService, CoravelEmailService>();
+builder.Services.AddIdentityProject(builder.Configuration);
 
 // Register the Coravel's mailer service
 builder.AddMailer();
@@ -42,8 +39,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.Configure<RazorViewEngineOptions>(options =>
 {
     options.ViewLocationFormats.Clear();
-    options.ViewLocationFormats.Add("/API/Views/{1}/{0}.cshtml");
-    options.ViewLocationFormats.Add("/API/Views/Shared/{0}.cshtml");
+    options.ViewLocationFormats.Add("/Api/Views/{1}/{0}.cshtml");
+    options.ViewLocationFormats.Add("/Api/Views/Shared/{0}.cshtml");
 });
 
 
@@ -72,8 +69,6 @@ app.UseStaticFiles();
 
 app.MapControllers();
 app.UseStatusCodePagesWithRedirects("/error/{0}");
-
-await app.ConfigureOpenIddict();
 
 if (app.Environment.IsDevelopment())
 {

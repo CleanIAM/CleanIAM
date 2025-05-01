@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedKernel", "src\SharedK
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.AnticorrutptionLayer", "src\Identity.AnticorrutptionLayer\Identity.AnticorrutptionLayer.csproj", "{EA19333A-43B9-4023-BB56-9FC07EF8CD9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortner", "src\UrlShortner\UrlShortner.csproj", "{AFE0494D-735E-447F-9570-427DDC634555}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener", "src\UrlShortener\UrlShortener.csproj", "{AFE0494D-735E-447F-9570-427DDC634555}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Host", "src\Host\Host.csproj", "{5A732172-C0B8-43C6-8A1F-FB38EBC3193E}"
 EndProject

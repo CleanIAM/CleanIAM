@@ -4,6 +4,9 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <GenerateDocumentationFile>True</GenerateDocumentationFile>
+        <RootNamespace>UrlShortner</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -28,11 +31,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SharedKernel\SharedKernel.csproj" />
+        <ProjectReference Include="..\SharedKernel\SharedKernel.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Api\Views\Shared\Error.cshtml" />
+        <AdditionalFiles Include="Api\Views\Shared\Error.cshtml"/>
     </ItemGroup>
 
 </Project>

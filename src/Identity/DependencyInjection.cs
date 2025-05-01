@@ -1,5 +1,7 @@
 using System.Text;
 using CommunityToolkit.Diagnostics;
+using Identity.Application.Interfaces;
+using Identity.Infrastructure.Services;
 using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
 using SharedKernel.Core.Database;
@@ -8,6 +10,18 @@ namespace Identity;
 
 public static class DependencyInjection
 {
+    public static IServiceCollection AddIdentityProject(this IServiceCollection serviceCollection,
+        IConfiguration configuration)
+    {
+        serviceCollection.AddScoped<ISigninRequestService, SigninRequestService>();
+        serviceCollection.AddTransient<IPasswordHasher, PasswordHasher>();
+        serviceCollection.AddTransient<IIdentityBuilderService, IdentityBuilderService>();
+        serviceCollection.AddScoped<IEmailService, CoravelEmailService>();
+        
+        
+        return serviceCollection;
+    }
+
     public static IServiceCollection AddOpenIddict(this IServiceCollection serviceCollection,
         IConfiguration configuration)
     {

@@ -5,7 +5,7 @@ using SharedKernel;
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseLamar();
 
-string[] assemblies = ["UrlShortner"];
+string[] assemblies = ["UrlShortener"];
 builder.Host.UseProjects(assemblies);
 
 builder.Services.AddLogging();

@@ -78,6 +78,13 @@ public static class DependencyInjection
         return services;
     }
 
+    /// <summary>
+    /// Configure swagger
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="title"> Title of the OpenApi schema</param>
+    /// <param name="assemblies"></param>
+    /// <returns></returns>
     public static IServiceCollection AddSwagger(this IServiceCollection services, string title,
         string[] assemblies)
     {
@@ -127,7 +134,6 @@ public static class DependencyInjection
 
             // Make all strings nullable by defaults
             options.SupportNonNullableReferenceTypes();
-
             options.SchemaFilter<MakeAllPropertiesRequiredFilter>();
         });
 

@@ -4,6 +4,8 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <GenerateDocumentationFile>True</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -58,7 +60,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Identity.AnticorrutptionLayer\Identity.AnticorrutptionLayer.csproj"/>
         <ProjectReference Include="..\SharedKernel\SharedKernel.csproj"/>
-        <ProjectReference Include="..\UrlShortner\UrlShortner.csproj" />
+        <ProjectReference Include="..\UrlShortener\UrlShortener.csproj" />
     </ItemGroup>
 
 
@@ -69,7 +71,7 @@
 
 
     <ItemGroup>
-      <Compile Remove="Mailables\Example.cs" />
+        <Compile Remove="Mailables\Example.cs"/>
     </ItemGroup>
 
     <Target Name="Tailwind" BeforeTargets="Build">
