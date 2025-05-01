@@ -12,8 +12,12 @@ using UrlShortner.Application.Commands;
 using UrlShortner.Core.Events;
 using Wolverine;
 
-namespace Identity.Application.Commands;
+namespace Identity.Application.Commands.EmailVerification;
 
+/// <summary>
+/// Send email verification request.
+/// </summary>
+/// <param name="UserId">Id of the user the request is requested for</param>
 public record SendEmailVerificationRequestCommand(Guid UserId);
 
 /// <summary>
@@ -22,14 +26,13 @@ public record SendEmailVerificationRequestCommand(Guid UserId);
 public class SendEmailVerificationRequestCommandHandler
 {
     public static async Task<Result<EmailVerificationReqest>> LoadAsync(SendEmailVerificationRequestCommand command,
-        IQuerySession querySession)
+        IQuerySession querySession, CancellationToken cancellationToken)
     {
         // Check if the user for a given request exists
-        var user = await querySession.LoadAsync<User>(command.UserId);
+        var user = await querySession.LoadAsync<User>(command.UserId, cancellationToken);
         if (user is null)
             return Result.Error("User not found", HttpStatusCode.NotFound);
-
-
+        
         var request = querySession.Query<EmailVerificationReqest>()
             .FirstOrDefault(x => x.UserId == user.Id);
 

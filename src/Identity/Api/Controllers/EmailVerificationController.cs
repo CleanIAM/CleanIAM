@@ -1,6 +1,6 @@
 using Identity.Api.ViewModels.Shared;
 using Identity.Api.Views.EmailVerification;
-using Identity.Application.Commands;
+using Identity.Application.Commands.EmailVerification;
 using Identity.Application.Interfaces;
 using Identity.Core.Events;
 using Mapster;
