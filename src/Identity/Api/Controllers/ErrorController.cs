@@ -27,4 +27,21 @@ public class ErrorController : Controller
             ErrorDescription = errorDescription
         });
     }
+    
+    [HttpGet("{errorCode}")]
+    public IActionResult Error(int errorCode)
+    {
+        var error = errorCode switch
+        {
+            404 => "Not Found",
+            500 => "Internal Server Error",
+            _ => "Unknown Error"
+        };
+
+        return View(new ErrorViewModel
+        {
+            Error = error,
+            ErrorDescription = "An unexpected error occurred."
+        });
+    }
 }

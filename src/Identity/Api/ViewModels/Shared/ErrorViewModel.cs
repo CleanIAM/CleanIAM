@@ -1,7 +1,7 @@
 namespace Identity.Api.ViewModels.Shared;
 
-public class ErrorViewModel
+public class ErrorViewModel(string? error = null, string? errorDescription = null)
 {
-    public string? Error { get; set; }
-    public string? ErrorDescription { get; set; }
+    public string? Error { get; set; } = error;
+    public string? ErrorDescription { get; set; } = errorDescription;
 }

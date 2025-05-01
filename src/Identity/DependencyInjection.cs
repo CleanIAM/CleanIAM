@@ -45,7 +45,8 @@ public static class DependencyInjection
                 options.SetAuthorizationEndpointUris("/connect/authorize")
                     .SetTokenEndpointUris("/connect/token")
                     .SetIntrospectionEndpointUris("connect/introspect")
-                    .SetEndSessionEndpointUris("/connect/endsession").SetUserInfoEndpointUris("/connect/userinfo");
+                    .SetEndSessionEndpointUris("/connect/endsession")
+                    .SetUserInfoEndpointUris("/connect/userinfo");
 
                 // .SetDeviceAuthorizationEndpointUris("connect/device")
                 // .SetEndUserVerificationEndpointUris("connect/verify")

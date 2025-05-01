@@ -48,7 +48,6 @@ builder.Services.Configure<RazorViewEngineOptions>(options =>
 
 
 builder.Services.AddHttpContextAccessor();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -72,7 +71,7 @@ app.UseAuthorization();
 app.UseStaticFiles();
 
 app.MapControllers();
-
+app.UseStatusCodePagesWithRedirects("/error/{0}");
 
 await app.ConfigureOpenIddict();
 
@@ -81,8 +80,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-// app.MapControllers();
 
 app.MapGet("/", () => "Hello, world!");
 
