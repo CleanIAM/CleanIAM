@@ -11,13 +11,13 @@
             <a asp-action="ExternalSignin" asp-controller="ExternalSigninProviders" asp-route-provider="Microsoft"
                asp-route-request=@ViewData["Request"]
                class="flex items-center justify-center w-full px-3 py-2 bg-gray-100 text-gray-800 text-sm font-medium rounded-md border border-gray-300 hover:bg-gray-200 transition duration-200 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:ring-offset-1">
-                <img src="/svg/microsoft-logo.svg" alt="Microsoft logo" class="w-4 h-4 mr-2" />
+                <img src="/svg/microsoft-logo.svg" alt="Microsoft logo" class="w-4 h-4 mr-2"/>
                 Microsoft
             </a>
             <a asp-action="ExternalSignin" asp-controller="ExternalSigninProviders" asp-route-provider="Google"
                asp-route-request=@ViewData["Request"]
                class="flex items-center justify-center w-full px-3 py-2 bg-gray-100 text-gray-800 text-sm font-medium rounded-md border border-gray-300 hover:bg-gray-200 transition duration-200 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:ring-offset-1">
-                <img src="/svg/google-logo.svg" alt="Google logo" class="w-4 h-4 mr-2" />
+                <img src="/svg/google-logo.svg" alt="Google logo" class="w-4 h-4 mr-2"/>
                 Google
             </a>
         </div>
@@ -35,8 +35,11 @@
                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-300"
                        placeholder="Enter your password"/>
                 <span asp-validation-for="Password" class="text-red-500 text-sm"></span>
+                <p class="text-sm text-right">
+                    <a asp-action="PasswordResetRequest" asp-controller="PasswordReset"
+                       class="text-indigo-600 hover:underline">Forgot your password?</a>
+                </p>
             </div>
-            <span class="text-red-500 text-sm">@ViewData["error"]</span>
             <button type="submit"
                     class="w-full px-4 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                 Sign in

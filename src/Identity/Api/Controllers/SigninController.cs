@@ -37,6 +37,7 @@ public class SigninController(
             return View("Error", new ErrorViewModel { Error = "Error", ErrorDescription = "Request not found" });
 
         // If user already authenticated redirect to authorize
+        //TODO: Check email verification and MFA
         return RedirectToAction("Authorize", "Auth", signinRequestService.CreateOidcQueryObject(signinRequest));
     }
 
@@ -90,25 +91,17 @@ public class SigninController(
         // Update signin request
         signinRequest.UserId = user.Id;
         await signinRequestService.UpdateAsync(signinRequest);
-        
+
 
         // Check if the user has validated email
         if (!user.EmailVerified)
             return RedirectToAction("VerifyEmail", "EmailVerification");
 
-        
+
         //TODO: If MFA is enabled redirect to the MFA handler
 
 
         // Redirect to authorize endpoint to authorize the client
         return RedirectToAction("Authorize", "Auth", signinRequestService.CreateOidcQueryObject(signinRequest));
-    }
-
-    [HttpGet("test")]
-    public async Task<IResult> Test()
-    {
-        if (User.Identity?.IsAuthenticated != true)
-            return Results.Ok("Not Authenticated");
-        return Results.Ok("Authenticated: " + User.Identity.Name);
     }
 }
