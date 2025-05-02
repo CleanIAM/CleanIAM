@@ -53,4 +53,4 @@ docs/.vitepress/dist
 docs/.vitepress/cache 
 node_modules
 .env
-src/Host/wwwroot/css/main.css
+src/**/wwwroot/css/main.css
