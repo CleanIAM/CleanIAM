@@ -64,9 +64,9 @@ public static class SeedDb
             ClientType = OpenIddictConstants.ClientTypes.Public,
             RedirectUris =
             {
-                new Uri("https://localhost:3000/signin-callback")
+                new Uri("https://localhost:3001/auth/signin-callback")
             },
-            PostLogoutRedirectUris = { new Uri("https://localhost:3000/signout-callback") },
+            PostLogoutRedirectUris = { new Uri("https://localhost:3001/auth/signout-callback") },
             Permissions =
             {
                 OpenIddictConstants.Permissions.Endpoints.Authorization,
