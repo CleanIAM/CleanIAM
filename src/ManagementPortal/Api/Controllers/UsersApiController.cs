@@ -22,7 +22,6 @@ public class UsersApiController(
     /// <summary>
     /// Get all users
     /// </summary>
-    /// <returns></returns>
     [HttpGet("")]
     [ProducesResponseType<IEnumerable<ApiUserModel>>(StatusCodes.Status200OK)]
     [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
@@ -37,7 +36,6 @@ public class UsersApiController(
     /// Create new user
     /// </summary>
     /// <param name="request">New user data</param>
-    /// <returns></returns>
     [HttpPost("")]
     [ProducesResponseType<UserCreated>(StatusCodes.Status200OK)]
     [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
@@ -53,7 +51,6 @@ public class UsersApiController(
     /// Get specific user by its id
     /// </summary>
     /// <param name="id">Id of the user to get</param>
-    /// <returns></returns>
     [HttpGet("{id:guid}")]
     [ProducesResponseType<ApiUserModel>(StatusCodes.Status200OK)]
     [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
@@ -73,7 +70,6 @@ public class UsersApiController(
     /// </summary>
     /// <param name="id">Id of user to update</param>
     /// <param name="request">New user data</param>
-    /// <returns></returns>
     [HttpPut("{id:guid}")]
     [ProducesResponseType<UserUpdated>(StatusCodes.Status200OK)]
     [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
@@ -90,7 +86,6 @@ public class UsersApiController(
     /// Delete user 
     /// </summary>
     /// <param name="id">Id of user to be deleted</param>
-    /// <returns></returns>
     [HttpDelete("{id:guid}")]
     [ProducesResponseType<UserDeleted>(StatusCodes.Status200OK)]
     [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
@@ -105,7 +100,6 @@ public class UsersApiController(
     /// Disable user
     /// </summary>
     /// <param name="id">Id of the use to disable</param>
-    /// <returns></returns>
     [ProducesResponseType<UserDisabled>(StatusCodes.Status200OK)]
     [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
@@ -114,5 +108,19 @@ public class UsersApiController(
     {
         var command = new DisableUserCommand(id);
         return await bus.InvokeAsync<Result<UserDisabled>>(command, cancellationToken);
+    }
+
+    /// <summary>
+    /// Enable user
+    /// </summary>
+    /// <param name="id">Id of the use to enable</param>
+    [ProducesResponseType<UserDisabled>(StatusCodes.Status200OK)]
+    [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
+    [HttpPut("{id:guid}/enabled")]
+    public async Task<IActionResult> EnableUserAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var command = new EnableUserCommand(id);
+        return await bus.InvokeAsync<Result<UserEnabled>>(command, cancellationToken);
     }
 }
