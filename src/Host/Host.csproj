@@ -37,7 +37,15 @@
         <ProjectReference Include="..\Identity\Identity.csproj"/>
         <ProjectReference Include="..\ManagementPortal\ManagementPortal.csproj"/>
         <ProjectReference Include="..\SharedKernel\SharedKernel.csproj"/>
-        <ProjectReference Include="..\UrlShortener\UrlShortener.csproj" />
+        <ProjectReference Include="..\UrlShortener\UrlShortener.csproj"/>
     </ItemGroup>
+
+    <Target Name="Identity_wwwroot" BeforeTargets="Build">
+        <Exec Command="cp -r ../Identity/wwwroot/* wwwroot"/>
+    </Target>
+
+    <Target Name="Tailwind" BeforeTargets="Build">
+        <Exec Command="cd ..; npx @tailwindcss/cli -i Host/wwwroot/css/base.css -o Host/wwwroot/css/main.css"/>
+    </Target>
 
 </Project>

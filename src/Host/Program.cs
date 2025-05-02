@@ -73,7 +73,7 @@ app.UseStaticFiles();
 app.UseHttpsRedirection();
 
 app.MapControllers();
-app.UseStatusCodePagesWithRedirects("/error/{0}");
+app.UseStatusCodePagesWithReExecute("/error/{0}");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

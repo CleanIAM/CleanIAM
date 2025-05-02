@@ -46,36 +46,14 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Api\"/>
-        <Folder Include="Application\"/>
-        <Folder Include="Infrastructure\"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <UpToDateCheckBuilt Include="wwwroot/css/base.css" Set="Css"/>
-        <UpToDateCheckBuilt Include="tailwind.config.js" Set="Css"/>
-    </ItemGroup>
-
-
-    <ItemGroup>
         <ProjectReference Include="..\Identity.AnticorrutptionLayer\Identity.AnticorrutptionLayer.csproj"/>
         <ProjectReference Include="..\SharedKernel\SharedKernel.csproj"/>
-        <ProjectReference Include="..\UrlShortener\UrlShortener.csproj" />
+        <ProjectReference Include="..\UrlShortener\UrlShortener.csproj"/>
     </ItemGroup>
 
-
-    <ItemGroup>
-        <_ContentIncludedByDefault Remove="Api\Views\Users\CreateUser.cshtml"/>
-        <_ContentIncludedByDefault Remove="Api\Views\Users\Index.cshtml"/>
-    </ItemGroup>
-
-
-    <ItemGroup>
-        <Compile Remove="Mailables\Example.cs"/>
-    </ItemGroup>
 
     <Target Name="Tailwind" BeforeTargets="Build">
         <Exec Command="npx @tailwindcss/cli -i ./wwwroot/css/base.css -o ./wwwroot/css/main.css"/>
     </Target>
-
+    
 </Project>
