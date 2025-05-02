@@ -1,4 +1,4 @@
-using Identity.Core;
+using Identity.Core.Requests;
 using Marten;
 
 namespace Identity.Application.Queries.PasswordReset;

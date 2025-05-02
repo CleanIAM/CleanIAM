@@ -1,8 +1,8 @@
 using System.Net;
 using Identity.Application.Interfaces;
-using Identity.Core;
 using Identity.Core.Events;
 using Identity.Core.Mails;
+using Identity.Core.Requests;
 using Identity.Core.Users;
 using Mapster;
 using Marten;

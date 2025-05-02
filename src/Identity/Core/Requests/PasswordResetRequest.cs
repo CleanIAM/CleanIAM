@@ -1,4 +1,4 @@
-namespace Identity.Core;
+namespace Identity.Core.Requests;
 
 public class PasswordResetRequest
 {

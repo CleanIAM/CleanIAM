@@ -1,6 +1,6 @@
 using System.Net;
-using Identity.Core;
 using Identity.Core.Events;
+using Identity.Core.Requests;
 using Identity.Core.Users;
 using Mapster;
 using Marten;

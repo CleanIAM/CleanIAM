@@ -1,6 +1,6 @@
 using System.Net;
 using Identity.Application.Interfaces;
-using Identity.Core;
+using Identity.Core.Requests;
 using Identity.Core.Users;
 using Mapster;
 using Marten;

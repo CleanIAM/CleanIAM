@@ -1,6 +1,6 @@
 using Identity.Api.ViewModels.Auth;
 using Identity.Application.Interfaces;
-using Identity.Core;
+using Identity.Core.Requests;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -69,7 +69,7 @@ public class AuthController(
     public async Task<IActionResult> EndSession(OpenIddictRequest request)
     {
         var oidcRequest = HttpContext.GetOpenIddictServerRequest();
-        
+
         // Sign out from local identity server session
         await HttpContext.SignOutAsync();
 
@@ -80,9 +80,8 @@ public class AuthController(
             {
                 RedirectUri = oidcRequest?.RedirectUri ?? "/",
             });
-        
     }
-    
+
     [HttpGet("userinfo")]
     [HttpPost("userinfo")]
     [Produces("application/json")]
@@ -95,15 +94,14 @@ public class AuthController(
             return BadRequest("Invalid sub claim, expected UUID format.");
 
         var scopes = User.GetScopes();
-        
+
         var claims = await identityBuilderService.BuildClaimsAsync(userId, scopes);
 
         if (claims.IsError())
             return BadRequest(claims.ErrorValue.Message);
-        
+
         var parsableClaims = claims.Value.Select(claim => (claim.Type, claim.Value)).ToDictionary();
-        
+
         return Ok(parsableClaims);
     }
-    
 }

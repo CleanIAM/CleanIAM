@@ -1,8 +1,8 @@
 using System.Net;
 using Identity.Application.Interfaces;
-using Identity.Core;
 using Identity.Core.Events;
 using Identity.Core.Mails;
+using Identity.Core.Requests;
 using Identity.Core.Users;
 using Mapster;
 using Marten;
@@ -32,7 +32,7 @@ public class SendEmailVerificationRequestCommandHandler
         var user = await querySession.LoadAsync<User>(command.UserId, cancellationToken);
         if (user is null)
             return Result.Error("User not found", HttpStatusCode.NotFound);
-        
+
         var request = querySession.Query<EmailVerificationReqest>()
             .FirstOrDefault(x => x.UserId == user.Id);
 

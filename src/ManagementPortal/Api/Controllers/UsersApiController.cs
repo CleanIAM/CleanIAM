@@ -100,4 +100,19 @@ public class UsersApiController(
         var command = new DeleteUserCommand(id);
         return await bus.InvokeAsync<Result<UserDeleted>>(command, cancellationToken);
     }
+
+    /// <summary>
+    /// Disable user
+    /// </summary>
+    /// <param name="id">Id of the use to disable</param>
+    /// <returns></returns>
+    [ProducesResponseType<UserDisabled>(StatusCodes.Status200OK)]
+    [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
+    [HttpPut("{id:guid}/disabled")]
+    public async Task<IActionResult> DisableUserAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var command = new DisableUserCommand(id);
+        return await bus.InvokeAsync<Result<UserDisabled>>(command, cancellationToken);
+    }
 }

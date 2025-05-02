@@ -1,6 +1,6 @@
 using OpenIddict.Abstractions;
 
-namespace Identity.Core;
+namespace Identity.Core.Requests;
 
 public class SigninRequest
 {

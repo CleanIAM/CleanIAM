@@ -69,6 +69,12 @@ public class SigninController(
             return View();
         }
 
+        // Check if the user is not disabled
+        if (user.IsDisabled)
+        {
+            ModelState.AddModelError("password", "Your account has been disabled");
+            return View();
+        }
 
         // Create claims for the user
         var claims = new Claim[]
