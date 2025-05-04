@@ -2,6 +2,7 @@ using Identity.Application.Interfaces;
 using Identity.Core.Users;
 using Mapster;
 using Marten;
+using SharedKernel.Core;
 using SharedKernel.Infrastructure;
 
 namespace Identity.Application.Commands.Users;
@@ -33,6 +34,7 @@ public class CreateNewUserCommandHandler
         var newUser = command.Adapt<User>();
         newUser.Email = command.Email.ToLowerInvariant(); // Normalize email
         newUser.Id = Guid.NewGuid();
+        newUser.Roles = [UserRole.User];
         newUser.HashedPassword = password.Adapt<HashedPassword>();
 
         documentSession.Store(newUser);

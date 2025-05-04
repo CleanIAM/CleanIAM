@@ -38,11 +38,11 @@ public class ApplicationsApiController(
     /// </summary>
     /// <param name="request">New application data</param>
     /// <param name="cancellationToken"></param>
-    [HttpPost("")]
+    [HttpPost]
     [ProducesResponseType<OpenIdApplicationCreated>(StatusCodes.Status200OK)]
     [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> CreateNewApplicationAsync(CreateNewApplicationRequest request,
+    public async Task<IActionResult> CreateNewApplication([FromBody] CreateNewApplicationRequest request,
         CancellationToken cancellationToken)
     {
         var command = request.Adapt<CreateNewOpenIdApplicationCommand>() with { Id = Guid.NewGuid() };
@@ -101,6 +101,4 @@ public class ApplicationsApiController(
         var command = new DeleteOpenIdApplicationCommand(id);
         return await bus.InvokeAsync<Result<OpenIdApplicationDeleted>>(command, cancellationToken);
     }
-
-
 }

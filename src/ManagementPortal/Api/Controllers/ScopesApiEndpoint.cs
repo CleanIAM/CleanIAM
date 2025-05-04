@@ -11,7 +11,7 @@ namespace ManagementPortal.Api.Controllers;
 /// <summary>
 /// Controller to manage OpenID scopes through API operations such as retrieval, creation, update, and deletion.
 /// </summary>
-[Microsoft.AspNetCore.Components.Route("/api/scopes")]
+[Route("/api/scopes")]
 [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
 public class ScopesApiEndpoint(IMessageBus bus) : Controller
 {
@@ -20,7 +20,7 @@ public class ScopesApiEndpoint(IMessageBus bus) : Controller
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpGet("endpoints/scopes")]
+    [HttpGet]
     [ProducesResponseType<IEnumerable<ItemWithTooltip>>(StatusCodes.Status200OK)]
     [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAllowedEndpoints(CancellationToken cancellationToken)

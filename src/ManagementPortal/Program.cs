@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
-using Mapster;
 using Lamar.Microsoft.DependencyInjection;
 using ManagementPortal;
+using Mapster;
 using Microsoft.AspNetCore.Mvc.Razor;
 using SharedKernel;
 
@@ -31,10 +31,10 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger("CleanIAM", assemblies);
 builder.Services.AddDatabases(builder.Configuration);
-builder.Services.AddOpenIddict(builder.Configuration);
+builder.Services.AddOpenIddictValidations(builder.Configuration);
 builder.Services.AddOidcAuthentication(builder.Configuration);
 builder.Services.AddUtils(builder.Configuration);
-
+builder.Services.AddManagementPortal(builder.Configuration);
 // Configure Mapster
 MapsterConfig.Configure();
 

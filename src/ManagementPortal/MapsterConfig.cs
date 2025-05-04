@@ -25,12 +25,6 @@ public static class MapsterConfig
             {
                 dest.Permissions.UnionWith(src.Scopes.Select(scope =>
                     OpenIddictConstants.Permissions.Prefixes.Scope + scope));
-                dest.Permissions.UnionWith(src.Endpoints.Select(endpoint =>
-                    OpenIddictConstants.Permissions.Prefixes.Endpoint + endpoint));
-                dest.Permissions.UnionWith(src.GrantTypes.Select(grantType =>
-                    OpenIddictConstants.Permissions.Prefixes.GrantType + grantType));
-                dest.Permissions.UnionWith(src.ResponseTypes.Select(responseType =>
-                    OpenIddictConstants.Permissions.Prefixes.ResponseType + responseType));
                 dest.RedirectUris.UnionWith(src.RedirectUris);
                 dest.PostLogoutRedirectUris.UnionWith(src.PostLogoutRedirectUris);
             });
@@ -38,14 +32,13 @@ public static class MapsterConfig
         TypeAdapterConfig<UpdateOpenIdApplicationCommand, OpenIddictApplicationDescriptor>.ForType()
             .AfterMapping((src, dest) =>
             {
+                // Normalize values to lowercase to avoid case-sensitive issues in OpenIddict
+                dest.ApplicationType = dest.ApplicationType?.ToLower();
+                dest.ClientType = dest.ClientType?.ToLower();
+                dest.ConsentType = dest.ConsentType?.ToLower();
+
                 dest.Permissions.UnionWith(src.Scopes.Select(scope =>
                     OpenIddictConstants.Permissions.Prefixes.Scope + scope));
-                dest.Permissions.UnionWith(src.Endpoints.Select(endpoint =>
-                    OpenIddictConstants.Permissions.Prefixes.Endpoint + endpoint));
-                dest.Permissions.UnionWith(src.GrantTypes.Select(grantType =>
-                    OpenIddictConstants.Permissions.Prefixes.GrantType + grantType));
-                dest.Permissions.UnionWith(src.ResponseTypes.Select(responseType =>
-                    OpenIddictConstants.Permissions.Prefixes.ResponseType + responseType));
 
                 dest.RedirectUris.UnionWith(src.RedirectUris);
                 dest.PostLogoutRedirectUris.UnionWith(src.PostLogoutRedirectUris);
@@ -54,14 +47,13 @@ public static class MapsterConfig
         TypeAdapterConfig<CreateNewOpenIdApplicationCommand, OpenIddictApplicationDescriptor>.ForType()
             .AfterMapping((src, dest) =>
             {
+                // Normalize values to lowercase to avoid case-sensitive issues in OpenIddict
+                dest.ApplicationType = dest.ApplicationType?.ToLower();
+                dest.ClientType = dest.ClientType?.ToLower();
+                dest.ConsentType = dest.ConsentType?.ToLower();
+
                 dest.Permissions.UnionWith(src.Scopes.Select(scope =>
                     OpenIddictConstants.Permissions.Prefixes.Scope + scope));
-                dest.Permissions.UnionWith(src.Endpoints.Select(endpoint =>
-                    OpenIddictConstants.Permissions.Prefixes.Endpoint + endpoint));
-                dest.Permissions.UnionWith(src.GrantTypes.Select(grantType =>
-                    OpenIddictConstants.Permissions.Prefixes.GrantType + grantType));
-                dest.Permissions.UnionWith(src.ResponseTypes.Select(responseType =>
-                    OpenIddictConstants.Permissions.Prefixes.ResponseType + responseType));
 
                 dest.RedirectUris.UnionWith(src.RedirectUris);
                 dest.PostLogoutRedirectUris.UnionWith(src.PostLogoutRedirectUris);

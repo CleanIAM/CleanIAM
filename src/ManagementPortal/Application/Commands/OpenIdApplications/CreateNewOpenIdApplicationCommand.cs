@@ -3,6 +3,7 @@ using ManagementPortal.Core.Events.OpenIdApplications;
 using ManagementPortal.Core.OpenIdApplication;
 using Mapster;
 using Marten;
+using OpenIddict.Abstractions;
 using OpenIddict.Core;
 using OpenIddict.EntityFrameworkCore.Models;
 using SharedKernel.Infrastructure;
@@ -18,9 +19,6 @@ public record CreateNewOpenIdApplicationCommand(
     ConsentType? ConsentType,
     string? DisplayName,
     HashSet<string> Scopes,
-    HashSet<string> Endpoints,
-    HashSet<string> GrantTypes,
-    HashSet<string> ResponseTypes,
     HashSet<Uri> PostLogoutRedirectUris,
     HashSet<Uri> RedirectUris
 );
@@ -47,21 +45,18 @@ public class CreateNewOpenIdApplicationCommandHandler
         if (loadResult.IsError())
             return loadResult;
 
-        //TODO: Create new app
-        var application = command.Adapt<OpenIdApplication>();
+        var descriptor = command.Adapt<OpenIddictApplicationDescriptor>();
 
-
-        var descriptor = application.ToDescriptor();
 
         // Generate a client secret only if the application type is confidential
-        if (application.ClientType == ClientType.Confidential)
+        if (command.ClientType == ClientType.Confidential)
             descriptor.ClientSecret = Guid.NewGuid().ToString();
 
         try
         {
             await applicationManager.CreateAsync(descriptor);
 
-            var applicationCreatedEvent = application.Adapt<OpenIdApplicationCreated>() with
+            var applicationCreatedEvent = command.Adapt<OpenIdApplicationCreated>() with
             {
                 ClientSecret = descriptor.ClientSecret
             };

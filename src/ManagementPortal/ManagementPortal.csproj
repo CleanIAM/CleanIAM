@@ -15,13 +15,13 @@
         <PackageReference Include="Mapster.Async" Version="2.0.1"/>
         <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1"/>
         <PackageReference Include="Marten" Version="7.38.1"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.15" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.15"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11"/>
-        <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.8.0" />
+        <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.8.0"/>
         <PackageReference Include="Npgsql" Version="9.0.3"/>
         <PackageReference Include="NSec.Cryptography" Version="24.4.0"/>
-        <PackageReference Include="OpenIddict.AspNetCore" Version="6.2.0" />
-        <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="6.2.0" />
+        <PackageReference Include="OpenIddict.AspNetCore" Version="6.2.0"/>
+        <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="6.2.0"/>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
         <PackageReference Include="System.Text.Json" Version="9.0.3"/>
@@ -40,19 +40,17 @@
         <PackageReference Include="System.Linq.Async"/>
 
     </ItemGroup>
-    
 
-    <ItemGroup>
-        <UpToDateCheckBuilt Include="tailwind.config.js" Set="Css"/>
-    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Identity.AnticorrutptionLayer\Identity.AnticorrutptionLayer.csproj"/>
         <ProjectReference Include="..\SharedKernel\SharedKernel.csproj"/>
     </ItemGroup>
 
-    <Target Name="Tailwind" BeforeTargets="Build">
-        <Exec Command="npx @tailwindcss/cli -i ./wwwroot/css/base.css -o ./wwwroot/css/main.css"/>
-    </Target>
+
+    <ItemGroup>
+        <Folder Include="Infrastructure\"/>
+    </ItemGroup>
+
 
 </Project>

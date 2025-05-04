@@ -3,7 +3,6 @@ using CommunityToolkit.Diagnostics;
 using Identity.Application.Interfaces;
 using Identity.Infrastructure.Services;
 using Microsoft.IdentityModel.Tokens;
-using OpenIddict.Abstractions;
 using SharedKernel.Core.Database;
 
 namespace Identity;

@@ -44,21 +44,6 @@ public class OpenIdApplication
     public HashSet<string> Scopes { get; set; } = [];
 
     /// <summary>
-    /// Allowed endpoints for the application.
-    /// </summary>
-    public HashSet<string> Endpoints { get; set; } = [];
-
-    /// <summary>
-    /// Allowed grant types for the application.
-    /// </summary>
-    public HashSet<string> GrantTypes { get; set; } = [];
-
-    /// <summary>
-    /// Allowed response types for the application.
-    /// </summary>
-    public HashSet<string> ResponseTypes { get; set; } = [];
-
-    /// <summary>
     /// Gets the post-logout redirect URIs associated with the application.
     /// </summary>
     public HashSet<Uri> PostLogoutRedirectUris { get; set; } = [];
@@ -101,7 +86,7 @@ public class OpenIdApplication
             {
                 OpenIddictConstants.ClientTypes.Public => Core.OpenIdApplication.ClientType.Public,
                 OpenIddictConstants.ClientTypes.Confidential => Core.OpenIdApplication.ClientType.Confidential,
-                var value =>  throw new InvalidDataException($"Invalid client type: {value}")
+                var value => throw new InvalidDataException($"Invalid client type: {value}")
             },
             ConsentType = application.ConsentType switch
             {
@@ -123,7 +108,9 @@ public class OpenIdApplication
                     await applicationManager.GetRedirectUrisAsync(application, CancellationToken.None))
                 .Select(uri => new Uri(uri))
             ],
-            Properties = new(await applicationManager.GetPropertiesAsync(application, CancellationToken.None)),
+            Properties =
+                new Dictionary<string, JsonElement>(
+                    await applicationManager.GetPropertiesAsync(application, CancellationToken.None)),
 
             Scopes =
             [
@@ -131,28 +118,7 @@ public class OpenIdApplication
                     .Where(permission => permission.StartsWith(OpenIddictConstants.Permissions.Prefixes.Scope,
                         StringComparison.OrdinalIgnoreCase))
                     .Select(permission => permission[OpenIddictConstants.Permissions.Prefixes.Scope.Length..])
-            ],
-
-            Endpoints =
-            [
-                ..permissions
-                    .Where(permission => permission.StartsWith(OpenIddictConstants.Permissions.Prefixes.Endpoint,
-                        StringComparison.OrdinalIgnoreCase))
-                    .Select(permission => permission[OpenIddictConstants.Permissions.Prefixes.Endpoint.Length..])
-            ],
-
-            GrantTypes =
-            [
-                ..permissions
-                    .Where(permission => permission.StartsWith(OpenIddictConstants.Permissions.Prefixes.GrantType,
-                        StringComparison.OrdinalIgnoreCase))
-                    .Select(permission => permission[OpenIddictConstants.Permissions.Prefixes.GrantType.Length..])
-            ],
-
-            ResponseTypes = new(permissions
-                .Where(permission => permission.StartsWith(OpenIddictConstants.Permissions.Prefixes.ResponseType,
-                    StringComparison.OrdinalIgnoreCase))
-                .Select(permission => permission[OpenIddictConstants.Permissions.Prefixes.ResponseType.Length..]))
+            ]
         };
         return dest;
     }

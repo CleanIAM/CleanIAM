@@ -17,45 +17,42 @@ public record UpdateOpenIdApplicationCommand(
     ConsentType? ConsentType,
     string? DisplayName,
     HashSet<string> Scopes,
-    HashSet<string> Endpoints,
-    HashSet<string> GrantTypes,
-    HashSet<string> ResponseTypes,
     HashSet<Uri> PostLogoutRedirectUris,
     HashSet<Uri> RedirectUris);
 
 public class UpdateOpenIdClientCommandHandler
 {
-    public static async Task<Result<OpenIddictEntityFrameworkCoreApplication<Guid>>> LoadAsync(UpdateOpenIdApplicationCommand command,
-        OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager, CancellationToken cancellationToken)
+    public static async Task<Result<OpenIddictEntityFrameworkCoreApplication<Guid>>> LoadAsync(
+        UpdateOpenIdApplicationCommand command,
+        OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager,
+        CancellationToken cancellationToken)
     {
         // Find application by its Guid Id property
         var application = await applicationManager.FindByIdAsync(command.Id.ToString(), cancellationToken);
         if (application is null)
-        {
             return Result.Error($"Client with ID {command.Id} not found", 400);
-        }   
-        
+
         return Result.Ok(application);
     }
-    
+
     public static async Task<Result<OpenIdApplicationUpdated>> Handle(UpdateOpenIdApplicationCommand command,
-        Result<OpenIddictEntityFrameworkCoreApplication<Guid>> loadResult, 
+        Result<OpenIddictEntityFrameworkCoreApplication<Guid>> loadResult,
         IMessageBus bus,
         OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager
-        ,CancellationToken cancellationToken)
+        , CancellationToken cancellationToken)
     {
         if (loadResult.IsError())
             return Result.From(loadResult);
 
-
         var descriptor = command.Adapt<OpenIddictApplicationDescriptor>();
+
         // Since the client secret is hidden in the UI, we need to load it from the existing application
         descriptor.ClientSecret = loadResult.Value.ClientSecret;
-        
+
         try
         {
             await applicationManager.UpdateAsync(loadResult.Value, descriptor, cancellationToken);
-            
+
             // On success publish event and return Ok with that event
             var applicationUpdatedEvent = command.Adapt<OpenIdApplicationUpdated>();
             await bus.PublishAsync(applicationUpdatedEvent);

@@ -1,6 +1,4 @@
 using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using CommunityToolkit.Diagnostics;
 using JasperFx.CodeGeneration;
 using Mapster;
@@ -95,7 +93,7 @@ public static class DependencyInjection
             {
                 Title = title,
                 Version = "v1",
-                Description = "CleanIAM API",
+                Description = "CleanIAM API"
             });
 
             // Create swagger auth definition
@@ -146,17 +144,15 @@ public static class DependencyInjection
         services.AddMapster();
 
         services.AddTransient<IAppConfiguration>(_ => ParseConfiguration(configuration));
-
-        services.AddControllers()
-            .AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.Converters.Add(
-                    new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
-            });
         return services;
     }
 
 
+    /// <summary>
+    /// Extract and validate configuration from appsettings.json to IAppConfiguration
+    /// </summary>
+    /// <param name="configuration"></param>
+    /// <returns></returns>
     private static IAppConfiguration ParseConfiguration(IConfiguration configuration)
     {
         var identityBaseUrl = configuration.GetSection("Identity")["BaseUrl"];

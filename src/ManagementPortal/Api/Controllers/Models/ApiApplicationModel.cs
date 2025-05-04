@@ -1,11 +1,11 @@
-using System.Globalization;
+using System.ComponentModel.DataAnnotations;
 using ManagementPortal.Core.OpenIdApplication;
 
 namespace ManagementPortal.Api.Controllers.Models;
 
 public class ApiApplicationModel
 {
-     /// <summary>
+    /// <summary>
     /// Gets or sets the id associated with the application.
     /// </summary>
     public Guid Id { get; set; }
@@ -18,6 +18,7 @@ public class ApiApplicationModel
     /// <summary>
     /// Gets or sets the client identifier associated with the application.
     /// </summary>
+    [Required]
     public string ClientId { get; set; }
 
     /// <summary>
@@ -38,35 +39,18 @@ public class ApiApplicationModel
     /// <summary>
     /// Allowed scopes for the application.
     /// </summary>
+    [Required]
     public HashSet<string> Scopes { get; set; } = [];
-    
-    /// <summary>
-    /// Allowed endpoints for the application.
-    /// </summary>
-    public HashSet<string> Endpoints { get; set; } = [];
-    
-    /// <summary>
-    /// Allowed grant types for the application.
-    /// </summary>
-    public HashSet<string> GrantTypes { get; set; } = [];
-    
-    /// <summary>
-    /// Allowed response types for the application.
-    /// </summary>
-    public HashSet<string> ResponseTypes { get; set; } = [];
 
     /// <summary>
     /// Gets the post-logout redirect URIs associated with the application.
     /// </summary>
+    [Required]
     public HashSet<Uri> PostLogoutRedirectUris { get; set; } = [];
 
     /// <summary>
     /// Gets the redirect URIs associated with the application.
     /// </summary>
+    [Required]
     public HashSet<Uri> RedirectUris { get; set; } = [];
-
-    /// <summary>
-    /// Gets the requirements associated with the application.
-    /// </summary>
-    public HashSet<string> Requirements { get; set; } = new(StringComparer.Ordinal);
 }

@@ -10,12 +10,26 @@ namespace ManagementPortal;
 public static class DependencyInjection
 {
     /// <summary>
-    /// Configure OpenIddict for the management portal.
+    /// Register configuration specific for the management portal.
     /// </summary>
-    /// <param name="serviceCollection"></param>
+    /// <param name="services"></param>
     /// <param name="configuration"></param>
     /// <returns></returns>
-    public static IServiceCollection AddOpenIddict(this IServiceCollection serviceCollection,
+    public static IServiceCollection AddManagementPortal(this IServiceCollection services, IConfiguration configuration)
+    {
+        // Configure custom mapster config
+        MapsterConfig.Configure();
+
+        return services;
+    }
+
+    /// <summary>
+    /// Configure OpenIddict for the management portal.
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddOpenIddictValidations(this IServiceCollection services,
         IConfiguration configuration)
     {
         var authority = configuration.GetSection("Authentication")["Authority"];
@@ -29,7 +43,7 @@ public static class DependencyInjection
         Guard.IsNotNullOrEmpty(resourceServerId, "The resource server id is not set");
 
 
-        serviceCollection.AddOpenIddict()
+        services.AddOpenIddict()
             .AddCore(options =>
             {
                 options.UseEntityFrameworkCore()
@@ -59,12 +73,11 @@ public static class DependencyInjection
                 // to reject access tokens retrieved from a revoked authorization code.
                 options.EnableAuthorizationEntryValidation();
             });
-        return serviceCollection;
+        return services;
     }
 
     /// <summary>
     /// This method configures the openiddict authentication scheme for the management portal.
-    ///
     /// This is the example usage of OpenIdConnect authentication:
     /// </summary>
     public static IServiceCollection AddOidcAuthentication(this IServiceCollection services,

@@ -10,8 +10,6 @@ public record OpenIdApplicationCreated(
     ClientType? ClientType,
     ConsentType? ConsentType,
     string? DisplayName,
-    HashSet<string> Permissions,
+    HashSet<string> Scopes,
     HashSet<Uri> PostLogoutRedirectUris,
-    HashSet<Uri> RedirectUris,
-    HashSet<string> Requirements,
-    Dictionary<string, string> Settings);
+    HashSet<Uri> RedirectUris);
