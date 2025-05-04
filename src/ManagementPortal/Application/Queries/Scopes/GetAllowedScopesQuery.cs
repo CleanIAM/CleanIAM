@@ -2,7 +2,7 @@ using ManagementPortal.Core.OpenIdApplication;
 using OpenIddict.Core;
 using OpenIddict.EntityFrameworkCore.Models;
 
-namespace ManagementPortal.Application.Queries.OpenIdApplications;
+namespace ManagementPortal.Application.Queries.Scopes;
 
 public struct GetAllowedScopesQuery;
 
@@ -12,7 +12,8 @@ public class GetAllowedScopesQueryHandler
         OpenIddictScopeManager<OpenIddictEntityFrameworkCoreScope<Guid>> scopeManager)
     {
         var scopes = await scopeManager.ListAsync().ToListAsync();
-        return scopes.Select(scope => new ItemWithTooltip{ Value = scope.Name?? "Unknown scope", Tooltip = $"Resources: {scope.Resources}" })
+        return scopes.Select(scope => new ItemWithTooltip
+                { Value = scope.Name ?? "Unknown scope", Tooltip = $"Resources: {scope.Resources}" })
             .OrderBy(scope => scope.Value)
             .ToList();
     }

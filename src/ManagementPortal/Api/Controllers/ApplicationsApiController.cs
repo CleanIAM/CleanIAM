@@ -101,4 +101,6 @@ public class ApplicationsApiController(
         var command = new DeleteOpenIdApplicationCommand(id);
         return await bus.InvokeAsync<Result<OpenIdApplicationDeleted>>(command, cancellationToken);
     }
+
+
 }
