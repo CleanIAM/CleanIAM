@@ -17,8 +17,8 @@ public static class DependencyInjection
         serviceCollection.AddTransient<IPasswordHasher, PasswordHasher>();
         serviceCollection.AddTransient<IIdentityBuilderService, IdentityBuilderService>();
         serviceCollection.AddScoped<IEmailService, CoravelEmailService>();
-        
-        
+
+
         return serviceCollection;
     }
 
@@ -113,7 +113,23 @@ public static class DependencyInjection
                         config.SetRedirectUri($"external-providers/callback/google");
                         config.AddScopes("email", "profile", "openid");
                     });
+            })
+            .AddValidation(options =>
+            {
+                // Import the configuration from the local OpenIddict server instance.
+                options.UseLocalServer();
+
+                // Register the ASP.NET Core host.
+                options.UseAspNetCore();
+                
+                // Enable authorization entry validation, which is required to be able
+                // to reject access tokens retrieved from a revoked authorization code.
+                options.EnableAuthorizationEntryValidation();
+
+                
+                
             });
+        ;
         return serviceCollection;
     }
 }

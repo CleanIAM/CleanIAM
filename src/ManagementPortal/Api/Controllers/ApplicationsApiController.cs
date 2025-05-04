@@ -5,13 +5,19 @@ using ManagementPortal.Application.Queries.OpenIdApplications;
 using ManagementPortal.Core.Events.OpenIdApplications;
 using ManagementPortal.Core.OpenIdApplication;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OpenIddict.Validation.AspNetCore;
 using SharedKernel.Infrastructure;
 using Wolverine;
 
 namespace ManagementPortal.Api.Controllers;
 
+/// <summary>
+/// Controller to manage OpenID applications through API operations such as retrieval, creation, update, and deletion.
+/// </summary>
 [Route("/api/applications")]
+[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
 public class ApplicationsApiController(
     IMessageBus bus) : Controller
 {
@@ -28,7 +34,7 @@ public class ApplicationsApiController(
     }
 
     /// <summary>
-    /// Create new application
+    /// Create a new application
     /// </summary>
     /// <param name="request">New application data</param>
     /// <param name="cancellationToken"></param>

@@ -6,7 +6,9 @@ using ManagementPortal.Application.Queries.Users;
 using ManagementPortal.Core;
 using ManagementPortal.Core.Events.Users;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OpenIddict.Validation.AspNetCore;
 using SharedKernel.Infrastructure;
 using Wolverine;
 
@@ -16,6 +18,7 @@ namespace ManagementPortal.Api.Controllers;
 /// API controller for managing users
 /// </summary>
 [Route("/api/users")]
+[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
 public class UsersApiController(
     IMessageBus bus) : Controller
 {
@@ -122,5 +125,13 @@ public class UsersApiController(
     {
         var command = new EnableUserCommand(id);
         return await bus.InvokeAsync<Result<UserEnabled>>(command, cancellationToken);
+    }
+
+    [ProducesResponseType<string>(StatusCodes.Status200OK)]
+    [Authorize(Roles = "Admin")]
+    [HttpGet("test")]
+    public Result<string> Test()
+    {
+        return Result.Ok("Ok");
     }
 }
