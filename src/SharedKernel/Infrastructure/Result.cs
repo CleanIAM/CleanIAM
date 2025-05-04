@@ -5,14 +5,12 @@ namespace SharedKernel.Infrastructure;
 
 /// <summary>
 /// This class represents the result of an operation.
-///
 /// It is inspired by Rust's Result type.
 /// </summary>
-///
 /// <remarks>
-/// This Type also implements <see cref="IActionResult"/>, so it can be user as a return type in endpoints
+/// This Type also implements <see cref="IActionResult" />, so it can be user as a return type in endpoints
 /// </remarks>
-public class Result: IActionResult
+public class Result : IActionResult
 {
     internal bool Success { get; set; }
     internal string? ErrorMessage { get; set; }
@@ -21,6 +19,27 @@ public class Result: IActionResult
     public Error ErrorValue => !Success
         ? new Error { Message = ErrorMessage ?? string.Empty, Code = ErrorCode ?? 0 }
         : throw new InvalidOperationException("Result is not an error");
+
+    public async Task ExecuteResultAsync(ActionContext context)
+    {
+        if (Success)
+        {
+            context.HttpContext.Response.StatusCode = StatusCodes.Status204NoContent;
+            return;
+        }
+
+        // Error
+        context.HttpContext.Response.StatusCode = ErrorCode ?? StatusCodes.Status500InternalServerError;
+        context.HttpContext.Response.ContentType = "application/json";
+        await context.HttpContext.Response.WriteAsJsonAsync(new
+        {
+            error = new Error
+            {
+                Message = ErrorMessage ?? string.Empty,
+                Code = ErrorCode ?? 0
+            }
+        });
+    }
 
     /// <summary>
     /// Creates a new Result object representing success.
@@ -32,15 +51,18 @@ public class Result: IActionResult
     }
 
     /// <summary>
-    /// Helper function to automatically infer generics type with explicitly specifying it 
+    /// Helper function to automatically infer generics type with explicitly specifying it
     /// </summary>
     /// <param name="value">Value of the success</param>
     /// <typeparam name="T">Type for the generics Result</typeparam>
     /// <returns></returns>
-    public static Result<T> Ok<T>(T value) where T : class => Result<T>.Ok(value);
-    
+    public static Result<T> Ok<T>(T value) where T : class
+    {
+        return Result<T>.Ok(value);
+    }
+
     /// <summary>
-    /// Function to convert generics Result to non-generics result 
+    /// Function to convert generics Result to non-generics result
     /// </summary>
     /// <param name="result"></param>
     /// <typeparam name="T"></typeparam>
@@ -52,10 +74,10 @@ public class Result: IActionResult
         {
             Success = result.Success,
             ErrorMessage = result.ErrorMessage,
-            ErrorCode = result.ErrorCode,
+            ErrorCode = result.ErrorCode
         };
     }
-    
+
     /// <summary>
     /// Creates a new Result object representing an error without description.
     /// </summary>
@@ -115,39 +137,53 @@ public class Result: IActionResult
     {
         return !Success;
     }
-
-    public async Task ExecuteResultAsync(ActionContext context)
-    {
-        if (Success)
-        {
-            context.HttpContext.Response.StatusCode = StatusCodes.Status204NoContent;
-            return;
-        }
-        // Error
-        context.HttpContext.Response.StatusCode = ErrorCode ?? StatusCodes.Status500InternalServerError;
-        context.HttpContext.Response.ContentType = "application/json";
-        await context.HttpContext.Response.WriteAsJsonAsync(new
-        {
-            error = new Error
-            {
-                Message = ErrorMessage ?? string.Empty,
-                Code = ErrorCode ?? 0
-            }
-        });
-    }
 }
 
 /// <summary>
 /// This class represents the result of an operation.
-///
 /// It is inspired by Rust's Result type.
 /// </summary>
-public class Result<T>: IActionResult where T : class
+public class Result<T> : IActionResult where T : class
 {
     internal bool Success { get; set; }
     internal T? SuccessValue { get; set; }
     internal string? ErrorMessage { get; set; }
     internal int? ErrorCode { get; set; }
+
+    /// <summary>
+    /// Value of the result if it represents success.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">If tried to get Value and result is error </exception>
+    public T Value => SuccessValue ?? throw new InvalidOperationException("Result is not a success");
+
+
+    /// <summary>
+    /// Error value of the result if it represents an error.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">If tried to get Error value and result is ok </exception>
+    public Error ErrorValue => !Success
+        ? new Error { Message = ErrorMessage ?? string.Empty, Code = ErrorCode ?? 0 }
+        : throw new InvalidOperationException("Result is not an error");
+
+    public async Task ExecuteResultAsync(ActionContext context)
+    {
+        if (Success)
+        {
+            context.HttpContext.Response.StatusCode = StatusCodes.Status200OK;
+            context.HttpContext.Response.ContentType = "application/json";
+            await context.HttpContext.Response.WriteAsJsonAsync(SuccessValue);
+            return;
+        }
+
+        // Error
+        context.HttpContext.Response.StatusCode = ErrorCode ?? StatusCodes.Status500InternalServerError;
+        context.HttpContext.Response.ContentType = "application/json";
+        await context.HttpContext.Response.WriteAsJsonAsync(new
+        {
+            Message = ErrorMessage ?? string.Empty,
+            Code = ErrorCode ?? 0
+        });
+    }
 
 
     /// <summary>
@@ -159,15 +195,18 @@ public class Result<T>: IActionResult where T : class
     /// <remarks>
     /// This conversion should only be applied if the result represents error!
     /// If it represents success, then the generics result should be created using `Result.Ok(object)`
-    /// that automatically converts to generics error if given some parameter. 
+    /// that automatically converts to generics error if given some parameter.
     /// </remarks>
-    public static implicit operator Result<T>(Result result) => new()
+    public static implicit operator Result<T>(Result result)
     {
-        Success = result.Success,
-        ErrorMessage = result.ErrorMessage,
-        ErrorCode = result.ErrorCode,
-        SuccessValue = null
-    };
+        return new Result<T>
+        {
+            Success = result.Success,
+            ErrorMessage = result.ErrorMessage,
+            ErrorCode = result.ErrorCode,
+            SuccessValue = null
+        };
+    }
 
 
     public static Result<T> From<T1>(Result<T1> result) where T1 : class
@@ -184,21 +223,6 @@ public class Result<T>: IActionResult where T : class
             SuccessValue = null
         };
     }
-    
-    /// <summary>
-    /// Value of the result if it represents success.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">If tried to get Value and result is error </exception>
-    public T Value => SuccessValue ?? throw new InvalidOperationException("Result is not a success");
-
-
-    /// <summary>
-    /// Error value of the result if it represents an error.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">If tried to get Error value and result is ok </exception>
-    public Error ErrorValue => !Success
-        ? new Error { Message = ErrorMessage ?? string.Empty, Code = ErrorCode ?? 0 }
-        : throw new InvalidOperationException("Result is not an error");
 
 
     /// <summary>
@@ -260,28 +284,6 @@ public class Result<T>: IActionResult where T : class
     public bool IsError()
     {
         return !Success;
-    }
-
-    public async Task ExecuteResultAsync(ActionContext context)
-    {
-        if (Success)
-        {
-            context.HttpContext.Response.StatusCode = StatusCodes.Status200OK;
-            context.HttpContext.Response.ContentType = "application/json";
-            await context.HttpContext.Response.WriteAsJsonAsync(SuccessValue);
-            return;
-        }
-        // Error
-        context.HttpContext.Response.StatusCode = ErrorCode ?? StatusCodes.Status500InternalServerError;
-        context.HttpContext.Response.ContentType = "application/json";
-        await context.HttpContext.Response.WriteAsJsonAsync(new
-        {
-            error = new Error
-            {
-                Message = ErrorMessage ?? string.Empty,
-                Code = ErrorCode ?? 0
-            }
-        });
     }
 }
 
