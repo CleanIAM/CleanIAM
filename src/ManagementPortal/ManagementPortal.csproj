@@ -43,7 +43,6 @@
     
 
     <ItemGroup>
-        <UpToDateCheckBuilt Include="wwwroot/css/base.css" Set="Css"/>
         <UpToDateCheckBuilt Include="tailwind.config.js" Set="Css"/>
     </ItemGroup>
 
