@@ -25,7 +25,7 @@ public class UsersApiController(
     /// <summary>
     /// Get all users
     /// </summary>
-    [HttpGet("")]
+    [HttpGet]
     [ProducesResponseType<IEnumerable<ApiUserModel>>(StatusCodes.Status200OK)]
     [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
     public async Task<IEnumerable<ApiUserModel>> GeAllUsersAsync(CancellationToken cancellationToken)
@@ -39,7 +39,7 @@ public class UsersApiController(
     /// Create new user
     /// </summary>
     /// <param name="request">New user data</param>
-    [HttpPost("")]
+    [HttpPost]
     [ProducesResponseType<UserCreated>(StatusCodes.Status200OK)]
     [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
