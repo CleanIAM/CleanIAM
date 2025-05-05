@@ -121,6 +121,16 @@ public class Result : IActionResult
     }
 
     /// <summary>
+    /// Creates a new Result object representing an error.
+    /// </summary>
+    /// <param name="errorMessage">Error to build result from</param>
+    /// <returns>Result object representing an error</returns>
+    public static Result Error(Error errorMessage)
+    {
+        return new Result { Success = false, ErrorMessage = errorMessage.Message, ErrorCode = errorMessage.Code };
+    }
+
+    /// <summary>
     /// Check if the result object represents success.
     /// </summary>
     /// <returns>`true` if object represents success, otherwise `false`</returns>

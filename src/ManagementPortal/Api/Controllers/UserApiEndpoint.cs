@@ -18,7 +18,7 @@ namespace ManagementPortal.Api.Controllers;
 /// /// API controller for managing user with his own data
 /// </summary>
 /// <param name="bus"></param>
-[Microsoft.AspNetCore.Components.Route("/api/user")]
+[Route("/api/user")]
 [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
 public class UserApiEndpoint(
     IMessageBus bus) : Controller

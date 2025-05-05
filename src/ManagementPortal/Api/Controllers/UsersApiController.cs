@@ -43,7 +43,7 @@ public class UsersApiController(
     [ProducesResponseType<UserCreated>(StatusCodes.Status200OK)]
     [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> CreateNewUserAsync(CreateNewUserRequest request,
+    public async Task<IActionResult> CreateNewUserAsync([FromBody] CreateNewUserRequest request,
         CancellationToken cancellationToken)
     {
         var command = request.Adapt<CreateNewUserCommand>();

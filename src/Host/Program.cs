@@ -76,6 +76,8 @@ app.UseHttpsRedirection();
 
 app.MapControllers();
 
+app.UseSharedKernel();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

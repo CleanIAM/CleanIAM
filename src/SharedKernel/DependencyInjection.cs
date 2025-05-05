@@ -11,6 +11,8 @@ using SharedKernel.Core.Database;
 using SharedKernel.Infrastructure.Services;
 using Wolverine;
 using Wolverine.FluentValidation;
+using Wolverine.Http;
+using Wolverine.Http.Marten;
 using Wolverine.Marten;
 
 namespace SharedKernel;
@@ -32,6 +34,19 @@ public static class DependencyInjection
         });
 
         return host;
+    }
+
+    public static WebApplication UseSharedKernel(this WebApplication app)
+    {
+        // Let's add in Wolverine HTTP endpoints to the routing tree
+        app.MapWolverineEndpoints(opts =>
+        {
+            opts.TenantId.IsClaimTypeNamed(SharedKernelConstants.TenantClaimName);
+
+            opts.TenantId.DefaultIs(Guid.Empty.ToString());
+        });
+
+        return app;
     }
 
     public static IServiceCollection AddDatabases(this IServiceCollection serviceCollection,
@@ -65,13 +80,13 @@ public static class DependencyInjection
             .UseLightweightSessions()
             .IntegrateWithWolverine();
 
-        // TODO: Add multitenancy support
-        // services.AddMartenTenancyDetection(opts =>
-        // {
-        //     // Tenant name is organization id
-        //     opts.IsClaimTypeNamed(SharedKernelConstants.OrganizationId);
-        //     opts.DefaultIs("default_tenant");
-        // });
+        // Add multitenancy support
+        services.AddMartenTenancyDetection(opts =>
+        {
+            // Tenant name is organization id
+            opts.IsClaimTypeNamed(SharedKernelConstants.TenantClaimName);
+            opts.DefaultIs(Guid.Empty.ToString());
+        });
 
         return services;
     }

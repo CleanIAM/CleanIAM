@@ -36,6 +36,16 @@ public class User
     public UserRole[] Roles { get; set; }
 
     /// <summary>
+    /// The id of the tenant to which the user belongs.
+    /// </summary>
+    public Guid TenantId { get; set; } = Guid.Empty;
+
+    /// <summary>
+    /// The name of the tenant to which the user belongs.
+    /// </summary>
+    public string TenantName { get; set; } = "Default Tenant";
+
+    /// <summary>
     /// Represents the hashed password of the user, including its hash, salt, and hash algorithm signature.
     /// </summary>
     public HashedPassword HashedPassword { get; set; }

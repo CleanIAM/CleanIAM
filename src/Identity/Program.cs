@@ -1,8 +1,6 @@
 using Coravel;
 using DotNetEnv;
 using Identity;
-using Identity.Application.Interfaces;
-using Identity.Infrastructure.Services;
 using Lamar.Microsoft.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -75,6 +73,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseSharedKernel();
 
 app.MapGet("/", () => "Hello, world!");
 

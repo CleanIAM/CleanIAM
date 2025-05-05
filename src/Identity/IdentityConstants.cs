@@ -3,7 +3,7 @@ namespace Identity;
 public static class IdentityConstants
 {
     /// <summary>
-    /// Required delay between email verification emails 
+    /// Required delay between email verification emails
     /// </summary>
     public static readonly TimeSpan VerificationEmailDelay = TimeSpan.FromMinutes(5);
 

@@ -5,6 +5,7 @@ using Identity.Application.Interfaces;
 using Identity.Application.Queries.Users;
 using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
+using SharedKernel;
 using SharedKernel.Core.Users;
 using SharedKernel.Infrastructure;
 using Wolverine;
@@ -49,7 +50,9 @@ public class IdentityBuilderService(IOpenIddictScopeManager scopeManager, IMessa
         var claims = new List<Claim>
         {
             // Note: the "sub" claim is a mandatory claim and must be included in the JSON response.
-            new(OpenIddictConstants.Claims.Subject, user.Id.ToString())
+            new(OpenIddictConstants.Claims.Subject, user.Id.ToString()),
+            // Add the "tenant" claim to the identity, to enable multi-tenancy.
+            new(SharedKernelConstants.TenantClaimName, user.TenantId.ToString())
         };
 
         if (scopes.Contains(OpenIddictConstants.Scopes.Profile))
