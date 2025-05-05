@@ -13,8 +13,7 @@ namespace Identity.Api.Controllers;
 
 /// <summary>
 /// Main Controller for handling OAuth2 and OpenId Connect requests.
-///
-/// Some parts of the OAuth 2 flow are handled by OpenIddict itself. <see cref="DependencyInjection.AddOpenIddict"/>
+/// Some parts of the OAuth 2 flow are handled by OpenIddict itself. <see cref="DependencyInjection.AddOpenIddict" />
 /// </summary>
 [Route("/connect")]
 public class AuthController(
@@ -24,7 +23,6 @@ public class AuthController(
 {
     /// <summary>
     /// The main endpoint for OAuth 2 authorization code flow.
-    ///
     /// If the user is not authenticated, the user will be redirected to the signin page.
     /// </summary>
     [HttpGet("authorize")]
@@ -102,7 +100,6 @@ public class AuthController(
 
     /// <summary>
     /// Show the view to confirm the consent of the user to sing out.
-    ///
     /// Just a fallback in case the client application did not provide a redirect URI.
     /// </summary>
     [HttpGet("endsession/success")]
@@ -132,8 +129,19 @@ public class AuthController(
         if (claims.IsError())
             return BadRequest(claims.ErrorValue.Message);
 
-        var parsableClaims = claims.Value.Select(claim => (claim.Type, claim.Value)).ToDictionary();
+        var parsableClaims = claims.Value.GroupBy(c => c.Type)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Select(c => c.Value).ToList()
+            );
 
-        return Ok(parsableClaims);
+        // The object must be normalize to make it usable json
+        // If the claim has only one value, we need to convert it to a single value
+        var normalized = parsableClaims.ToDictionary(
+            kvp => kvp.Key,
+            kvp => (object)(kvp.Value.Count == 1 ? kvp.Value[0] : kvp.Value)
+        );
+
+        return Ok(normalized);
     }
 }

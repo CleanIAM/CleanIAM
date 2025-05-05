@@ -43,6 +43,11 @@ public class User
     public HashedPassword HashedPassword { get; set; }
 
     /// <summary>
+    /// Indicates whether the user has enabled multi-factor authentication (MFA).
+    /// </summary>
+    public bool IsMFAEnabled { get; set; }
+
+    /// <summary>
     /// Indicates whether the user account is disabled.
     /// </summary>
     public bool IsDisabled { get; set; }

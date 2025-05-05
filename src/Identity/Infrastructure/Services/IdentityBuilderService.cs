@@ -19,7 +19,7 @@ public class IdentityBuilderService(IOpenIddictScopeManager scopeManager, IMessa
             TokenValidationParameters.DefaultAuthenticationType,
             OpenIddictConstants.Claims.Name,
             OpenIddictConstants.Claims.Role);
-        
+
         var scopes = request.GetScopes();
 
         var claims = await BuildClaimsAsync(userId, scopes);
@@ -36,7 +36,7 @@ public class IdentityBuilderService(IOpenIddictScopeManager scopeManager, IMessa
 
         return Result.Ok(new ClaimsPrincipal(identity));
     }
-    
+
     public async Task<Result<IEnumerable<Claim>>> BuildClaimsAsync(Guid userId, ImmutableArray<string> scopes)
     {
         // Get user from database
@@ -44,33 +44,31 @@ public class IdentityBuilderService(IOpenIddictScopeManager scopeManager, IMessa
         var user = await bus.InvokeAsync<User?>(query);
         if (user == null)
             return Result.Error("User not found", HttpStatusCode.BadRequest);
-        
+
         // Build user info claims
         var claims = new List<Claim>
         {
             // Note: the "sub" claim is a mandatory claim and must be included in the JSON response.
-            new(OpenIddictConstants.Claims.Subject, user.Id.ToString()),
+            new(OpenIddictConstants.Claims.Subject, user.Id.ToString())
         };
-        
+
         if (scopes.Contains(OpenIddictConstants.Scopes.Profile))
         {
-            claims.Add(new(OpenIddictConstants.Claims.Name, $"{user.FirstName} {user.LastName}"));
-            claims.Add(new(OpenIddictConstants.Claims.GivenName, user.FirstName));
-            claims.Add(new(OpenIddictConstants.Claims.FamilyName, user.LastName));
+            claims.Add(new Claim(OpenIddictConstants.Claims.Name, $"{user.FirstName} {user.LastName}"));
+            claims.Add(new Claim(OpenIddictConstants.Claims.GivenName, user.FirstName));
+            claims.Add(new Claim(OpenIddictConstants.Claims.FamilyName, user.LastName));
         }
 
         if (scopes.Contains(OpenIddictConstants.Scopes.Email))
         {
-            claims.Add(new(OpenIddictConstants.Claims.Email, user.Email));
-            claims.Add(new (OpenIddictConstants.Claims.EmailVerified, user.EmailVerified.ToString()));
+            claims.Add(new Claim(OpenIddictConstants.Claims.Email, user.Email));
+            claims.Add(new Claim(OpenIddictConstants.Claims.EmailVerified, user.EmailVerified.ToString()));
         }
 
         if (scopes.Contains(OpenIddictConstants.Scopes.Roles))
-        {
             foreach (var role in user.Roles)
-                claims.Add(new (OpenIddictConstants.Claims.Role, role.ToString()));
-        }
-        
+                claims.Add(new Claim(OpenIddictConstants.Claims.Role, role.ToString()));
+
         return Result.Ok((IEnumerable<Claim>)claims);
     }
 }
