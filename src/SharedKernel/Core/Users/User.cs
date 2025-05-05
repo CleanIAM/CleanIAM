@@ -56,6 +56,11 @@ public class User
     public bool IsMFAEnabled { get; set; }
 
     /// <summary>
+    /// Indicates whether the user has a pending invite or the profile is already set up.
+    /// </summary>
+    public bool IsInvitePending { get; set; }
+
+    /// <summary>
     /// Indicates whether the user account is disabled.
     /// </summary>
     public bool IsDisabled { get; set; }
