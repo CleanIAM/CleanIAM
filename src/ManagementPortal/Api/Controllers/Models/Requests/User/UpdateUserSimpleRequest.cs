@@ -1,8 +1,6 @@
-using SharedKernel.Core;
+namespace ManagementPortal.Api.Controllers.Models.Requests.User;
 
-namespace ManagementPortal.Api.Controllers.Models.Requests.Users;
-
-public class UpdateUserRequest
+public class UpdateUserSimpleRequest
 {
     /// <summary>
     /// First name of the user
@@ -13,9 +11,4 @@ public class UpdateUserRequest
     /// last name of the user
     /// </summary>
     public required string LastName { get; set; }
-
-    /// <summary>
-    /// User roles
-    /// </summary>
-    public required UserRole[] Roles { get; set; }
 }

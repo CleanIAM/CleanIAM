@@ -1,5 +1,5 @@
-using Identity.Core.Users;
 using Marten;
+using SharedKernel.Core.Users;
 
 namespace Identity.Application.Queries.Users;
 

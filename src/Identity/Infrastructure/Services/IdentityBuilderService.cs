@@ -3,9 +3,9 @@ using System.Net;
 using System.Security.Claims;
 using Identity.Application.Interfaces;
 using Identity.Application.Queries.Users;
-using Identity.Core.Users;
 using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
+using SharedKernel.Core.Users;
 using SharedKernel.Infrastructure;
 using Wolverine;
 

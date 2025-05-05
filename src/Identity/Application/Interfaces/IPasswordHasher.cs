@@ -1,4 +1,4 @@
-using Identity.Core.Users;
+using SharedKernel.Core.Users;
 
 namespace Identity.Application.Interfaces;
 

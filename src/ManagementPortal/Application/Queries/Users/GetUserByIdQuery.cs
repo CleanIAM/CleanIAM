@@ -1,5 +1,6 @@
 using ManagementPortal.Core;
 using Marten;
+using SharedKernel.Core.Users;
 
 namespace ManagementPortal.Application.Queries.Users;
 

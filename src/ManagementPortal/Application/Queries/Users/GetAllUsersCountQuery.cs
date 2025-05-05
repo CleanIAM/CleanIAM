@@ -1,9 +1,9 @@
-using ManagementPortal.Core;
 using Marten;
+using SharedKernel.Core.Users;
 
 namespace ManagementPortal.Application.Queries.Users;
 
-public record GetAllUsersCountQuery();
+public record GetAllUsersCountQuery;
 
 public class GetAllUsersCountQueryHandler
 {

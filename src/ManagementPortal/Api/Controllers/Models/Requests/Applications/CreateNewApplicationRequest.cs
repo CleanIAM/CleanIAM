@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using ManagementPortal.Core.OpenIdApplication;
 
-namespace ManagementPortal.Api.Controllers.Models.Requests;
+namespace ManagementPortal.Api.Controllers.Models.Requests.Applications;
 
 public class CreateNewApplicationRequest
 {

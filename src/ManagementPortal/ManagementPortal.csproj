@@ -49,7 +49,7 @@
 
 
     <ItemGroup>
-        <Folder Include="Infrastructure\"/>
+        <Folder Include="Api\Controllers\Models\Applications\"/>
     </ItemGroup>
 
 

@@ -49,6 +49,15 @@ public class UpdateOpenIdClientCommandHandler
         // Since the client secret is hidden in the UI, we need to load it from the existing application
         descriptor.ClientSecret = loadResult.Value.ClientSecret;
 
+        // Allow application to use auth endpoint
+        descriptor.Permissions.Add(OpenIddictConstants.Permissions.Endpoints.Authorization);
+        descriptor.Permissions.Add(OpenIddictConstants.Permissions.Endpoints.EndSession);
+        descriptor.Permissions.Add(OpenIddictConstants.Permissions.Endpoints.Introspection);
+        descriptor.Permissions.Add(OpenIddictConstants.Permissions.Endpoints.Token);
+        descriptor.Permissions.Add(OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode);
+        descriptor.Permissions.Add(OpenIddictConstants.Permissions.GrantTypes.RefreshToken);
+        descriptor.Permissions.Add(OpenIddictConstants.Permissions.ResponseTypes.Code);
+
         try
         {
             await applicationManager.UpdateAsync(loadResult.Value, descriptor, cancellationToken);

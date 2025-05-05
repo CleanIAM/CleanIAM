@@ -52,6 +52,15 @@ public class CreateNewOpenIdApplicationCommandHandler
         if (command.ClientType == ClientType.Confidential)
             descriptor.ClientSecret = Guid.NewGuid().ToString();
 
+        // Allow application to use auth endpoint
+        descriptor.Permissions.Add(OpenIddictConstants.Permissions.Endpoints.Authorization);
+        descriptor.Permissions.Add(OpenIddictConstants.Permissions.Endpoints.EndSession);
+        descriptor.Permissions.Add(OpenIddictConstants.Permissions.Endpoints.Introspection);
+        descriptor.Permissions.Add(OpenIddictConstants.Permissions.Endpoints.Token);
+        descriptor.Permissions.Add(OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode);
+        descriptor.Permissions.Add(OpenIddictConstants.Permissions.GrantTypes.RefreshToken);
+        descriptor.Permissions.Add(OpenIddictConstants.Permissions.ResponseTypes.Code);
+
         try
         {
             await applicationManager.CreateAsync(descriptor);

@@ -51,9 +51,13 @@
         <ProjectReference Include="..\UrlShortener\UrlShortener.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Folder Include="Core\Users\"/>
+    </ItemGroup>
+
 
     <Target Name="Tailwind" BeforeTargets="Build">
         <Exec Command="npx @tailwindcss/cli -i ./wwwroot/css/base.css -o ./wwwroot/css/main.css"/>
     </Target>
-    
+
 </Project>

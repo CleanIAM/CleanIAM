@@ -56,7 +56,7 @@ public class Result : IActionResult
     /// <param name="value">Value of the success</param>
     /// <typeparam name="T">Type for the generics Result</typeparam>
     /// <returns></returns>
-    public static Result<T> Ok<T>(T value) where T : class
+    public static Result<T> Ok<T>(T value)
     {
         return Result<T>.Ok(value);
     }
@@ -143,7 +143,7 @@ public class Result : IActionResult
 /// This class represents the result of an operation.
 /// It is inspired by Rust's Result type.
 /// </summary>
-public class Result<T> : IActionResult where T : class
+public class Result<T> : IActionResult
 {
     internal bool Success { get; set; }
     internal T? SuccessValue { get; set; }
@@ -204,7 +204,7 @@ public class Result<T> : IActionResult where T : class
             Success = result.Success,
             ErrorMessage = result.ErrorMessage,
             ErrorCode = result.ErrorCode,
-            SuccessValue = null
+            SuccessValue = default
         };
     }
 
@@ -220,7 +220,7 @@ public class Result<T> : IActionResult where T : class
             Success = result.Success,
             ErrorMessage = result.ErrorMessage,
             ErrorCode = result.ErrorCode,
-            SuccessValue = null
+            SuccessValue = default
         };
     }
 

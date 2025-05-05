@@ -1,16 +1,14 @@
-using System.Diagnostics.CodeAnalysis;
-using Identity.Application.Interfaces;
-using Identity.Core.Users;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using OpenIddict.Abstractions;
-
-namespace Identity.Api.Controllers;
-
 using System.Security.Claims;
+using Identity.Application.Interfaces;
 using Marten;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using OpenIddict.Abstractions;
 using OpenIddict.Client.WebIntegration;
+using SharedKernel.Core.Users;
+
+namespace Identity.Api.Controllers;
 
 /// <summary>
 /// Controller with endpoints handling external providers authentication such as Microsoft or Google

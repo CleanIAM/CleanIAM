@@ -1,5 +1,5 @@
 using ManagementPortal.Api.Controllers.Models;
-using ManagementPortal.Api.Controllers.Models.Requests;
+using ManagementPortal.Api.Controllers.Models.Requests.Applications;
 using ManagementPortal.Application.Commands.OpenIdApplications;
 using ManagementPortal.Application.Queries.OpenIdApplications;
 using ManagementPortal.Core.Events.OpenIdApplications;

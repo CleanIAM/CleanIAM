@@ -1,4 +1,4 @@
-namespace Identity.Core.Users;
+namespace SharedKernel.Core.Users;
 
 /// <summary>
 /// Structure representation of a hashed password

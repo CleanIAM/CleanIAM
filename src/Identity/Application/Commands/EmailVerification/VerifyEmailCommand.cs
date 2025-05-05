@@ -1,9 +1,9 @@
 using System.Net;
 using Identity.Core.Events;
 using Identity.Core.Requests;
-using Identity.Core.Users;
 using Mapster;
 using Marten;
+using SharedKernel.Core.Users;
 using SharedKernel.Infrastructure;
 using Wolverine;
 

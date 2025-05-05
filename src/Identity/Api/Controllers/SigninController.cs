@@ -3,13 +3,12 @@ using Identity.Api.ViewModels.Shared;
 using Identity.Api.ViewModels.Signin;
 using Identity.Application.Interfaces;
 using Identity.Application.Queries.Users;
-using Identity.Core.Users;
-using Identity.Infrastructure;
 using Mapster;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
+using SharedKernel.Core.Users;
 using Wolverine;
 
 namespace Identity.Api.Controllers;

@@ -3,12 +3,12 @@ using ManagementPortal.Api.Controllers.Models;
 using ManagementPortal.Api.Controllers.Models.Requests.Users;
 using ManagementPortal.Application.Commands.Users;
 using ManagementPortal.Application.Queries.Users;
-using ManagementPortal.Core;
 using ManagementPortal.Core.Events.Users;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Validation.AspNetCore;
+using SharedKernel.Core.Users;
 using SharedKernel.Infrastructure;
 using Wolverine;
 
@@ -69,7 +69,7 @@ public class UsersApiController(
     }
 
     /// <summary>
-    /// Update user 
+    /// Update user
     /// </summary>
     /// <param name="id">Id of user to update</param>
     /// <param name="request">New user data</param>
@@ -86,7 +86,7 @@ public class UsersApiController(
     }
 
     /// <summary>
-    /// Delete user 
+    /// Delete user
     /// </summary>
     /// <param name="id">Id of user to be deleted</param>
     [HttpDelete("{id:guid}")]
@@ -125,13 +125,5 @@ public class UsersApiController(
     {
         var command = new EnableUserCommand(id);
         return await bus.InvokeAsync<Result<UserEnabled>>(command, cancellationToken);
-    }
-
-    [ProducesResponseType<string>(StatusCodes.Status200OK)]
-    [Authorize(Roles = "Admin")]
-    [HttpGet("test")]
-    public Result<string> Test()
-    {
-        return Result.Ok("Ok");
     }
 }

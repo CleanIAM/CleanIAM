@@ -1,15 +1,13 @@
 using System.Security.Cryptography;
 using System.Text;
 using Identity.Application.Interfaces;
-using Identity.Core.Users;
 using NSec.Cryptography;
+using SharedKernel.Core.Users;
 
 namespace Identity.Infrastructure.Services;
 
 public class PasswordHasher : IPasswordHasher
 {
-    private readonly Argon2id _argon;
-
     // https://www.rfc-editor.org/rfc/rfc9106.html#name-parameter-choice
     private const int SaltSize = 16;
     private const int HashSize = 128;
@@ -21,11 +19,12 @@ public class PasswordHasher : IPasswordHasher
     private const int DegreeOfParallelism = 1; // Single degree of parallelism
 
     private const int AlgorithmVersion = 0x13; // Argon2id version 0x13
+    private readonly Argon2id _argon;
 
 
     public PasswordHasher()
     {
-        var argon = PasswordBasedKeyDerivationAlgorithm.Argon2id(new Argon2Parameters()
+        var argon = PasswordBasedKeyDerivationAlgorithm.Argon2id(new Argon2Parameters
         {
             MemorySize = MemorySize,
             NumberOfPasses = NumberOfPasses,

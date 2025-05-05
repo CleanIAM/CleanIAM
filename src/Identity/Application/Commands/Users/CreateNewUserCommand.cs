@@ -1,8 +1,8 @@
 using Identity.Application.Interfaces;
-using Identity.Core.Users;
 using Mapster;
 using Marten;
 using SharedKernel.Core;
+using SharedKernel.Core.Users;
 using SharedKernel.Infrastructure;
 
 namespace Identity.Application.Commands.Users;

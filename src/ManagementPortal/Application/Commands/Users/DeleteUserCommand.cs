@@ -1,7 +1,7 @@
-using ManagementPortal.Core;
 using ManagementPortal.Core.Events.Users;
 using Mapster;
 using Marten;
+using SharedKernel.Core.Users;
 using SharedKernel.Infrastructure;
 using Wolverine;
 

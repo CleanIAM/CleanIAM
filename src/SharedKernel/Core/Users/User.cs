@@ -1,6 +1,4 @@
-using SharedKernel.Core;
-
-namespace Identity.Core.Users;
+namespace SharedKernel.Core.Users;
 
 /// <summary>
 /// The main user entity for the identity system.
