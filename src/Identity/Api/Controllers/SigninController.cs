@@ -8,7 +8,6 @@ using Mapster;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using OpenIddict.Abstractions;
 using Wolverine;
 
 namespace Identity.Api.Controllers;
@@ -16,6 +15,7 @@ namespace Identity.Api.Controllers;
 [Route("/")]
 public class SigninController(
     ISigninRequestService signinRequestService,
+    IIdentityBuilderService identityBuilderService,
     IMessageBus bus,
     IPasswordHasher passwordHasher) : Controller
 {
@@ -35,8 +35,6 @@ public class SigninController(
         if (signinRequest == null)
             return View("Error", new ErrorViewModel { Error = "Error", ErrorDescription = "Request not found" });
 
-        // If user already authenticated redirect to authorize
-        //TODO: Check email verification and MFA
         return RedirectToAction("Authorize", "Auth", signinRequestService.CreateOidcQueryObject(signinRequest));
     }
 
@@ -61,7 +59,7 @@ public class SigninController(
             return View();
         }
 
-        // Check if users account is setup
+        // Check if users account is set up
         if (user.IsInvitePending)
         {
             ModelState.AddModelError("password",
@@ -84,22 +82,12 @@ public class SigninController(
         }
 
         // Create claims for the user
-        var claims = new Claim[]
-        {
-            new(OpenIddictConstants.Claims.Subject, user.Id.ToString()),
-            new(IdentityConstants.SigninRequestClaimName, request.ToString())
-        };
-
-        var claimsIdentity = new ClaimsIdentity(
-            claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-        var authProperties = new AuthenticationProperties();
-
+        var claimsIdentity = identityBuilderService.BuildLocalClaimsPrincipal(user, request);
         // Signin in identity server
         await HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
             new ClaimsPrincipal(claimsIdentity),
-            authProperties);
+            new AuthenticationProperties());
 
         // Update signin request
         signinRequest.UserId = user.Id;
@@ -115,6 +103,8 @@ public class SigninController(
 
 
         // Redirect to authorize endpoint to authorize the client
-        return RedirectToAction("Authorize", "Auth", signinRequestService.CreateOidcQueryObject(signinRequest));
+        var oidcRequestParams = signinRequestService.CreateOidcQueryObject(signinRequest);
+        oidcRequestParams["chooseAccount"] = "false"; // Set chooseAccount to false to skip account chooser
+        return RedirectToAction("Authorize", "Auth", oidcRequestParams);
     }
 }

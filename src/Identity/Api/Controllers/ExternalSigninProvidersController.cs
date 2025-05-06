@@ -5,7 +5,6 @@ using Marten;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using OpenIddict.Abstractions;
 using OpenIddict.Client.WebIntegration;
 
 namespace Identity.Api.Controllers;
@@ -16,7 +15,8 @@ namespace Identity.Api.Controllers;
 [Route("/external-providers")]
 public class ExternalSigninProvidersController(
     IQuerySession session,
-    ISigninRequestService signinRequestService) : Controller
+    ISigninRequestService signinRequestService,
+    IIdentityBuilderService identityBuilderService) : Controller
 {
     /// <summary>
     /// Initiates the authentication process with Microsoft provider
@@ -71,25 +71,22 @@ public class ExternalSigninProvidersController(
 
         // Sign in user
         // Create claims for the user
-        var claims = new Claim[] { new(OpenIddictConstants.Claims.Subject, user.Id.ToString()) };
-
-        var claimsIdentity = new ClaimsIdentity(
-            claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-        var authProperties = new AuthenticationProperties();
+        var claimsIdentity = identityBuilderService.BuildLocalClaimsPrincipal(user, requestId ?? Guid.Empty);
 
         // Signin in identity server
         await HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
             new ClaimsPrincipal(claimsIdentity),
-            authProperties);
+            new AuthenticationProperties());
 
         var signinRequest = await signinRequestService.GetAsync(requestId.Value);
         if (signinRequest == null)
             return RedirectToSignin("Request id is invalid");
 
         // Redirect to authorize endpoint to authorize the client
-        return RedirectToAction("Authorize", "Auth", signinRequestService.CreateOidcQueryObject(signinRequest));
+        var oidcRequestParams = signinRequestService.CreateOidcQueryObject(signinRequest);
+        oidcRequestParams["chooseAccount"] = "false"; // Set chooseAccount to false to skip account chooser
+        return RedirectToAction("Authorize", "Auth", oidcRequestParams);
     }
 
 

@@ -1,5 +1,6 @@
 using Identity.Api.ViewModels.Auth;
 using Identity.Api.ViewModels.Shared;
+using Identity.Api.Views.Auth;
 using Identity.Application.Interfaces;
 using Identity.Core.Requests;
 using Microsoft.AspNetCore;
@@ -24,10 +25,55 @@ public class AuthController(
     /// <summary>
     /// The main endpoint for OAuth 2 authorization code flow.
     /// If the user is not authenticated, the user will be redirected to the signin page.
+    /// If user is authenticated, the confirmation will be shown.
     /// </summary>
+    /// <param name="chooseAccount">Indicates whether the user should be prompted with account chooser</param>
     [HttpGet("authorize")]
-    public async Task<IActionResult> Authorize()
+    public async Task<IActionResult> Authorize([FromQuery] bool chooseAccount = true)
     {
+        // If account chooser disabled, directly handle auth
+        if (chooseAccount == false)
+            return await AuthorizePost();
+
+        // If user not authenticated, redirect to signin
+        if (User.Identity is not { IsAuthenticated: true })
+        {
+            // Validate the OpenID Connect request
+            var oidcRequest = HttpContext.GetOpenIddictServerRequest();
+            if (oidcRequest == null)
+                return View("error", new ErrorViewModel
+                {
+                    Error = OpenIddictConstants.Errors.InvalidRequest,
+                    ErrorDescription = "The OpenID Connect request cannot be retrieved."
+                });
+
+            // Redirect user to signin page
+            var request = new SigninRequest
+            {
+                Id = Guid.NewGuid(),
+                OidcRequest = oidcRequest
+            };
+            await signinRequestService.SaveAsync(request);
+            return RedirectToAction("Signin", "Signin", new { request = request.Id });
+        }
+
+        // Show account chooser
+        var oidcRequestValues = HttpContext.Request.Query.ToDictionary();
+        var name = User.Identity.Name;
+        return View("Authorize", new AuthorizeViewModel { Name = name, OidcRequest = oidcRequestValues });
+    }
+
+    /// <summary>
+    /// Endpoint handling the OpenId Connect authorization request.
+    /// </summary>
+    /// <param name="newSignIn">Indicates whether the user should be signin as another user</param>
+    /// <returns></returns>
+    [HttpPost("authorize")]
+    public async Task<IActionResult> AuthorizePost([FromForm] bool newSignIn = false)
+    {
+        if (newSignIn)
+            await HttpContext.SignOutAsync();
+
         var oidcRequest = HttpContext.GetOpenIddictServerRequest();
         if (oidcRequest == null)
             // TODO: Create error page and redirect to it
@@ -37,9 +83,9 @@ public class AuthController(
                 ErrorDescription = "The OpenID Connect request cannot be retrieved."
             });
 
-        // If user not authenticated, redirect to signin
+        // If user not authenticated or new signin is requested, redirect to signin
         var userIdRaw = User.FindFirst(OpenIddictConstants.Claims.Subject)?.Value;
-        if (User.Identity?.IsAuthenticated != true || !Guid.TryParse(userIdRaw, out var userId))
+        if (User.Identity?.IsAuthenticated != true || !Guid.TryParse(userIdRaw, out var userId) || newSignIn)
         {
             var request = new SigninRequest
             {

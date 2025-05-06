@@ -4,6 +4,7 @@ using System.Security.Claims;
 using Identity.Application.Interfaces;
 using Identity.Application.Queries.Users;
 using Identity.Core.Users;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
 using SharedKernel;
@@ -73,5 +74,23 @@ public class IdentityBuilderService(IOpenIddictScopeManager scopeManager, IMessa
                 claims.Add(new Claim(OpenIddictConstants.Claims.Role, role.ToString()));
 
         return Result.Ok((IEnumerable<Claim>)claims);
+    }
+
+    public ClaimsIdentity BuildLocalClaimsPrincipal(IdentityUser user, Guid requestId)
+    {
+        var claims = new Claim[]
+        {
+            new(OpenIddictConstants.Claims.Subject, user.Id.ToString()),
+            new(IdentityConstants.SigninRequestClaimName, requestId.ToString()),
+            new(OpenIddictConstants.Claims.Name, $"{user.FirstName} {user.LastName}")
+        };
+
+        var identity = new ClaimsIdentity(
+            CookieAuthenticationDefaults.AuthenticationScheme, OpenIddictConstants.Claims.Name,
+            OpenIddictConstants.Claims.Role);
+
+        identity.AddClaims(claims);
+
+        return identity;
     }
 }
