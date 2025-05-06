@@ -1,7 +1,6 @@
 using Identity.Api.Views.Invitation;
 using Identity.Application.Commands.Invitations;
 using Identity.Core.Events;
-using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using SharedKernel.Infrastructure;
 using Wolverine;
@@ -14,19 +13,19 @@ namespace Identity.Api.Controllers;
 [Route("/invitations")]
 public class InvitationController(IMessageBus bus) : Controller
 {
-    [HttpGet]
-    public async Task<IActionResult> Index([FromQuery] Guid requestId)
+    [HttpGet("{requestId:guid}")]
+    public async Task<IActionResult> Index([FromRoute] Guid requestId)
     {
-        return View("Invitation");
+        return View("Invitation", new InvitationViewModel { RequestId = requestId });
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Index([FromQuery] Guid requestId, [FromForm] InvitationViewModel model)
+    [HttpPost("{requestId:guid}")]
+    public async Task<IActionResult> Index([FromRoute] Guid requestId, [FromForm] InvitationViewModel model)
     {
         if (!ModelState.IsValid)
             return View("Invitation", model);
 
-        var command = model.Adapt<SetupUserAccountCommand>();
+        var command = new SetupUserAccountCommand(requestId, model.NewPassword);
         var res = await bus.InvokeAsync<Result<UserAccountSetup>>(command);
 
         if (res.IsError())

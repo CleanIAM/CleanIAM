@@ -14,8 +14,8 @@ namespace Identity.Application.Commands.Invitations;
 /// Command to set up a user account.
 /// </summary>
 /// <param name="RequirestId">Id of the invitation request</param>
-/// <param name="Passowrd">New users password</param>
-public record SetupUserAccountCommand(Guid RequirestId, string Passowrd);
+/// <param name="Password">New users password</param>
+public record SetupUserAccountCommand(Guid RequirestId, string Password);
 
 public class SetupUserAccountCommandHandler
 {
@@ -42,7 +42,7 @@ public class SetupUserAccountCommandHandler
         var (request, user) = loadResult.Value;
 
         // Set the password
-        user.HashedPassword = passwordHasher.Hash(command.Passowrd);
+        user.HashedPassword = passwordHasher.Hash(command.Password);
 
         // Set the user as setup
         user.SetUserAsSetup();

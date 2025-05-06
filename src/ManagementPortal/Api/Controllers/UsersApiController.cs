@@ -4,11 +4,12 @@ using ManagementPortal.Api.Controllers.Models.Requests.Users;
 using ManagementPortal.Application.Commands.Users;
 using ManagementPortal.Application.Queries.Users;
 using ManagementPortal.Core.Events.Users;
+using ManagementPortal.Core.Users;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Validation.AspNetCore;
-using SharedKernel.Core.Users;
+using SharedKernel.Core;
 using SharedKernel.Infrastructure;
 using Wolverine;
 
@@ -125,5 +126,45 @@ public class UsersApiController(
     {
         var command = new EnableUserCommand(id);
         return await bus.InvokeAsync<Result<UserEnabled>>(command, cancellationToken);
+    }
+
+    /// <summary>
+    /// Invite a user to the system
+    /// </summary>
+    /// <param name="request">Invite user request</param>
+    /// <param name="tenant">custom tenant id if superAdmin wants to invite user to different organization</param>
+    /// <returns></returns>
+    [HttpPost("invited")]
+    [ProducesResponseType<UserInvited>(StatusCodes.Status200OK)]
+    [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> InviteUser([FromBody] InviteUserRequest request, [FromQuery] Guid? tenant)
+    {
+        var command = request.Adapt<InviteUserCommand>();
+        // Invoke for custom tenant only if user is super admin and custom tenant is provided
+        if (tenant is not null && User.GetRoles().Contains(UserRole.SuperAdmin))
+            return await bus.InvokeForTenantAsync<Result<UserInvited>>(tenant.ToString()!, command);
+        return await bus.InvokeAsync<Result<UserInvited>>(command);
+    }
+
+    /// <summary>
+    /// Resend user invitation email
+    /// </summary>
+    /// <param name="id">Id of the user</param>
+    /// <param name="tenant">custom tenant id if superAdmin wants to invite user to different organization</param>
+    /// <returns></returns>
+    [HttpPost("{id:guid}/invitation/email")]
+    [ProducesResponseType<UserInvited>(StatusCodes.Status200OK)]
+    [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ResendInvitationEmail([FromRoute] Guid id,
+        [FromQuery]
+        Guid? tenant)
+    {
+        var command = new ResendInvitationEmailCommand(id);
+        // Invoke for custom tenant only if user is super admin and custom tenant is provided
+        if (tenant is not null && User.GetRoles().Contains(UserRole.SuperAdmin))
+            return await bus.InvokeForTenantAsync<Result<UserInvited>>(tenant.ToString()!, command);
+        return await bus.InvokeAsync<Result<UserInvited>>(command);
     }
 }

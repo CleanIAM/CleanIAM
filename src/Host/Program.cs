@@ -73,7 +73,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseStaticFiles();
 app.UseHttpsRedirection();
-
+app.MapWolverineEndpoints();
 app.MapControllers();
 
 app.UseSharedKernel();

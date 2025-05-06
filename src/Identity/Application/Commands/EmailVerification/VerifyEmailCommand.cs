@@ -42,6 +42,7 @@ public class VerifyEmailCommandHandler
             return Result.From(result);
         var (request, user) = result.Value;
 
+
         // Update email verification status
         user.EmailVerified = true;
         documentSession.Delete(request);

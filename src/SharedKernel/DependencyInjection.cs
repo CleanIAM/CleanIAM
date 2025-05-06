@@ -6,6 +6,7 @@ using Marten;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using SharedKernel.Application.Interfaces;
+using SharedKernel.Application.Middlewares;
 using SharedKernel.Application.Swagger;
 using SharedKernel.Core.Database;
 using SharedKernel.Infrastructure.Services;
@@ -45,6 +46,9 @@ public static class DependencyInjection
 
             opts.TenantId.DefaultIs(Guid.Empty.ToString());
         });
+
+        // Register middleware to parse tenant id from claims
+        app.UseMiddleware<TenantParserMiddleware>();
 
         return app;
     }

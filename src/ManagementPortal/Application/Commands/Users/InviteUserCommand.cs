@@ -1,7 +1,8 @@
 using ManagementPortal.Core.Events.Users;
+using ManagementPortal.Core.Users;
 using Mapster;
 using Marten;
-using SharedKernel.Core.Users;
+using SharedKernel.Core;
 using SharedKernel.Infrastructure;
 using Wolverine;
 
@@ -14,7 +15,8 @@ namespace ManagementPortal.Application.Commands.Users;
 /// <param name="Email">Email of invited user</param>
 /// <param name="FirstName">First name of invited user</param>
 /// <param name="LastName">Last name of invited user</param>
-public record InviteUserCommand(Guid Id, string Email, string FirstName, string LastName);
+/// <param name="Roles">Roles of invited user</param>
+public record InviteUserCommand(Guid Id, string Email, string FirstName, string LastName, UserRole[] Roles);
 
 public class InviteUserCommandHandler
 {
@@ -30,10 +32,12 @@ public class InviteUserCommandHandler
     }
 
     public async Task<Result<UserInvited>> HandleAsync(InviteUserCommand command, Result laodResult, IMessageBus bus,
-        IDocumentSession session, CancellationToken cancellationToken)
+        IDocumentSession session, CancellationToken cancellationToken, ILogger logger)
     {
         if (laodResult.IsError())
             return laodResult;
+
+        logger.LogDebug("Inviting user [{}]", command.Email);
 
         var user = command.Adapt<User>();
         user.IsInvitePending = true;

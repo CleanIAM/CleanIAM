@@ -1,3 +1,5 @@
+using SharedKernel.Core;
+
 namespace ManagementPortal.Api.Controllers.Models.Requests.Users;
 
 /// <summary>
@@ -19,4 +21,9 @@ public class InviteUserRequest
     /// Last name of the invited user
     /// </summary>
     public required string LastName { get; set; }
+
+    /// <summary>
+    /// Roles of the invited user
+    /// </summary>
+    public required UserRole[] Roles { get; set; }
 }

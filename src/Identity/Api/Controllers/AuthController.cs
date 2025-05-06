@@ -53,11 +53,16 @@ public class AuthController(
 
         var principal = await identityBuilderService.BuildClaimsPrincipalAsync(oidcRequest, userId);
         if (principal.IsError())
-            return BadRequest(new OpenIddictResponse
+        {
+            await HttpContext.SignOutAsync();
+            var request = new SigninRequest
             {
-                Error = OpenIddictConstants.Errors.InvalidRequest,
-                ErrorDescription = principal.ErrorValue.Message
-            });
+                Id = Guid.NewGuid(),
+                OidcRequest = oidcRequest
+            };
+            await signinRequestService.SaveAsync(request);
+            return RedirectToAction("Signin", "Signin", new { request = request.Id });
+        }
 
         return SignIn(principal.Value, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
     }

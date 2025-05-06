@@ -1,6 +1,7 @@
 using System.Net;
 using ManagementPortal.Core;
 using ManagementPortal.Core.Events.Tenants;
+using ManagementPortal.Core.Users;
 using Mapster;
 using Marten;
 using SharedKernel.Core.Users;

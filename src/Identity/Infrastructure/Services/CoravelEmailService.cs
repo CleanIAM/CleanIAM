@@ -63,7 +63,7 @@ public class CoravelEmailService(IMailer mailer, ILogger<CoravelEmailService> lo
         {
             await mailer.SendAsync(Mailable.AsInline<InvitationEmailViewModel>()
                 .To(recipient)
-                .Subject("CleanIAM - Password reset")
+                .Subject("CleanIAM - Invitation")
                 .View("Api/Emails/InvitationEmailView.cshtml", new InvitationEmailViewModel
                 {
                     Recipient = recipient,

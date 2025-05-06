@@ -1,4 +1,4 @@
-using ManagementPortal.Core.Events.Users;
+using Events.Core.Events;
 using Mapster;
 
 namespace ManagementPortal.Infrastructure.AnticorruptionLayer;
@@ -8,8 +8,9 @@ namespace ManagementPortal.Infrastructure.AnticorruptionLayer;
 /// </summary>
 public class UserInvitedMapperHandler
 {
-    public static UserInvited Handle(Events.Core.Events.UserInvited localEvent)
+    public static UserInvited Handle(Core.Events.Users.UserInvited localEvent, ILogger logger)
     {
+        logger.LogDebug("Mapping local UserInvited event to global event");
         return localEvent.Adapt<UserInvited>();
     }
 }

@@ -1,3 +1,4 @@
+using ManagementPortal.Core.Users;
 using Marten;
 using SharedKernel.Core.Users;
 

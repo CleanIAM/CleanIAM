@@ -1,16 +1,14 @@
 using ManagementPortal.Api.Controllers.Models;
 using ManagementPortal.Api.Controllers.Models.Requests.User;
-using ManagementPortal.Api.Controllers.Models.Requests.Users;
 using ManagementPortal.Application.Commands.Users;
 using ManagementPortal.Application.Queries.Users;
 using ManagementPortal.Core.Events.Users;
+using ManagementPortal.Core.Users;
 using ManagementPortal.Infrastructure.Utils;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Validation.AspNetCore;
-using SharedKernel.Core;
-using SharedKernel.Core.Users;
 using SharedKernel.Infrastructure;
 using Wolverine;
 
@@ -85,24 +83,5 @@ public class UserApiEndpoint(
         var command = request.Adapt<ToggleMFAForUserCommand>() with { Id = userId };
 
         return await bus.InvokeAsync<Result<UserUpdated>>(command);
-    }
-
-    /// <summary>
-    /// Invite a user to the system
-    /// </summary>
-    /// <param name="request">Invite user request</param>
-    /// <param name="tenant">custom tenant id if superAdmin wants to invite user to different organization</param>
-    /// <returns></returns>
-    [HttpPost("invited")]
-    [ProducesResponseType<UserInvited>(StatusCodes.Status200OK)]
-    [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> InviteUser([FromBody] InviteUserRequest request, [FromQuery] Guid? tenant)
-    {
-        var command = request.Adapt<InviteUserCommand>();
-        // Invoke for custom tenant only if user is super admin and custom tenant is provided
-        if (tenant is not null && User.GetRoles().Contains(UserRole.SuperAdmin))
-            return await bus.InvokeForTenantAsync<Result<UserInvited>>(tenant.ToString()!, command);
-        return await bus.InvokeAsync<Result<UserInvited>>(command);
     }
 }
