@@ -9,7 +9,6 @@ using SharedKernel.Infrastructure;
 namespace Identity.Infrastructure.Services;
 
 /// <summary>
-/// 
 /// </summary>
 /// <param name="mailer"></param>
 public class CoravelEmailService(IMailer mailer, ILogger<CoravelEmailService> logger) : IEmailService
@@ -47,6 +46,28 @@ public class CoravelEmailService(IMailer mailer, ILogger<CoravelEmailService> lo
                 {
                     Recipient = recipient,
                     PasswordResetUrl = passwordResetUrl
+                }));
+        }
+        catch (Exception ex)
+        {
+            logger.Log(LogLevel.Error, ex, "Failed to send email");
+            return Result.Error("Failed to send email", HttpStatusCode.InternalServerError);
+        }
+
+        return Result.Ok();
+    }
+
+    public async Task<Result> SendInvitationEmailAsync(EmailRecipient recipient, string invitationUrl)
+    {
+        try
+        {
+            await mailer.SendAsync(Mailable.AsInline<InvitationEmailViewModel>()
+                .To(recipient)
+                .Subject("CleanIAM - Password reset")
+                .View("Api/Emails/InvitationEmailView.cshtml", new InvitationEmailViewModel
+                {
+                    Recipient = recipient,
+                    InvitationUrl = invitationUrl
                 }));
         }
         catch (Exception ex)

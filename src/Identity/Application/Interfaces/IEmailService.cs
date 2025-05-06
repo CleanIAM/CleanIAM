@@ -18,4 +18,11 @@ public interface IEmailService
     /// <param name="recipient">Info about email recipient</param>
     /// <param name="passwordResetUrl">Link for the password reset to embed into the email</param>
     Task<Result> SendPasswordResetEmailAsync(EmailRecipient recipient, string passwordResetUrl);
+
+    /// <summary>
+    /// Sends a invitaion email to the user.
+    /// </summary>
+    /// <param name="recipient">Info about email recipient</param>
+    /// <param name="invitationUrl">Link for the account setup to embed into the mail</param>
+    Task<Result> SendInvitationEmailAsync(EmailRecipient recipient, string invitationUrl);
 }
