@@ -1,4 +1,5 @@
 using Events.Core.Events.ManagementPortal.Users;
+using Identity.Core.Requests;
 using Identity.Core.Users;
 using Marten;
 
@@ -12,7 +13,13 @@ public class UserDeletedEventHandler
     public static async Task Handle(UserDeleted userDeleted, IDocumentSession session,
         CancellationToken cancellationToken)
     {
+        // Delete the user from the database
         session.Delete<IdentityUser>(userDeleted.Id);
+        // Delete all other objects associated with the user
+        session.DeleteWhere<EmailVerificationReqest>(r => r.UserId == userDeleted.Id);
+        session.DeleteWhere<InvitationRequest>(r => r.UserId == userDeleted.Id);
+        session.DeleteWhere<PasswordResetRequest>(r => r.UserId == userDeleted.Id);
+
         await session.SaveChangesAsync(cancellationToken);
     }
 }
