@@ -16,7 +16,7 @@ public class CreateNewUserCommandHandler
     {
         var user = await session.Query<User>().Where(u => u.Email == command.Email).FirstOrDefaultAsync();
         if (user != null)
-            return Result.Error("User with given email already exists");
+            return Result.Error("User with given email already exists", StatusCodes.Status400BadRequest);
 
         return Result.Ok();
     }
