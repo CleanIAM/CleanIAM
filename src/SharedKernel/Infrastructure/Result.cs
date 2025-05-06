@@ -68,7 +68,7 @@ public class Result : IActionResult
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     /// <remarks> When mapping success result the successValue will be lost</remarks>
-    public static Result From<T>(Result<T> result) where T : class
+    public static Result From<T>(Result<T> result)
     {
         return new Result
         {
@@ -219,7 +219,7 @@ public class Result<T> : IActionResult
     }
 
 
-    public static Result<T> From<T1>(Result<T1> result) where T1 : class
+    public static Result<T> From<T1>(Result<T1> result)
     {
         if (result.Success)
             throw new InvalidOperationException(

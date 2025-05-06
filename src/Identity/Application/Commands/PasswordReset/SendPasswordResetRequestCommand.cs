@@ -3,10 +3,10 @@ using Identity.Application.Interfaces;
 using Identity.Core.Events;
 using Identity.Core.Mails;
 using Identity.Core.Requests;
+using Identity.Core.Users;
 using Mapster;
 using Marten;
 using SharedKernel.Application.Interfaces;
-using SharedKernel.Core.Users;
 using SharedKernel.Infrastructure;
 using UrlShortner.Application.Commands;
 using UrlShortner.Core.Events;
@@ -31,7 +31,7 @@ public class SendPasswordResetRequestCommandHandler
         // Normalize email
         var normalizedEmail = command.Email.ToLowerInvariant();
         // Check if the user for a given request exists
-        var user = await querySession.Query<User>()
+        var user = await querySession.Query<IdentityUser>()
             .FirstOrDefaultAsync(u => u.Email == normalizedEmail, cancellationToken);
         if (user is null)
             return Result.Error("User not found", HttpStatusCode.NotFound);

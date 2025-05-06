@@ -1,9 +1,8 @@
-namespace SharedKernel.Core.Users;
+using SharedKernel.Core;
 
-/// <summary>
-/// The main user entity for the identity system.
-/// </summary>
-public class User
+namespace Identity.Core.Users;
+
+public class IdentityUser
 {
     /// <summary>
     /// Id of the user
@@ -64,4 +63,29 @@ public class User
     /// Indicates whether the user account is disabled.
     /// </summary>
     public bool IsDisabled { get; set; }
+
+    /// <summary>
+    /// Sets the user as setup, indicating that the user has completed the setup process.
+    /// </summary>
+    public void SetUserAsSetup()
+    {
+        IsInvitePending = false;
+    }
+
+    /// <summary>
+    /// Sets the user email as verified, indicating that the user has verified their email address.
+    /// </summary>
+    public void SetUserEmailAsVerified()
+    {
+        EmailVerified = true;
+    }
+
+    /// <summary>
+    /// Disables or enables the user account.
+    /// </summary>
+    /// <param name="disable">Should be user Disabled/Enabled</param>
+    public void Disable(bool disable)
+    {
+        IsDisabled = disable;
+    }
 }

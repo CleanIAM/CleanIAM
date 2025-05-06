@@ -46,13 +46,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Identity.AnticorrutptionLayer\Identity.AnticorrutptionLayer.csproj"/>
+        <ProjectReference Include="..\Events\Events.csproj"/>
         <ProjectReference Include="..\SharedKernel\SharedKernel.csproj"/>
         <ProjectReference Include="..\UrlShortener\UrlShortener.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Core\Users\"/>
     </ItemGroup>
 
 

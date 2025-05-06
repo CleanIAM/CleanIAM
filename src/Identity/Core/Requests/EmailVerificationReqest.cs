@@ -1,5 +1,8 @@
+using Marten.Schema;
+
 namespace Identity.Core.Requests;
 
+[SingleTenanted]
 public class EmailVerificationReqest
 {
     /// <summary>

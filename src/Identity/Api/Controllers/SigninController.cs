@@ -3,12 +3,12 @@ using Identity.Api.ViewModels.Shared;
 using Identity.Api.ViewModels.Signin;
 using Identity.Application.Interfaces;
 using Identity.Application.Queries.Users;
+using Identity.Core.Users;
 using Mapster;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
-using SharedKernel.Core.Users;
 using Wolverine;
 
 namespace Identity.Api.Controllers;
@@ -53,11 +53,19 @@ public class SigninController(
 
         // Validate user credentials
         var query = model.Adapt<GetUserByEmailQuery>();
-        var user = await bus.InvokeAsync<User?>(query, cancellationToken);
+        var user = await bus.InvokeAsync<IdentityUser?>(query, cancellationToken);
 
         if (user == null)
         {
             ModelState.AddModelError("password", "Incorrect email or password");
+            return View();
+        }
+
+        // Check if users account is setup
+        if (user.IsInvitePending)
+        {
+            ModelState.AddModelError("password",
+                "Your account is not setup yet. <br/> Check your email for the invite or contact your administrator.");
             return View();
         }
 

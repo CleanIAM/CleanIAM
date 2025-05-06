@@ -3,10 +3,10 @@ using Identity.Application.Interfaces;
 using Identity.Core.Events;
 using Identity.Core.Mails;
 using Identity.Core.Requests;
+using Identity.Core.Users;
 using Mapster;
 using Marten;
 using SharedKernel.Application.Interfaces;
-using SharedKernel.Core.Users;
 using SharedKernel.Infrastructure;
 using UrlShortner.Application.Commands;
 using UrlShortner.Core.Events;
@@ -29,7 +29,7 @@ public class SendEmailVerificationRequestCommandHandler
         IQuerySession querySession, CancellationToken cancellationToken)
     {
         // Check if the user for a given request exists
-        var user = await querySession.LoadAsync<User>(command.UserId, cancellationToken);
+        var user = await querySession.LoadAsync<IdentityUser>(command.UserId, cancellationToken);
         if (user is null)
             return Result.Error("User not found", HttpStatusCode.NotFound);
 
@@ -71,6 +71,7 @@ public class SendEmailVerificationRequestCommandHandler
         var verificationUrl = $"{configuration.IdentityBaseUrl}/email-verification/{request.Id.ToString()}";
 
         // Shorten the url if shortening is enabled
+        //TODO: Anti-corruption layer
         if (configuration.UseUrlShortener)
         {
             var shortenUrlCommand = new ShortenUrlCommand(verificationUrl);

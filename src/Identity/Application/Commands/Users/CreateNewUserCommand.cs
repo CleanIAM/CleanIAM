@@ -1,9 +1,10 @@
 using Identity.Application.Interfaces;
+using Identity.Core.Users;
 using Mapster;
 using Marten;
 using SharedKernel.Core;
-using SharedKernel.Core.Users;
 using SharedKernel.Infrastructure;
+using HashedPassword = Identity.Core.Users.HashedPassword;
 
 namespace Identity.Application.Commands.Users;
 
@@ -17,7 +18,8 @@ public class CreateNewUserCommandHandler
         // Normalize email
         var normalizedEmail = command.Email.ToLowerInvariant();
 
-        var user = await session.Query<User>().FirstOrDefaultAsync(x => x.Email == normalizedEmail, cancellationToken);
+        var user = await session.Query<IdentityUser>()
+            .FirstOrDefaultAsync(x => x.Email == normalizedEmail, cancellationToken);
         if (user is not null)
             return Result.Error("User with given email already exists", 400);
 
@@ -31,7 +33,7 @@ public class CreateNewUserCommandHandler
             return loadResult;
 
         var password = passwordHasher.Hash(command.Password);
-        var newUser = command.Adapt<User>();
+        var newUser = command.Adapt<IdentityUser>();
         newUser.Email = command.Email.ToLowerInvariant(); // Normalize email
         newUser.Id = Guid.NewGuid();
         newUser.Roles = [UserRole.User];

@@ -43,7 +43,7 @@
 
 
     <ItemGroup>
-        <ProjectReference Include="..\Identity.AnticorrutptionLayer\Identity.AnticorrutptionLayer.csproj"/>
+        <ProjectReference Include="..\Events\Events.csproj"/>
         <ProjectReference Include="..\SharedKernel\SharedKernel.csproj"/>
     </ItemGroup>
 

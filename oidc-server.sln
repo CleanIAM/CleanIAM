@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagementPortal", "src\Man
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedKernel", "src\SharedKernel\SharedKernel.csproj", "{071AEEEF-7B56-4380-9B21-9A692D6200A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.AnticorrutptionLayer", "src\Identity.AnticorrutptionLayer\Identity.AnticorrutptionLayer.csproj", "{EA19333A-43B9-4023-BB56-9FC07EF8CD9A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Events", "src\Events\Events.csproj", "{EA19333A-43B9-4023-BB56-9FC07EF8CD9A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener", "src\UrlShortener\UrlShortener.csproj", "{AFE0494D-735E-447F-9570-427DDC634555}"
 EndProject

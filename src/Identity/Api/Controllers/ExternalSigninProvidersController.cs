@@ -1,12 +1,12 @@
 using System.Security.Claims;
 using Identity.Application.Interfaces;
+using Identity.Core.Users;
 using Marten;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using OpenIddict.Client.WebIntegration;
-using SharedKernel.Core.Users;
 
 namespace Identity.Api.Controllers;
 
@@ -63,7 +63,7 @@ public class ExternalSigninProvidersController(
         // Validate the authentication result
         var receivedClaims = result.Principal.Claims;
         var email = receivedClaims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-        var user = await session.Query<User>().FirstOrDefaultAsync(u => u.AnyTenant() && u.Email == email);
+        var user = await session.Query<IdentityUser>().FirstOrDefaultAsync(u => u.AnyTenant() && u.Email == email);
 
 
         if (user == null)

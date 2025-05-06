@@ -1,5 +1,5 @@
+using Identity.Core.Users;
 using Marten;
-using SharedKernel.Core.Users;
 
 namespace Identity.Application.Queries.Users;
 
@@ -11,8 +11,8 @@ public record GetUserByIdQuery(Guid Id);
 
 public class GetUserByIdQueryHandler
 {
-    public static User? Handle(GetUserByIdQuery query, IDocumentSession session)
+    public static IdentityUser? Handle(GetUserByIdQuery query, IDocumentSession session)
     {
-        return session.Query<User>().FirstOrDefault(u => u.Id == query.Id && u.AnyTenant());
+        return session.Query<IdentityUser>().FirstOrDefault(u => u.Id == query.Id && u.AnyTenant());
     }
 }

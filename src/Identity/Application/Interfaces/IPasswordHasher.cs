@@ -1,4 +1,4 @@
-using SharedKernel.Core.Users;
+using HashedPassword = Identity.Core.Users.HashedPassword;
 
 namespace Identity.Application.Interfaces;
 

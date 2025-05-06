@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Identity.Application.Interfaces;
 using NSec.Cryptography;
-using SharedKernel.Core.Users;
+using HashedPassword = Identity.Core.Users.HashedPassword;
 
 namespace Identity.Infrastructure.Services;
 

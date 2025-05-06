@@ -1,5 +1,5 @@
+using Identity.Core.Users;
 using Marten;
-using SharedKernel.Core.Users;
 
 namespace Identity.Application.Queries.Users;
 
@@ -11,10 +11,10 @@ public record GetUserByEmailQuery(string Email);
 
 public class GetUserByEmailQueryHandler
 {
-    public static User? Handle(GetUserByEmailQuery query, IDocumentSession session)
+    public static IdentityUser? Handle(GetUserByEmailQuery query, IDocumentSession session)
     {
-        return session.Query<User>().FirstOrDefault(u => u.AnyTenant() &&
-                                                         string.Equals(u.Email, query.Email,
-                                                             StringComparison.InvariantCultureIgnoreCase));
+        return session.Query<IdentityUser>().FirstOrDefault(u => u.AnyTenant() &&
+                                                                 string.Equals(u.Email, query.Email,
+                                                                     StringComparison.InvariantCultureIgnoreCase));
     }
 }

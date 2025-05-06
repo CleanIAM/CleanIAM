@@ -3,10 +3,10 @@ using System.Net;
 using System.Security.Claims;
 using Identity.Application.Interfaces;
 using Identity.Application.Queries.Users;
+using Identity.Core.Users;
 using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
 using SharedKernel;
-using SharedKernel.Core.Users;
 using SharedKernel.Infrastructure;
 using Wolverine;
 
@@ -42,7 +42,7 @@ public class IdentityBuilderService(IOpenIddictScopeManager scopeManager, IMessa
     {
         // Get user from database
         var query = new GetUserByIdQuery(userId);
-        var user = await bus.InvokeAsync<User?>(query);
+        var user = await bus.InvokeAsync<IdentityUser?>(query);
         if (user == null)
             return Result.Error("User not found", HttpStatusCode.BadRequest);
 

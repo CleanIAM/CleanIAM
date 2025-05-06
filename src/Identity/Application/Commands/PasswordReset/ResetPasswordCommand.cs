@@ -1,9 +1,9 @@
 using System.Net;
 using Identity.Application.Interfaces;
 using Identity.Core.Requests;
+using Identity.Core.Users;
 using Mapster;
 using Marten;
-using SharedKernel.Core.Users;
 using SharedKernel.Infrastructure;
 using Wolverine;
 
@@ -41,7 +41,7 @@ public class ResetPasswordCommandHandler
         var request = result.Value;
 
         // Get user from the database
-        var user = await documentSession.LoadAsync<User>(request.UserId, cancellationToken);
+        var user = await documentSession.LoadAsync<IdentityUser>(request.UserId, cancellationToken);
         if (user is null)
             return Result.Error("User not found", HttpStatusCode.NotFound);
 
