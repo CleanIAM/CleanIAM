@@ -3,7 +3,7 @@ using Identity.Core.Users;
 using Mapster;
 using Marten;
 
-namespace Identity.Application.EventHandlers;
+namespace Identity.Application.EventHandlers.Users;
 
 public class UserUpdatedEventHandler
 {

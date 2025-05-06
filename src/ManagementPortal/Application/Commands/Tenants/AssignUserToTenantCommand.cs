@@ -2,9 +2,7 @@ using System.Net;
 using ManagementPortal.Core;
 using ManagementPortal.Core.Events.Tenants;
 using ManagementPortal.Core.Users;
-using Mapster;
 using Marten;
-using SharedKernel.Core.Users;
 using SharedKernel.Infrastructure;
 using Wolverine;
 
@@ -40,15 +38,20 @@ public class AssignUsersToTenantCommandHandler
         if (loadResult.IsError())
             return Result.Error(loadResult.ErrorValue);
         var (user, tenant) = loadResult.Value;
+        var oldTenant = user.TenantId;
+
+        user.TenantId = command.TenantId;
+        user.TenantName = tenant.Name;
 
         session.ForTenant(user.TenantId.ToString()).Delete(user);
         session.ForTenant(command.TenantId.ToString()).Store(user);
         await session.SaveChangesAsync(cancellationToken);
 
-        var userAssignedToTenant = command.Adapt<UserAssignedToTenant>() with
-        {
-            TenantName = tenant.Name, UserFirstName = user.FirstName, UserLastName = user.LastName
-        };
+        var userAssignedToTenant = new UserAssignedToTenant(
+            command.TenantId, oldTenant,
+            tenant.Name, user.Id,
+            user.FirstName, user.LastName
+        );
         await bus.PublishAsync(userAssignedToTenant);
         return Result.Ok(userAssignedToTenant);
     }

@@ -2,7 +2,7 @@ using Events.Core.Events.ManagementPortal.Users;
 using Identity.Core.Users;
 using Marten;
 
-namespace Identity.Application.EventHandlers;
+namespace Identity.Application.EventHandlers.Users;
 
 /// <summary>
 /// Handles the UserEnabled event and enables the corresponding user from the database.

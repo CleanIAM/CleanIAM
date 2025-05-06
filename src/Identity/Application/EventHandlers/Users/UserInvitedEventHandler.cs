@@ -7,7 +7,7 @@ using SharedKernel.Infrastructure;
 using Wolverine;
 using UserInvitationCreated = Identity.Core.Events.UserInvitationCreated;
 
-namespace Identity.Application.EventHandlers;
+namespace Identity.Application.EventHandlers.Users;
 
 public class UserInvitedEventHandler
 {
