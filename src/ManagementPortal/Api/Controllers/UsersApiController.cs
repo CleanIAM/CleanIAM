@@ -64,7 +64,7 @@ public class UsersApiController(
     [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> UpdateUserAsync(Guid id, UpdateUserRequest request,
+    public async Task<IActionResult> UpdateUserAsync(Guid id, [FromBody] UpdateUserRequest request,
         CancellationToken cancellationToken)
     {
         var command = request.Adapt<UpdateUserCommand>() with { Id = id };
@@ -89,10 +89,10 @@ public class UsersApiController(
     /// Disable user
     /// </summary>
     /// <param name="id">Id of the use to disable</param>
+    [HttpPut("{id:guid}/disabled")]
     [ProducesResponseType<UserDisabled>(StatusCodes.Status200OK)]
     [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
-    [HttpPut("{id:guid}/disabled")]
     public async Task<IActionResult> DisableUserAsync(Guid id, CancellationToken cancellationToken)
     {
         var command = new DisableUserCommand(id);
@@ -103,10 +103,10 @@ public class UsersApiController(
     /// Enable user
     /// </summary>
     /// <param name="id">Id of the use to enable</param>
+    [HttpPut("{id:guid}/enabled")]
     [ProducesResponseType<UserDisabled>(StatusCodes.Status200OK)]
     [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
-    [HttpPut("{id:guid}/enabled")]
     public async Task<IActionResult> EnableUserAsync(Guid id, CancellationToken cancellationToken)
     {
         var command = new EnableUserCommand(id);

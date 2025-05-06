@@ -3,7 +3,6 @@ using ManagementPortal.Core.Users;
 using Mapster;
 using Marten;
 using SharedKernel.Core;
-using SharedKernel.Core.Users;
 using SharedKernel.Infrastructure;
 using Wolverine;
 
@@ -19,7 +18,7 @@ public class UpdateUserCommandHandler
         if (user == null)
             return Result.Error("User not found");
 
-        return Result.Ok();
+        return Result.Ok(user);
     }
 
     public static async Task<Result<UserUpdated>> Handle(UpdateUserCommand command, Result<User> res,
