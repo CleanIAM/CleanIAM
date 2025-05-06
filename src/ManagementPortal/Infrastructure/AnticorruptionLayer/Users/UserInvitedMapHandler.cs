@@ -1,7 +1,7 @@
-using Events.Core.Events;
+using Events.Core.Events.ManagementPortal.Users;
 using Mapster;
 
-namespace ManagementPortal.Infrastructure.AnticorruptionLayer;
+namespace ManagementPortal.Infrastructure.AnticorruptionLayer.Users;
 
 /// <summary>
 /// Anticorruption layer mapper form local user invited event to global event defined in Events

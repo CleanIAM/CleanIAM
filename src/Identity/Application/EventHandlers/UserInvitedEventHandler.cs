@@ -1,4 +1,4 @@
-using Events.Core.Events;
+using Events.Core.Events.ManagementPortal.Users;
 using Identity.Application.Commands.Invitations;
 using Identity.Core.Users;
 using Mapster;

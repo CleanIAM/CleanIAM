@@ -48,9 +48,4 @@
     </ItemGroup>
 
 
-    <ItemGroup>
-        <Folder Include="Api\Controllers\Models\Applications\"/>
-    </ItemGroup>
-
-
 </Project>

@@ -37,21 +37,6 @@ public class UsersApiController(
     }
 
     /// <summary>
-    /// Create new user
-    /// </summary>
-    /// <param name="request">New user data</param>
-    [HttpPost]
-    [ProducesResponseType<UserCreated>(StatusCodes.Status200OK)]
-    [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> CreateNewUserAsync([FromBody] CreateNewUserRequest request,
-        CancellationToken cancellationToken)
-    {
-        var command = request.Adapt<CreateNewUserCommand>();
-        return await bus.InvokeAsync<Result<UserCreated>>(command, cancellationToken);
-    }
-
-    /// <summary>
     /// Get specific user by its id
     /// </summary>
     /// <param name="id">Id of the user to get</param>

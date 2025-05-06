@@ -1,0 +1,15 @@
+using Events.Core.Events.ManagementPortal.Users;
+using Mapster;
+
+namespace ManagementPortal.Infrastructure.AnticorruptionLayer.Users;
+
+/// <summary>
+/// Anticorruption layer mapper form local user disabled event to global event defined in Events
+/// </summary>
+public class UserDisabledMapHandler
+{
+    public static UserDisabled Handle(Core.Events.Users.UserDisabled localEvent)
+    {
+        return localEvent.Adapt<UserDisabled>();
+    }
+}

@@ -1,4 +1,4 @@
-namespace Events.Core.Events;
+namespace Events.Core.Events.ManagementPortal.Users;
 
 /// <summary>
 /// Represents an event that is triggered when a user is invited.

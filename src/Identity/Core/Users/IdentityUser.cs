@@ -81,11 +81,18 @@ public class IdentityUser
     }
 
     /// <summary>
-    /// Disables or enables the user account.
+    /// Disables the user account.
     /// </summary>
-    /// <param name="disable">Should be user Disabled/Enabled</param>
-    public void Disable(bool disable)
+    public void Disable()
     {
-        IsDisabled = disable;
+        IsDisabled = true;
+    }
+
+    /// <summary>
+    /// Enables the user account.
+    /// </summary>
+    public void Enable()
+    {
+        IsDisabled = false;
     }
 }
