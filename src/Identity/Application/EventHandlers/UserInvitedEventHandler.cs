@@ -14,7 +14,7 @@ public class UserInvitedEventHandler
     public static async Task Handle(UserInvited userInvitedEvent, IDocumentSession session, IMessageBus bus,
         CancellationToken cancellationToken)
     {
-        // Create a new user account
+        // Create a new user account if it doesn't exist
         var user = userInvitedEvent.Adapt<IdentityUser>();
         user.IsInvitePending = true;
         session.Store(user);

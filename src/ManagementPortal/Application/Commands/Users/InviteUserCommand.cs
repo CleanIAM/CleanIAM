@@ -22,7 +22,7 @@ public class InviteUserCommandHandler
         CancellationToken cancellationToken)
     {
         var user = await session.Query<User>()
-            .FirstOrDefaultAsync(u => u.Email == command.Email, cancellationToken);
+            .FirstOrDefaultAsync(u => u.Email == command.Email.ToLowerInvariant(), cancellationToken);
         if (user is not null)
             return Result.Error("User already exists", StatusCodes.Status400BadRequest);
 
@@ -37,6 +37,7 @@ public class InviteUserCommandHandler
 
         var user = command.Adapt<User>();
         user.IsInvitePending = true;
+        user.Email = user.Email.ToLowerInvariant(); // Normalize email
         session.Store(user);
         await session.SaveChangesAsync(cancellationToken);
 

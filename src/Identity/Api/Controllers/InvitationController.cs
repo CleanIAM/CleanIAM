@@ -11,7 +11,7 @@ namespace Identity.Api.Controllers;
 /// <summary>
 /// Controller for handling user invitation flow.
 /// </summary>
-[Route("invitation")]
+[Route("/invitations")]
 public class InvitationController(IMessageBus bus) : Controller
 {
     [HttpGet]
