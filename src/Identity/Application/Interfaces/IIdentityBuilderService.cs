@@ -2,7 +2,7 @@ using System.Collections.Immutable;
 using System.Security.Claims;
 using Identity.Core.Users;
 using OpenIddict.Abstractions;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 
 namespace Identity.Application.Interfaces;
 

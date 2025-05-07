@@ -2,7 +2,7 @@ using Identity.Api.ViewModels.Signup;
 using Identity.Application.Commands.Users;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 using Wolverine;
 
 namespace Identity.Api.Controllers;

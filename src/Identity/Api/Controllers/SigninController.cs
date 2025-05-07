@@ -63,7 +63,7 @@ public class SigninController(
         if (user.IsInvitePending)
         {
             ModelState.AddModelError("password",
-                "Your account is not setup yet. <br/> Check your email for the invite or contact your administrator.");
+                "Your account is not setup yet. Check your email for the invite or contact your administrator.");
             return View();
         }
 

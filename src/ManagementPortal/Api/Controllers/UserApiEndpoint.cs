@@ -4,7 +4,6 @@ using ManagementPortal.Application.Commands.Users;
 using ManagementPortal.Application.Queries.Users;
 using ManagementPortal.Core.Events.Users;
 using ManagementPortal.Core.Users;
-using ManagementPortal.Infrastructure.Utils;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

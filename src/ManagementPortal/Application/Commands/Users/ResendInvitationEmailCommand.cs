@@ -2,7 +2,7 @@ using ManagementPortal.Core.Events.Users;
 using ManagementPortal.Core.Users;
 using Mapster;
 using Marten;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 using Wolverine;
 
 namespace ManagementPortal.Application.Commands.Users;

@@ -2,7 +2,7 @@ using Identity.Api.Views.Invitation;
 using Identity.Application.Commands.Invitations;
 using Identity.Core.Events;
 using Microsoft.AspNetCore.Mvc;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 using Wolverine;
 
 namespace Identity.Api.Controllers;

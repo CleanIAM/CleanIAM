@@ -6,7 +6,7 @@ using Identity.Core.Events;
 using Identity.Core.Requests;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 using Wolverine;
 
 namespace Identity.Api.Controllers;

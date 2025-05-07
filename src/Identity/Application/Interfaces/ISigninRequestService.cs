@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using Identity.Core.Requests;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 
 namespace Identity.Application.Interfaces;
 

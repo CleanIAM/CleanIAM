@@ -3,7 +3,7 @@ using ManagementPortal.Core;
 using ManagementPortal.Core.Events.Tenants;
 using Mapster;
 using Marten;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 using Wolverine;
 
 namespace ManagementPortal.Application.Commands.Tenants;

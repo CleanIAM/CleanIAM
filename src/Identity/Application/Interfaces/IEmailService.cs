@@ -1,5 +1,5 @@
 using Identity.Core.Mails;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 
 namespace Identity.Application.Interfaces;
 

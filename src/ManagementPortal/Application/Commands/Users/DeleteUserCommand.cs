@@ -3,7 +3,7 @@ using ManagementPortal.Core.Users;
 using Mapster;
 using Marten;
 using OpenIddict.Abstractions;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 using Wolverine;
 
 namespace ManagementPortal.Application.Commands.Users;
@@ -27,11 +27,12 @@ public class DeleteUserCommandHandler
         return Result.Ok();
     }
 
-    public async Task<Result<UserDeleted>> Handle(DeleteUserCommand command, Result loadRes, IDocumentSession session,
+    public async Task<Result<UserDeleted>> Handle(DeleteUserCommand command, Result loadResult,
+        IDocumentSession session,
         IMessageBus bus, CancellationToken cancellationToken, IOpenIddictTokenManager tokenManager)
     {
-        if (loadRes.IsError())
-            return loadRes;
+        if (loadResult.IsError())
+            return loadResult;
 
         // Delete the user from the database
         session.Delete<User>(command.Id);

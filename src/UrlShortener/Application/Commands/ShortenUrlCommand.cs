@@ -1,6 +1,6 @@
 using Mapster;
 using Marten;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 using UrlShortner.Core;
 using UrlShortner.Core.Events;
 using Wolverine;
@@ -27,15 +27,15 @@ public class ShortenUrlCommandHandler
         var shortenedUrl = new ShortenedUrl
         {
             Id = Guid.NewGuid(),
-            OriginalUrl = command.Url,
+            OriginalUrl = command.Url
         };
 
         session.Store(shortenedUrl);
         await session.SaveChangesAsync();
 
         var baseUrl = configuration["UrlShortener:BaseUrl"];
-        
-        var urlShortened = shortenedUrl.Adapt<UrlShortened>() with { ShortenedUrl = $"{baseUrl}/{shortenedUrl.Id}"};
+
+        var urlShortened = shortenedUrl.Adapt<UrlShortened>() with { ShortenedUrl = $"{baseUrl}/{shortenedUrl.Id}" };
         await bus.PublishAsync(urlShortened);
         return Result.Ok(urlShortened);
     }

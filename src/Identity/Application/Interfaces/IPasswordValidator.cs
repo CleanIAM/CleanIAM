@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using FluentValidation;
-using Identity.Infrastructure;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 
 namespace Identity.Application.Interfaces;
 

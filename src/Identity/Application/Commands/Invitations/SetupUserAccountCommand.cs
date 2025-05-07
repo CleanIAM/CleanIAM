@@ -5,7 +5,7 @@ using Identity.Core.Requests;
 using Identity.Core.Users;
 using Mapster;
 using Marten;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 using Wolverine;
 
 namespace Identity.Application.Commands.Invitations;

@@ -3,7 +3,7 @@ using ManagementPortal.Core.Users;
 using Mapster;
 using Marten;
 using SharedKernel.Core;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 using Wolverine;
 
 namespace ManagementPortal.Application.Commands.Users;
@@ -31,11 +31,11 @@ public class InviteUserCommandHandler
         return Result.Ok();
     }
 
-    public async Task<Result<UserInvited>> HandleAsync(InviteUserCommand command, Result laodResult, IMessageBus bus,
+    public async Task<Result<UserInvited>> HandleAsync(InviteUserCommand command, Result loadResult, IMessageBus bus,
         IDocumentSession session, CancellationToken cancellationToken, ILogger logger)
     {
-        if (laodResult.IsError())
-            return laodResult;
+        if (loadResult.IsError())
+            return loadResult;
 
         logger.LogDebug("Inviting user [{}]", command.Email);
 

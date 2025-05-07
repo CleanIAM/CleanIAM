@@ -3,7 +3,7 @@ using Identity.Application.Commands.Invitations;
 using Identity.Core.Users;
 using Mapster;
 using Marten;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 using Wolverine;
 using UserInvitationCreated = Identity.Core.Events.UserInvitationCreated;
 

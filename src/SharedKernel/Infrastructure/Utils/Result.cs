@@ -1,7 +1,7 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 
-namespace SharedKernel.Infrastructure;
+namespace SharedKernel.Infrastructure.Utils;
 
 /// <summary>
 /// This class represents the result of an operation.

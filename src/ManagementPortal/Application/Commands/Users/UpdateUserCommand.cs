@@ -3,7 +3,7 @@ using ManagementPortal.Core.Users;
 using Mapster;
 using Marten;
 using SharedKernel.Core;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 using Wolverine;
 
 namespace ManagementPortal.Application.Commands.Users;
@@ -21,12 +21,12 @@ public class UpdateUserCommandHandler
         return Result.Ok(user);
     }
 
-    public static async Task<Result<UserUpdated>> Handle(UpdateUserCommand command, Result<User> res,
+    public static async Task<Result<UserUpdated>> Handle(UpdateUserCommand command, Result<User> loadResult,
         IDocumentSession session, IMessageBus bus)
     {
-        if (res.IsError())
-            return Result.From(res);
-        var user = res.Value;
+        if (loadResult.IsError())
+            return Result.From(loadResult);
+        var user = loadResult.Value;
 
         var updatedUser = command.Adapt(user);
         session.Store(updatedUser);

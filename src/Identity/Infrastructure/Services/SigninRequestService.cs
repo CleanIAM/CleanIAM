@@ -3,7 +3,7 @@ using System.Security.Claims;
 using Identity.Application.Interfaces;
 using Identity.Core.Requests;
 using Marten;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 
 namespace Identity.Infrastructure.Services;
 

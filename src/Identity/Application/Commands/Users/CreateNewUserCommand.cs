@@ -3,7 +3,7 @@ using Identity.Core.Users;
 using Mapster;
 using Marten;
 using SharedKernel.Core;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 using HashedPassword = Identity.Core.Users.HashedPassword;
 
 namespace Identity.Application.Commands.Users;

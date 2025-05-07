@@ -7,7 +7,7 @@ using Identity.Core.Users;
 using Mapster;
 using Marten;
 using SharedKernel.Application.Interfaces;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 using UrlShortner.Application.Commands;
 using UrlShortner.Core.Events;
 using Wolverine;

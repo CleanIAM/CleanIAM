@@ -4,7 +4,7 @@ using Coravel.Mailer.Mail.Interfaces;
 using Identity.Api.Emails;
 using Identity.Application.Interfaces;
 using Identity.Core.Mails;
-using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 
 namespace Identity.Infrastructure.Services;
 
