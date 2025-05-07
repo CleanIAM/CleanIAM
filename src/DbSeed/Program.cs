@@ -24,6 +24,7 @@ builder.Services.AddOpenIddict()
 
 var app = builder.Build();
 
-await app.ConfigureOpenIddict();
+await app.SeedOpenIddictObjects();
+await app.SeedMartenDb();
 
-Console.WriteLine("Seeding finished");
+System.Console.WriteLine("Seeding finished");

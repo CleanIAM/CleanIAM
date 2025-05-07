@@ -1,3 +1,5 @@
+using ManagementPortal.Core;
+using Marten;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
 using SharedKernel.Core.Database;
@@ -13,7 +15,7 @@ public static class SeedDb
         dbContext.Database.EnsureCreated();
     }
 
-    public static async Task ConfigureOpenIddict(this IApplicationBuilder app)
+    public static async Task SeedOpenIddictObjects(this IApplicationBuilder app)
     {
         await using var scope = app.ApplicationServices.CreateAsyncScope();
 
@@ -148,17 +150,14 @@ public static class SeedDb
         };
 
         foreach (var defaultScope in defaultScopes)
-        {
             if (await scopeManager.FindByNameAsync(defaultScope) is null)
                 await scopeManager.CreateAsync(new OpenIddictScopeDescriptor
                 {
                     Name = defaultScope
                 });
-        }
 
         var testingScope = "BE1";
         if (await scopeManager.FindByNameAsync(testingScope) is null)
-        {
             await scopeManager.CreateAsync(new OpenIddictScopeDescriptor
             {
                 Name = testingScope,
@@ -167,6 +166,22 @@ public static class SeedDb
                     "example-BE-client"
                 }
             });
-        }
+    }
+
+    public static async Task SeedMartenDb(this IApplicationBuilder app)
+    {
+        await using var scope = app.ApplicationServices.CreateAsyncScope();
+
+        var session = scope.ServiceProvider.GetRequiredService<IDocumentSession>();
+
+        // Generate default tenant
+        var defaultTenant = new Tenant
+        {
+            Id = Guid.Empty,
+            Name = "Default Tenant"
+        };
+        session.Store(defaultTenant);
+
+        await session.SaveChangesAsync();
     }
 }

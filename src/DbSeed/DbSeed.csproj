@@ -37,6 +37,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Identity\Identity.csproj"/>
+        <ProjectReference Include="..\ManagementPortal\ManagementPortal.csproj"/>
         <ProjectReference Include="..\SharedKernel\SharedKernel.csproj"/>
     </ItemGroup>
 
