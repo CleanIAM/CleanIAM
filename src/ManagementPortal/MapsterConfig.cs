@@ -1,5 +1,7 @@
+using ManagementPortal.Api.Controllers.Models;
 using ManagementPortal.Application.Commands.OpenIdApplications;
 using ManagementPortal.Core.OpenIdApplication;
+using ManagementPortal.Core.Users;
 using Mapster;
 using OpenIddict.Abstractions;
 using OpenIddict.EntityFrameworkCore.Models;
@@ -58,5 +60,8 @@ public static class MapsterConfig
                 dest.RedirectUris.UnionWith(src.RedirectUris);
                 dest.PostLogoutRedirectUris.UnionWith(src.PostLogoutRedirectUris);
             });
+
+        TypeAdapterConfig<User, ApiUserModel>.ForType()
+            .Map(dest => dest.IsMFAConfigured, src => src.MfaConfig.IsMfaConfigured);
     }
 }

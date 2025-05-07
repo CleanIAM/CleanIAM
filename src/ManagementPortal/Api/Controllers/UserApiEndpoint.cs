@@ -1,7 +1,11 @@
 using ManagementPortal.Api.Controllers.Models;
+using ManagementPortal.Api.Controllers.Models.Requests.Mfa;
 using ManagementPortal.Api.Controllers.Models.Requests.User;
+using ManagementPortal.Api.Controllers.Models.Responses.Mfa;
+using ManagementPortal.Application.Commands.Mfa;
 using ManagementPortal.Application.Commands.Users;
 using ManagementPortal.Application.Queries.Users;
+using ManagementPortal.Core.Events.Mfa;
 using ManagementPortal.Core.Events.Users;
 using ManagementPortal.Core.Users;
 using Mapster;
@@ -9,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Validation.AspNetCore;
 using SharedKernel.Infrastructure;
+using SharedKernel.Infrastructure.Utils;
 using Wolverine;
 
 namespace ManagementPortal.Api.Controllers;
@@ -63,7 +68,7 @@ public class UserApiEndpoint(
             return userIdRes;
         var userId = userIdRes.Value;
 
-        var command = request.Adapt<UpdateUserCommand>() with { Id = userId };
+        var command = request.Adapt<UpdateUserSimpleCommand>() with { Id = userId };
 
         return await bus.InvokeAsync<Result<UserUpdated>>(command);
     }
@@ -72,15 +77,89 @@ public class UserApiEndpoint(
     /// Enable or disable MFA for the current user
     /// </summary>
     [HttpPut("mfa/enabled")]
-    public async Task<IActionResult> ToggleMfa([FromBody] UpdateMfaRequest request)
+    [ProducesResponseType<MfaUpdatedResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ToggleMfa([FromBody] EnableMfaRequest request)
     {
         var userIdRes = User.GetUserId();
         if (userIdRes.IsError())
             return userIdRes;
         var userId = userIdRes.Value;
 
-        var command = request.Adapt<ToggleMFAForUserCommand>() with { Id = userId };
+        if (request.Enable)
+        {
+            var command = new EnableMfaForUserCommand(userId);
+            var res = await bus.InvokeAsync<Result<MfaEnabledForUser>>(command);
+            if (res.IsError())
+                return res;
+            return Result.Ok(new MfaUpdatedResponse
+            {
+                MfaEnabled = true
+            });
+        }
+        else
+        {
+            var command = new DisableMfaForUserCommand(userId);
+            var res = await bus.InvokeAsync<Result<MfaDisabledForUser>>(command);
+            if (res.IsError())
+                return res;
+            return Result.Ok(new MfaUpdatedResponse
+            {
+                MfaEnabled = false
+            });
+        }
+    }
 
-        return await bus.InvokeAsync<Result<UserUpdated>>(command);
+    /// <summary>
+    /// Generate a QR code for MFA connection
+    /// </summary>
+    /// <returns>The qrcode image encoded in base64</returns>
+    [HttpGet("mfa/configuration")]
+    [ProducesResponseType<MfaConfigurationResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetMfaQrCode()
+    {
+        var userIdRes = User.GetUserId();
+        if (userIdRes.IsError())
+            return userIdRes;
+        var userId = userIdRes.Value;
+
+        var command = new GenerateMfaConnectionQrCodeCommand(userId);
+        var res = await bus.InvokeAsync<Result<string>>(command);
+
+        if (res.IsError())
+            return res;
+        return Result.Ok(new MfaConfigurationResponse
+        {
+            QrCode = res.Value
+        });
+    }
+
+    /// <summary>
+    /// Validate Totp and if valid, configure MFA for the user
+    /// </summary>
+    [HttpPost("mfa/configuration")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ConfigureMfa([FromBody] ConfigureMfaRequest request)
+    {
+        var userIdRes = User.GetUserId();
+        if (userIdRes.IsError())
+            return userIdRes;
+        var userId = userIdRes.Value;
+
+        var command = request.Adapt<ValidateMfaConnectionCommand>() with { Id = userId };
+        var res = await bus.InvokeAsync<Result<MfaConfiguredForUser>>(command);
+
+        if (res.IsError())
+            return res;
+        // Do not return MfaConfiguredForUser event since it contains sensitive data (TotpSecretKey)
+        return Result.Ok();
     }
 }

@@ -1,3 +1,5 @@
+using SharedKernel.Core;
+
 namespace Events.Core.Events.ManagementPortal.Users;
 
 /// <summary>
@@ -7,4 +9,5 @@ namespace Events.Core.Events.ManagementPortal.Users;
 /// <param name="Email">Email of the invited user</param>
 /// <param name="FirstName">First name of the invited user</param>
 /// <param name="LastName">Last name of the invited user</param>
-public record UserInvited(Guid Id, string Email, string FirstName, string LastName);
+/// <param name="Roles">Roles of the invited user</param>
+public record UserInvited(Guid Id, string Email, string FirstName, string LastName, UserRole[] Roles);

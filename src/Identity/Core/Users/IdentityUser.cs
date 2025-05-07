@@ -1,3 +1,4 @@
+using ManagementPortal.Core.Users;
 using SharedKernel.Core;
 
 namespace Identity.Core.Users;
@@ -50,9 +51,14 @@ public class IdentityUser
     public HashedPassword HashedPassword { get; set; }
 
     /// <summary>
-    /// Indicates whether the user has enabled multi-factor authentication (MFA).
+    /// Indicates whether the user has enabled multifactor authentication (MFA).
     /// </summary>
     public bool IsMFAEnabled { get; set; }
+
+    /// <summary>
+    /// The configuration for multifactor authentication (MFA) for the user.
+    /// </summary>
+    public MfaConfig MfaConfig { get; set; } = new() { IsMfaConfigured = false, TotpSecretKey = "" };
 
     /// <summary>
     /// Indicates whether the user has a pending invite or the profile is already set up.

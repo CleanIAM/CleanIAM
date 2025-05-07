@@ -43,9 +43,14 @@ public class ApiUserModel
     public bool IsDisabled { get; set; }
 
     /// <summary>
-    /// Indicates whether the user has enabled multi-factor authentication (MFA).
+    /// Indicates whether the user has enabled multifactor authentication (MFA).
     /// </summary>
     public bool IsMFAEnabled { get; set; }
+
+    /// <summary>
+    /// Indicates whether the user has configured multifactor authentication (MFA).
+    /// </summary>
+    public bool IsMFAConfigured { get; set; }
 
     /// <summary>
     /// Indicates whether the user has a pending invite or the profile is already set up.
