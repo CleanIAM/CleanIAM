@@ -19,7 +19,7 @@ public class TenantUpdatedEventHandler
             user.TenantName = tenantUpdated.Name;
 
         // Store updated users
-        session.Update(users);
+        session.Update(users.ToArray());
         await session.SaveChangesAsync(cancellationToken);
     }
 }

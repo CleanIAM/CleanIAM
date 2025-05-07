@@ -25,6 +25,9 @@ public class UpdateTenantCommandHandler
         if (tenant is null)
             return Result.Error("Tenant not found", HttpStatusCode.NotFound);
 
+        if (tenant.Id == Guid.Empty)
+            return Result.Error("Default tenant cannot be updated", HttpStatusCode.Forbidden);
+
         return Result.Ok(tenant);
     }
 

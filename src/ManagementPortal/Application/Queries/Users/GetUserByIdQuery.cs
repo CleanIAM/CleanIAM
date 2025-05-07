@@ -1,12 +1,17 @@
-using ManagementPortal.Core;
 using ManagementPortal.Core.Users;
 using Marten;
-using SharedKernel.Core.Users;
 
 namespace ManagementPortal.Application.Queries.Users;
 
+/// <summary>
+/// Query to get user by id
+/// </summary>
+/// <param name="Id">Id of user to get</param>
 public record GetUserByIdQuery(Guid Id);
 
+/// <summary>
+/// Handler for GetUserByIdQuery
+/// </summary>
 public class GetUserByIdQueryHandler
 {
     public static async Task<User?> Handle(GetUserByIdQuery query, IQuerySession session)
