@@ -6,10 +6,12 @@ using Marten;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using SharedKernel.Application.Interfaces;
+using SharedKernel.Application.Interfaces.Utils;
 using SharedKernel.Application.Middlewares;
 using SharedKernel.Application.Swagger;
 using SharedKernel.Core.Database;
 using SharedKernel.Infrastructure.Services;
+using SharedKernel.Infrastructure.Utils;
 using Wolverine;
 using Wolverine.FluentValidation;
 using Wolverine.Http;
@@ -163,6 +165,8 @@ public static class DependencyInjection
         services.AddMapster();
 
         services.AddTransient<IAppConfiguration>(_ => ParseConfiguration(configuration));
+        services.AddTransient<ITotpValidator, TotpValidator>();
+
         return services;
     }
 
