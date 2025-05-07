@@ -1,8 +1,10 @@
 using System.Net;
 using ManagementPortal.Api.Controllers.Models;
 using ManagementPortal.Api.Controllers.Models.Requests.Users;
+using ManagementPortal.Application.Commands.Mfa;
 using ManagementPortal.Application.Commands.Users;
 using ManagementPortal.Application.Queries.Users;
+using ManagementPortal.Core.Events.Mfa;
 using ManagementPortal.Core.Events.Users;
 using ManagementPortal.Core.Users;
 using Mapster;
@@ -152,5 +154,21 @@ public class UsersApiController(
         if (tenant is not null && User.GetRoles().Contains(UserRole.SuperAdmin))
             return await bus.InvokeForTenantAsync<Result<UserInvited>>(tenant.ToString()!, command);
         return await bus.InvokeAsync<Result<UserInvited>>(command);
+    }
+
+    /// <summary>
+    /// Disable MFA for user
+    /// </summary>
+    /// <param name="id">Id of user to disable mfa for</param>
+    /// <returns></returns>
+    [HttpPost("{id:guid}/mfa/disabled")]
+    [ProducesResponseType<MfaDisabledForUser>(StatusCodes.Status200OK)]
+    [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DisableMfaForUser([FromRoute] Guid id)
+    {
+        var command = new DisableMfaForUserCommand(id);
+        return await bus.InvokeAsync<Result<MfaDisabledForUser>>(command);
     }
 }

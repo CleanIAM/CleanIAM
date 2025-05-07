@@ -162,4 +162,28 @@ public class UserApiEndpoint(
         // Do not return MfaConfiguredForUser event since it contains sensitive data (TotpSecretKey)
         return Result.Ok();
     }
+
+    /// <summary>
+    /// Remove mfa configuration command for user and disable mfa.
+    /// </summary>
+    [HttpDelete("mfa/configuration")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> CleanMfa()
+    {
+        var userIdRes = User.GetUserId();
+        if (userIdRes.IsError())
+            return userIdRes;
+        var userId = userIdRes.Value;
+
+        var command = new CleanMfaConfigurationCommand(userId);
+        var res = await bus.InvokeAsync<Result<MfaConfiguredForUser>>(command);
+
+        if (res.IsError())
+            return res;
+        // Do not return MfaConfiguredForUser event since it contains sensitive data (TotpSecretKey)
+        return Result.Ok();
+    }
 }
