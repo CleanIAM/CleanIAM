@@ -74,9 +74,12 @@ public static class MapsterConfig
             .AfterMapping((src, dest) => { dest.Resources = JsonSerializer.Serialize(src.Resources); });
 
         TypeAdapterConfig<OpenIddictEntityFrameworkCoreScope<Guid>, Scope>.ForType()
+            .Ignore(dest => dest.Resources)
             .AfterMapping((src, dest) =>
             {
-                dest.Resources = JsonSerializer.Deserialize<string[]>(src.Resources ?? "") ?? [];
+                var resouce = src.Resources ?? "[]";
+                var json = JsonSerializer.Deserialize<string[]>(resouce);
+                dest.Resources = json ?? [];
             });
     }
 }
