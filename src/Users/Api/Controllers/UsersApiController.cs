@@ -4,8 +4,6 @@ using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Validation.AspNetCore;
-using SharedKernel.Core;
-using SharedKernel.Infrastructure;
 using SharedKernel.Infrastructure.Utils;
 using Users.Api.Controllers.Models;
 using Users.Api.Controllers.Models.Requests.Users;
@@ -126,12 +124,9 @@ public class UsersApiController(
     [ProducesResponseType<UserInvited>(StatusCodes.Status200OK)]
     [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> InviteUser([FromBody] InviteUserRequest request, [FromQuery] Guid? tenant)
+    public async Task<IActionResult> InviteUser([FromBody] InviteUserRequest request)
     {
         var command = request.Adapt<InviteUserCommand>();
-        // Invoke for custom tenant only if user is super admin and custom tenant is provided
-        if (tenant is not null && User.GetRoles().Contains(UserRole.MasterAdmin))
-            return await bus.InvokeForTenantAsync<Result<UserInvited>>(tenant.ToString()!, command);
         return await bus.InvokeAsync<Result<UserInvited>>(command);
     }
 
@@ -145,14 +140,9 @@ public class UsersApiController(
     [ProducesResponseType<UserInvited>(StatusCodes.Status200OK)]
     [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ResendInvitationEmail([FromRoute] Guid id,
-        [FromQuery]
-        Guid? tenant)
+    public async Task<IActionResult> ResendInvitationEmail([FromRoute] Guid id)
     {
         var command = new ResendInvitationEmailCommand(id);
-        // Invoke for custom tenant only if user is super admin and custom tenant is provided
-        if (tenant is not null && User.GetRoles().Contains(UserRole.MasterAdmin))
-            return await bus.InvokeForTenantAsync<Result<UserInvited>>(tenant.ToString()!, command);
         return await bus.InvokeAsync<Result<UserInvited>>(command);
     }
 
