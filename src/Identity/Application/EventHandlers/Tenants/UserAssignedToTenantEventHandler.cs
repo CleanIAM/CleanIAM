@@ -9,23 +9,22 @@ public class UserAssignedToTenantEventHandler
     public static async Task Handle(UserAssignedToTenant @event, IDocumentSession session,
         CancellationToken cancellationToken, ILogger logger)
     {
-        var user = await session.Query<IdentityUser>()
-            .Where(user => user.Id == @event.UserId && user.AnyTenant())
-            .FirstOrDefaultAsync(cancellationToken);
-
+        var user = await session.LoadAsync<IdentityUser>(@event.UserId, cancellationToken);
         if (user is null)
         {
-            logger.LogError(
-                $"[UserAssignedToTenantEventHandler] User with id [{@event.UserId}] not found");
+            logger.LogError("[UserAssignedToTenantEventHandler] User not found: {UserId}", @event.UserId);
             return;
         }
 
-        // Update user
+        // Update the user's tenant information
+        var oldTenantId = user.TenantId;
         user.TenantId = @event.NewTenantId;
         user.TenantName = @event.TenantName;
-        session.ForTenant(@event.OldTenantId.ToString()).Delete<IdentityUser>(user.Id);
-        session.ForTenant(@event.NewTenantId.ToString()).Store(user);
 
+        // Store the user in the new tenant
+        session.ForTenant(oldTenantId.ToString()).Delete(user);
+        session.ForTenant(user.TenantId.ToString()).Store(user);
+        await session.SaveChangesAsync(cancellationToken);
         //TODO: move other user objects in identity to new tenant
     }
 }
