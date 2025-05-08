@@ -2,8 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity", "src\Identity\Identity.csproj", "{ADAE613C-AAD9-42DE-8FE2-4B8D1E1B9127}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagementPortal", "src\ManagementPortal\ManagementPortal.csproj", "{268654A1-8ADF-4FFB-A8B0-5E7FF1B38C4A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedKernel", "src\SharedKernel\SharedKernel.csproj", "{071AEEEF-7B56-4380-9B21-9A692D6200A4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Events", "src\Events\Events.csproj", "{EA19333A-43B9-4023-BB56-9FC07EF8CD9A}"

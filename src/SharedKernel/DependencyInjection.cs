@@ -14,7 +14,6 @@ using SharedKernel.Infrastructure.Services;
 using SharedKernel.Infrastructure.Utils;
 using Wolverine;
 using Wolverine.FluentValidation;
-using Wolverine.Http;
 using Wolverine.Http.Marten;
 using Wolverine.Marten;
 
@@ -22,6 +21,12 @@ namespace SharedKernel;
 
 public static class DependencyInjection
 {
+    /// <summary>
+    /// Configure parts the project that need asccess to all assemblies (e.g. Wolverine)
+    /// </summary>
+    /// <param name="host"></param>
+    /// <param name="assemblies"></param>
+    /// <returns></returns>
     public static IHostBuilder AddProjects(this IHostBuilder host, string[] assemblies)
     {
         host.UseWolverine(opts =>
@@ -39,22 +44,23 @@ public static class DependencyInjection
         return host;
     }
 
+    /// <summary>
+    /// Add shared configuration to the project
+    /// </summary>
     public static WebApplication UseSharedKernel(this WebApplication app)
     {
-        // Let's add in Wolverine HTTP endpoints to the routing tree
-        app.MapWolverineEndpoints(opts =>
-        {
-            opts.TenantId.IsClaimTypeNamed(SharedKernelConstants.TenantClaimName);
-
-            opts.TenantId.DefaultIs(Guid.Empty.ToString());
-        });
-
-        // Register middleware to parse tenant id from claims
+        // Register middleware to extract tenant id from claims (or query string)
         app.UseMiddleware<TenantParserMiddleware>();
 
         return app;
     }
 
+    /// <summary>
+    /// Configure databases <br />
+    /// This project uses two databases:<br />
+    /// 1. ApplicationDbContext - used for OpenIddict<br />
+    /// 2. Marten - used for the rest of the application<br />
+    /// </summary>
     public static IServiceCollection AddDatabases(this IServiceCollection serviceCollection,
         IConfiguration configuration)
     {
@@ -68,6 +74,9 @@ public static class DependencyInjection
         return serviceCollection;
     }
 
+    /// <summary>
+    /// Configure Marten database
+    /// </summary>
     public static IServiceCollection AddMarten(this IServiceCollection services, IConfiguration configuration)
     {
         var dbSchemeName = configuration.GetSection("DbSettings:DatabaseNames")["MartenDb"];
@@ -153,7 +162,9 @@ public static class DependencyInjection
 
             // Make all strings nullable by defaults
             options.SupportNonNullableReferenceTypes();
+            // Make all properties required by default (For nicer api generation on FE. See docs)
             options.SchemaFilter<MakeAllPropertiesRequiredFilter>();
+            // Add custom operation filter to add optional tenant query parameter to all endpoints
             options.OperationFilter<AddPrionalTenantQuery>();
         });
 
@@ -161,6 +172,9 @@ public static class DependencyInjection
     }
 
 
+    /// <summary>
+    /// Add all utils to the project
+    /// </summary>
     public static IServiceCollection AddUtils(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMapster();

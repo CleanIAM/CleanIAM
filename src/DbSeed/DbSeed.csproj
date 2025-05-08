@@ -42,7 +42,6 @@
         <ProjectReference Include="..\..\Tenants\Tenants.csproj"/>
         <ProjectReference Include="..\..\Users\Users.csproj"/>
         <ProjectReference Include="..\Identity\Identity.csproj"/>
-        <ProjectReference Include="..\ManagementPortal\ManagementPortal.csproj"/>
         <ProjectReference Include="..\SharedKernel\SharedKernel.csproj"/>
     </ItemGroup>
 

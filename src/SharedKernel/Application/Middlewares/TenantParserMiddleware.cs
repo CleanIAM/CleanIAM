@@ -15,6 +15,7 @@ public class TenantParserMiddleware(RequestDelegate next)
     {
         if (context.User.Identity is { IsAuthenticated: true })
         {
+            // Try get tenant from query string
             var queryTenant = GetTenantFromQueryString(context);
             if (queryTenant != null && IsMasterAdmin(context))
             {

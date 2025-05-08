@@ -3,7 +3,6 @@ using Coravel;
 using DotNetEnv;
 using Identity;
 using Lamar.Microsoft.DependencyInjection;
-using ManagementPortal;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Scopes;
@@ -52,7 +51,6 @@ builder.Services.AddScopes(builder.Configuration);
 builder.Services.AddUsers(builder.Configuration);
 builder.Services.AddApplications(builder.Configuration);
 builder.Services.AddTenants(builder.Configuration);
-builder.Services.AddManagementPortal(builder.Configuration);
 
 // Configure Razor view locations
 builder.Services.Configure<RazorViewEngineOptions>(options =>
