@@ -34,6 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Applications\Applications.csproj"/>
         <ProjectReference Include="..\..\Scopes\Scopes.csproj"/>
         <ProjectReference Include="..\..\Users\Users.csproj"/>
         <ProjectReference Include="..\Identity\Identity.csproj"/>

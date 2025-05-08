@@ -1,3 +1,4 @@
+using Applications;
 using Coravel;
 using DotNetEnv;
 using Identity;
@@ -38,13 +39,15 @@ string[] assemblies =
     "ManagementPortal",
     "UrlShortener",
     "Scopes",
-    "Users"
+    "Users",
+    "Applications"
 ];
 
 builder.Services.AddWolverineHttp();
 builder.Host.AddProjects(assemblies);
 builder.Services.AddScopes(builder.Configuration);
 builder.Services.AddUsers(builder.Configuration);
+builder.Services.AddApplications(builder.Configuration);
 builder.Services.AddIdentityProject(builder.Configuration);
 builder.Services.AddManagementPortal(builder.Configuration);
 
@@ -85,6 +88,7 @@ app.MapControllers();
 app.UseSharedKernel();
 app.UseScopes();
 app.UseUsers();
+app.UseApplications();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
