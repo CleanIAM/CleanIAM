@@ -59,8 +59,7 @@ public class ScopesApiEndpoint(IMessageBus bus) : Controller
         CancellationToken cancellationToken)
     {
         var command = request.Adapt<CreateNewScopeCommand>();
-        var result = await bus.InvokeAsync<ScopeCreated>(command, cancellationToken);
-        return Result.Ok(result);
+        return await bus.InvokeAsync<Result<ScopeCreated>>(command, cancellationToken);
     }
 
     /// <summary>
@@ -76,8 +75,7 @@ public class ScopesApiEndpoint(IMessageBus bus) : Controller
         UpdateScopeRequest request, CancellationToken cancellationToken)
     {
         var command = request.Adapt<UpdateScopeCommand>() with { Name = scopeName };
-        var result = await bus.InvokeAsync<ScopeUpdated>(command, cancellationToken);
-        return Result.Ok(result);
+        return await bus.InvokeAsync<Result<ScopeUpdated>>(command, cancellationToken);
     }
 
     /// <summary>
@@ -92,7 +90,6 @@ public class ScopesApiEndpoint(IMessageBus bus) : Controller
     public async Task<IActionResult> DeleteScope([FromRoute] string scopeName, CancellationToken cancellationToken)
     {
         var command = new DeleteScopeCommand(scopeName);
-        var result = await bus.InvokeAsync<ScopeDeleted>(command, cancellationToken);
-        return Result.Ok(result);
+        return await bus.InvokeAsync<Result<ScopeDeleted>>(command, cancellationToken);
     }
 }
