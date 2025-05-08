@@ -54,7 +54,7 @@ public static class ScopesConstants
         {
             Name = OpenIddictConstants.Scopes.OfflineAccess,
             DisplayName = "Offline Access",
-            Description = "Access to your offline access",
+            Description = "Allow refresh token usage",
             Resources = ["management-portal"]
         }
     ];

@@ -109,7 +109,7 @@ public static class DependencyInjection
                     {
                         config.SetClientId(googleClientId);
                         config.SetClientSecret(googleClientSecret);
-                        config.SetRedirectUri($"external-providers/callback/google");
+                        config.SetRedirectUri("external-providers/callback/google");
                         config.AddScopes("email", "profile", "openid");
                     });
             })
@@ -120,13 +120,10 @@ public static class DependencyInjection
 
                 // Register the ASP.NET Core host.
                 options.UseAspNetCore();
-                
+
                 // Enable authorization entry validation, which is required to be able
                 // to reject access tokens retrieved from a revoked authorization code.
                 options.EnableAuthorizationEntryValidation();
-
-                
-                
             });
         ;
         return serviceCollection;
