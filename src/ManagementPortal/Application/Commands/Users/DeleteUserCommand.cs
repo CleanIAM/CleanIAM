@@ -34,12 +34,14 @@ public class DeleteUserCommandHandler
         if (loadResult.IsError())
             return loadResult;
 
+        // Revoke all tokens associated with the user
+        // TODO: check why is it not working
+
+        // await tokenManager.RevokeBySubjectAsync(command.Id.ToString(), cancellationToken);
+
         // Delete the user from the database
         session.Delete<User>(command.Id);
         await session.SaveChangesAsync(cancellationToken);
-
-        // Revoke all tokens associated with the user
-        await tokenManager.RevokeBySubjectAsync(command.Id.ToString(), cancellationToken);
 
         var userDeleted = command.Adapt<UserDeleted>();
         await bus.PublishAsync(userDeleted);
