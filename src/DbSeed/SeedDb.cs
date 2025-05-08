@@ -1,8 +1,12 @@
+using ManagementPortal;
 using ManagementPortal.Core;
+using Mapster;
 using Marten;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
+using OpenIddict.Core;
 using SharedKernel.Core.Database;
+using OpenIddictScope = OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreScope<System.Guid>;
 
 namespace DbConfig;
 
@@ -135,32 +139,21 @@ public static class SeedDb
 
     private static async Task CreateDefaultOidcScopes(AsyncServiceScope serviceScope)
     {
-        var scopeManager = serviceScope.ServiceProvider.GetRequiredService<IOpenIddictScopeManager>();
+        var scopeManager = serviceScope.ServiceProvider.GetRequiredService<OpenIddictScopeManager<OpenIddictScope>>();
 
-        var defaultScopes = new[]
-        {
-            OpenIddictConstants.Scopes.Address,
-            OpenIddictConstants.Scopes.Email,
-            OpenIddictConstants.Scopes.OfflineAccess,
-            OpenIddictConstants.Scopes.Profile,
-            OpenIddictConstants.Scopes.OpenId,
-            OpenIddictConstants.Scopes.Phone,
-            OpenIddictConstants.Scopes.Profile,
-            OpenIddictConstants.Scopes.Roles
-        };
+        var defaultScopes = ManagementPortalConstatns.DefaultScopes;
 
         foreach (var defaultScope in defaultScopes)
-            if (await scopeManager.FindByNameAsync(defaultScope) is null)
-                await scopeManager.CreateAsync(new OpenIddictScopeDescriptor
-                {
-                    Name = defaultScope
-                });
+            if (await scopeManager.FindByNameAsync(defaultScope.Name) is null)
+                await scopeManager.CreateAsync(defaultScope.Adapt<OpenIddictScope>());
 
         var testingScope = "BE1";
         if (await scopeManager.FindByNameAsync(testingScope) is null)
             await scopeManager.CreateAsync(new OpenIddictScopeDescriptor
             {
                 Name = testingScope,
+                Description = "Testing scope",
+                DisplayName = "Testing scope",
                 Resources =
                 {
                     "example-BE-client"
