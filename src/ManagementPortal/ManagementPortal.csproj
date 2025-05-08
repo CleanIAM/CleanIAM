@@ -53,7 +53,7 @@
 
     <ItemGroup>
         <Folder Include="Application\Queries\Scopes\"/>
-        <Folder Include="Infrastructure\AnticorruptionLayer\Scopes\"/>
+        <Folder Include="Application\Queries\Users\"/>
     </ItemGroup>
 
 

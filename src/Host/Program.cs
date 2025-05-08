@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Scopes;
 using SharedKernel;
+using Users;
 using Wolverine.Http;
 
 Env.Load();
@@ -36,12 +37,14 @@ string[] assemblies =
     "SharedKernel",
     "ManagementPortal",
     "UrlShortener",
-    "Scopes"
+    "Scopes",
+    "Users"
 ];
 
 builder.Services.AddWolverineHttp();
 builder.Host.AddProjects(assemblies);
 builder.Services.AddScopes(builder.Configuration);
+builder.Services.AddUsers(builder.Configuration);
 builder.Services.AddIdentityProject(builder.Configuration);
 builder.Services.AddManagementPortal(builder.Configuration);
 
@@ -81,6 +84,7 @@ app.MapControllers();
 
 app.UseSharedKernel();
 app.UseScopes();
+app.UseUsers();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
