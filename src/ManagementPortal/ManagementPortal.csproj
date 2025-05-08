@@ -52,11 +52,16 @@
 
 
     <ItemGroup>
+        <Folder Include="Api\Controllers\Models\Requests\Tenants\"/>
         <Folder Include="Api\Controllers\Models\Responses\Mfa\"/>
         <Folder Include="Application\Commands\OpenIdApplications\"/>
+        <Folder Include="Application\Commands\Tenants\"/>
         <Folder Include="Application\Queries\OpenIdApplications\"/>
         <Folder Include="Application\Queries\Scopes\"/>
+        <Folder Include="Application\Queries\Tenants\"/>
         <Folder Include="Application\Queries\Users\"/>
+        <Folder Include="Core\Events\Tenants\"/>
+        <Folder Include="Infrastructure\AnticorruptionLayer\Tenants\"/>
     </ItemGroup>
 
 

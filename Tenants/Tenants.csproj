@@ -9,15 +9,25 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DotNetEnv" Version="3.1.1"/>
+        <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.4.0"/>
+        <PackageReference Include="ExpressionDebugger" Version="2.2.1"/>
+        <PackageReference Include="Mapster" Version="7.4.0"/>
+        <PackageReference Include="Mapster.Async" Version="2.0.1"/>
+        <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1"/>
+        <PackageReference Include="Marten" Version="7.38.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.15"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
+        <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.8.0"/>
         <PackageReference Include="Npgsql" Version="9.0.3"/>
         <PackageReference Include="NSec.Cryptography" Version="24.4.0"/>
         <PackageReference Include="OpenIddict.AspNetCore" Version="6.2.0"/>
         <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="6.2.0"/>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4"/>
+        <PackageReference Include="Otp.NET" Version="1.4.0"/>
+        <PackageReference Include="QRCoder" Version="1.6.0"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
+        <PackageReference Include="System.Drawing.Common" Version="9.0.4"/>
+        <PackageReference Include="System.Text.Json" Version="9.0.3"/>
         <PackageReference Include="WolverineFx" Version="3.10.4"/>
         <PackageReference Include="WolverineFx.FluentValidation" Version="3.6.5"/>
         <PackageReference Include="WolverineFx.Http" Version="3.6.5"/>
@@ -34,22 +44,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Applications\Applications.csproj"/>
-        <ProjectReference Include="..\..\Scopes\Scopes.csproj"/>
-        <ProjectReference Include="..\..\Tenants\Tenants.csproj"/>
-        <ProjectReference Include="..\..\Users\Users.csproj"/>
-        <ProjectReference Include="..\Identity\Identity.csproj"/>
-        <ProjectReference Include="..\ManagementPortal\ManagementPortal.csproj"/>
-        <ProjectReference Include="..\SharedKernel\SharedKernel.csproj"/>
-        <ProjectReference Include="..\UrlShortener\UrlShortener.csproj"/>
+        <ProjectReference Include="..\src\Events\Events.csproj"/>
     </ItemGroup>
-
-    <Target Name="Identity_wwwroot" BeforeTargets="Build">
-        <Exec Command="cp -r ../Identity/wwwroot/* wwwroot"/>
-    </Target>
-
-    <Target Name="Tailwind" BeforeTargets="Build">
-        <Exec Command="cd ..; npx @tailwindcss/cli -i Host/wwwroot/css/base.css -o Host/wwwroot/css/main.css"/>
-    </Target>
 
 </Project>

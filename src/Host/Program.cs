@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Scopes;
 using SharedKernel;
+using Tenants;
 using Users;
 using Wolverine.Http;
 
@@ -40,15 +41,17 @@ string[] assemblies =
     "UrlShortener",
     "Scopes",
     "Users",
-    "Applications"
+    "Applications",
+    "Tenants"
 ];
 
 builder.Services.AddWolverineHttp();
 builder.Host.AddProjects(assemblies);
+builder.Services.AddIdentityProject(builder.Configuration);
 builder.Services.AddScopes(builder.Configuration);
 builder.Services.AddUsers(builder.Configuration);
 builder.Services.AddApplications(builder.Configuration);
-builder.Services.AddIdentityProject(builder.Configuration);
+builder.Services.AddTenants(builder.Configuration);
 builder.Services.AddManagementPortal(builder.Configuration);
 
 // Configure Razor view locations

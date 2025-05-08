@@ -1,4 +1,3 @@
-using ManagementPortal.Core;
 using Mapster;
 using Marten;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +5,7 @@ using OpenIddict.Abstractions;
 using OpenIddict.Core;
 using Scopes;
 using SharedKernel.Core.Database;
+using Tenants.Core;
 using OpenIddictScope = OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreScope<System.Guid>;
 
 namespace DbConfig;
