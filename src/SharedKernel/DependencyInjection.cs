@@ -154,6 +154,7 @@ public static class DependencyInjection
             // Make all strings nullable by defaults
             options.SupportNonNullableReferenceTypes();
             options.SchemaFilter<MakeAllPropertiesRequiredFilter>();
+            options.OperationFilter<AddPrionalTenantQuery>();
         });
 
         return services;

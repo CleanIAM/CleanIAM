@@ -130,7 +130,7 @@ public class UsersApiController(
     {
         var command = request.Adapt<InviteUserCommand>();
         // Invoke for custom tenant only if user is super admin and custom tenant is provided
-        if (tenant is not null && User.GetRoles().Contains(UserRole.SuperAdmin))
+        if (tenant is not null && User.GetRoles().Contains(UserRole.MasterAdmin))
             return await bus.InvokeForTenantAsync<Result<UserInvited>>(tenant.ToString()!, command);
         return await bus.InvokeAsync<Result<UserInvited>>(command);
     }
@@ -151,7 +151,7 @@ public class UsersApiController(
     {
         var command = new ResendInvitationEmailCommand(id);
         // Invoke for custom tenant only if user is super admin and custom tenant is provided
-        if (tenant is not null && User.GetRoles().Contains(UserRole.SuperAdmin))
+        if (tenant is not null && User.GetRoles().Contains(UserRole.MasterAdmin))
             return await bus.InvokeForTenantAsync<Result<UserInvited>>(tenant.ToString()!, command);
         return await bus.InvokeAsync<Result<UserInvited>>(command);
     }
