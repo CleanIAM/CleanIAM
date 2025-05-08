@@ -20,7 +20,7 @@ public record InviteUserCommand(Guid Id, string Email, string FirstName, string 
 
 public class InviteUserCommandHandler
 {
-    public async Task<Result> LoadAsync(InviteUserCommand command, IQuerySession session,
+    public async Task<Result<Guid>> LoadAsync(InviteUserCommand command, IQuerySession session,
         CancellationToken cancellationToken)
     {
         var user = await session.Query<User>()
@@ -28,20 +28,23 @@ public class InviteUserCommandHandler
         if (user is not null)
             return Result.Error("User already exists", StatusCodes.Status400BadRequest);
 
-        return Result.Ok();
+        return Result.Ok(Guid.TryParse(session.TenantId, out var tenantId) ? tenantId : Guid.Empty);
     }
 
-    public async Task<Result<UserInvited>> HandleAsync(InviteUserCommand command, Result loadResult, IMessageBus bus,
+    public async Task<Result<UserInvited>> HandleAsync(InviteUserCommand command, Result<Guid> loadResult,
+        IMessageBus bus,
         IDocumentSession session, CancellationToken cancellationToken, ILogger logger)
     {
         if (loadResult.IsError())
-            return loadResult;
+            return Result.From(loadResult);
+        var tenantId = loadResult.Value;
 
         logger.LogDebug("Inviting user [{}]", command.Email);
 
         var user = command.Adapt<User>();
         user.IsInvitePending = true;
         user.Email = user.Email.ToLowerInvariant(); // Normalize email
+        user.TenantId = tenantId;
         session.Store(user);
         await session.SaveChangesAsync(cancellationToken);
 

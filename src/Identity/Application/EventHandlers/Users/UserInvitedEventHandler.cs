@@ -17,9 +17,11 @@ public class UserInvitedEventHandler
         logger.LogDebug("Handling UserInvited event for user [{}]", userInvitedEvent.Email);
         // Create a new user account if it doesn't exist
         var user = userInvitedEvent.Adapt<IdentityUser>();
+        user.TenantId = Guid.TryParse(session.TenantId, out var tenantId) ? tenantId : Guid.Empty;
         user.IsInvitePending = true;
         session.Store(user);
         await session.SaveChangesAsync(cancellationToken);
+
 
         // Create invite
         var command = user.Adapt<CreateUserInvitationCommand>();
