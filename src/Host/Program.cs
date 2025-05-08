@@ -34,9 +34,8 @@ builder.AddMailer();
 
 string[] assemblies =
 [
-    "Identity",
     "SharedKernel",
-    "ManagementPortal",
+    "Identity",
     "UrlShortener",
     "Scopes",
     "Users",
