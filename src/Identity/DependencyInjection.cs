@@ -125,7 +125,7 @@ public static class DependencyInjection
                 // to reject access tokens retrieved from a revoked authorization code.
                 options.EnableAuthorizationEntryValidation();
             });
-        ;
+        
         return serviceCollection;
     }
 }

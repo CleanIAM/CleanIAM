@@ -41,28 +41,11 @@
         <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="9.0.1"/>
         <PackageReference Include="WolverineFx.Postgresql" Version="3.10.4"/>
         <PackageReference Include="System.Linq.Async"/>
-
     </ItemGroup>
-
 
     <ItemGroup>
-        <ProjectReference Include="..\Events\Events.csproj"/>
-        <ProjectReference Include="..\SharedKernel\SharedKernel.csproj"/>
+        <ProjectReference Include="..\src\Events\Events.csproj"/>
+        <ProjectReference Include="..\src\SharedKernel\SharedKernel.csproj"/>
     </ItemGroup>
-
-
-    <ItemGroup>
-        <Folder Include="Api\Controllers\Models\Requests\Tenants\"/>
-        <Folder Include="Api\Controllers\Models\Responses\Mfa\"/>
-        <Folder Include="Application\Commands\OpenIdApplications\"/>
-        <Folder Include="Application\Commands\Tenants\"/>
-        <Folder Include="Application\Queries\OpenIdApplications\"/>
-        <Folder Include="Application\Queries\Scopes\"/>
-        <Folder Include="Application\Queries\Tenants\"/>
-        <Folder Include="Application\Queries\Users\"/>
-        <Folder Include="Core\Events\Tenants\"/>
-        <Folder Include="Infrastructure\AnticorruptionLayer\Tenants\"/>
-    </ItemGroup>
-
 
 </Project>
