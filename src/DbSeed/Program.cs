@@ -13,7 +13,7 @@ Identity.MapsterConfig.Configure();
 var builder = WebApplication.CreateBuilder(args);
 string[] assemblies = ["DbSeed"];
 
-builder.Host.UseProjects(assemblies);
+builder.Host.AddProjects(assemblies);
 // Add databases to allow EF Core to work with the database
 builder.Services.AddDatabases(builder.Configuration);
 builder.Services.AddOpenIddict()

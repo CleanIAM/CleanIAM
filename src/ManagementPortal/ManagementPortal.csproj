@@ -51,4 +51,10 @@
     </ItemGroup>
 
 
+    <ItemGroup>
+        <Folder Include="Application\Queries\Scopes\"/>
+        <Folder Include="Infrastructure\AnticorruptionLayer\Scopes\"/>
+    </ItemGroup>
+
+
 </Project>

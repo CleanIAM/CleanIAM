@@ -1,7 +1,7 @@
 using Events.Core.Events.ManagementPortal.Scopes;
 using Mapster;
 
-namespace ManagementPortal.Infrastructure.AnticorruptionLayer.Scopes;
+namespace Scopes.Infrastructure.AnticorruptionLayer;
 
 /// <summary>
 /// Anticorruption layer mapper form local ScopeDeleted event to global event defined in Events
@@ -12,7 +12,7 @@ namespace ManagementPortal.Infrastructure.AnticorruptionLayer.Scopes;
 /// </remarks>
 public class ScopeDeletedMapHandler
 {
-    public static ScopeDeleted Handle(Core.Events.Scopes.ScopeDeleted localEvent)
+    public static ScopeDeleted Handle(Core.Events.ScopeDeleted localEvent)
     {
         return localEvent.Adapt<ScopeDeleted>();
     }

@@ -1,10 +1,10 @@
-using ManagementPortal.Core.Events.Scopes;
 using OpenIddict.Core;
+using Scopes.Core.Events;
 using SharedKernel.Infrastructure.Utils;
 using Wolverine;
 using OpenIddictScope = OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreScope<System.Guid>;
 
-namespace ManagementPortal.Application.Commands.Scopes;
+namespace Scopes.Application.Commands;
 
 /// <summary>
 /// Command to delete existing scope.
@@ -18,7 +18,7 @@ public class DeleteScopeCommandHandler
         OpenIddictScopeManager<OpenIddictScope> scopeManager, CancellationToken cancellationToken)
     {
         // Check if the scope with the given name isn't default scope
-        if (ManagementPortalConstatns.DefaultScopeNames.Contains(command.Name))
+        if (ScopesConstants.DefaultScopeNames.Contains(command.Name))
             return Result.Error("Default scopes cannot be deleted", StatusCodes.Status400BadRequest);
 
         // Check if the scope with the given name does exist

@@ -13,7 +13,7 @@ builder.Host.UseLamar();
 
 string[] assemblies = ["ManagementPortal"];
 
-builder.Host.UseProjects(assemblies);
+builder.Host.AddProjects(assemblies);
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 

@@ -5,6 +5,7 @@ using Lamar.Microsoft.DependencyInjection;
 using ManagementPortal;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Scopes;
 using SharedKernel;
 using Wolverine.Http;
 
@@ -34,11 +35,13 @@ string[] assemblies =
     "Identity",
     "SharedKernel",
     "ManagementPortal",
-    "UrlShortener"
+    "UrlShortener",
+    "Scopes"
 ];
 
 builder.Services.AddWolverineHttp();
-builder.Host.UseProjects(assemblies);
+builder.Host.AddProjects(assemblies);
+builder.Services.AddScopes(builder.Configuration);
 builder.Services.AddIdentityProject(builder.Configuration);
 builder.Services.AddManagementPortal(builder.Configuration);
 
@@ -77,6 +80,7 @@ app.MapWolverineEndpoints();
 app.MapControllers();
 
 app.UseSharedKernel();
+app.UseScopes();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseLamar();
 
 string[] assemblies = ["UrlShortener"];
-builder.Host.UseProjects(assemblies);
+builder.Host.AddProjects(assemblies);
 
 builder.Services.AddLogging();
 builder.Services.AddControllersWithViews();

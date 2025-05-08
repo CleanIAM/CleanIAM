@@ -1,13 +1,9 @@
-namespace ManagementPortal.Core.Scopes;
+namespace Scopes.Api.Controllers.Models.Requests;
 
 /// <summary>
-/// Represents a scope in the OpenID Connect system.
+/// Request to create a new scope.
 /// </summary>
-/// <remarks>
-/// This class is only used for abstraction, the real scope object stored in database is
-/// OpenIddictEntityFrameworkCoreScope&lt;Guid&gt; managed by OpenIddict.
-/// </remarks>
-public class Scope
+public class CreateNewScopeRequest
 {
     /// <summary>
     /// The name of the scope.

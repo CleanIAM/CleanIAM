@@ -1,9 +1,9 @@
-using ManagementPortal.Core.Scopes;
 using OpenIddict.Abstractions;
+using Scopes.Core;
 
-namespace ManagementPortal;
+namespace Scopes;
 
-public static class ManagementPortalConstatns
+public static class ScopesConstants
 {
     /// <summary>
     /// List of CleanIAM default scope names.

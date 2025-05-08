@@ -1,15 +1,10 @@
-namespace ManagementPortal.Api.Controllers.Models;
+namespace Scopes.Api.Controllers.Models.Requests;
 
 /// <summary>
-/// Represents a scope in the OpenID Connect system.
+/// Request to update a scope.
 /// </summary>
-public class ApiScopeModel
+public class UpdateScopeRequest
 {
-    /// <summary>
-    /// The name of the scope.
-    /// </summary>
-    public required string Name { get; set; }
-
     /// <summary>
     /// The display name of the scope.
     /// </summary>

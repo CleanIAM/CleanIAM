@@ -1,9 +1,9 @@
-using ManagementPortal.Core.Scopes;
 using Mapster;
 using OpenIddict.Core;
+using Scopes.Core;
 using OpenIddictScope = OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreScope<System.Guid>;
 
-namespace ManagementPortal.Application.Queries.Scopes;
+namespace Scopes.Application.Queries;
 
 /// <summary>
 /// Query to get the list of allowed scopes.

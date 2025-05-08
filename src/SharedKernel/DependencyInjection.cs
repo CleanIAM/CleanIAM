@@ -22,7 +22,7 @@ namespace SharedKernel;
 
 public static class DependencyInjection
 {
-    public static IHostBuilder UseProjects(this IHostBuilder host, string[] assemblies)
+    public static IHostBuilder AddProjects(this IHostBuilder host, string[] assemblies)
     {
         host.UseWolverine(opts =>
         {

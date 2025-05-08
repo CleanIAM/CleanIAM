@@ -1,9 +1,9 @@
-namespace ManagementPortal.Api.Controllers.Models.Requests.Scopes;
+namespace Scopes.Api.Controllers.Models;
 
 /// <summary>
-/// Request to create a new scope.
+/// Represents a scope in the OpenID Connect system.
 /// </summary>
-public class CreateNewScopeRequest
+public class ApiScopeModel
 {
     /// <summary>
     /// The name of the scope.

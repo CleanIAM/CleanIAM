@@ -1,9 +1,6 @@
-using System.Text.Json;
 using ManagementPortal.Api.Controllers.Models;
 using ManagementPortal.Application.Commands.OpenIdApplications;
-using ManagementPortal.Application.Commands.Scopes;
 using ManagementPortal.Core.OpenIdApplication;
-using ManagementPortal.Core.Scopes;
 using ManagementPortal.Core.Users;
 using Mapster;
 using OpenIddict.Abstractions;
@@ -66,20 +63,5 @@ public static class MapsterConfig
 
         TypeAdapterConfig<User, ApiUserModel>.ForType()
             .Map(dest => dest.IsMFAConfigured, src => src.MfaConfig.IsMfaConfigured);
-
-        TypeAdapterConfig<CreateNewScopeCommand, OpenIddictEntityFrameworkCoreScope<Guid>>.ForType()
-            .AfterMapping((src, dest) => { dest.Resources = JsonSerializer.Serialize(src.Resources); });
-
-        TypeAdapterConfig<UpdateScopeCommand, OpenIddictEntityFrameworkCoreScope<Guid>>.ForType()
-            .AfterMapping((src, dest) => { dest.Resources = JsonSerializer.Serialize(src.Resources); });
-
-        TypeAdapterConfig<OpenIddictEntityFrameworkCoreScope<Guid>, Scope>.ForType()
-            .Ignore(dest => dest.Resources)
-            .AfterMapping((src, dest) =>
-            {
-                var resouce = src.Resources ?? "[]";
-                var json = JsonSerializer.Deserialize<string[]>(resouce);
-                dest.Resources = json ?? [];
-            });
     }
 }

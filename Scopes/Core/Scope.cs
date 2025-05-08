@@ -1,10 +1,19 @@
-namespace ManagementPortal.Api.Controllers.Models.Requests.Scopes;
+namespace Scopes.Core;
 
 /// <summary>
-/// Request to update a scope.
+/// Represents a scope in the OpenID Connect system.
 /// </summary>
-public class UpdateScopeRequest
+/// <remarks>
+/// This class is only used for abstraction, the real scope object stored in database is
+/// OpenIddictEntityFrameworkCoreScope&lt;Guid&gt; managed by OpenIddict.
+/// </remarks>
+public class Scope
 {
+    /// <summary>
+    /// The name of the scope.
+    /// </summary>
+    public required string Name { get; set; }
+
     /// <summary>
     /// The display name of the scope.
     /// </summary>

@@ -1,7 +1,7 @@
 using Events.Core.Events.ManagementPortal.Scopes;
 using Mapster;
 
-namespace ManagementPortal.Infrastructure.AnticorruptionLayer.Scopes;
+namespace Scopes.Infrastructure.AnticorruptionLayer;
 
 /// <summary>
 /// Anticorruption layer mapper form local ScopeUpdated event to global event defined in Events
@@ -12,7 +12,7 @@ namespace ManagementPortal.Infrastructure.AnticorruptionLayer.Scopes;
 /// </remarks>
 public class ScopeUpdatedMapHandler
 {
-    public static ScopeUpdated Handle(Core.Events.Scopes.ScopeUpdated localEvent)
+    public static ScopeUpdated Handle(Core.Events.ScopeUpdated localEvent)
     {
         return localEvent.Adapt<ScopeUpdated>();
     }

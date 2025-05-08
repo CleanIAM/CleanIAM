@@ -1,10 +1,10 @@
-using ManagementPortal;
 using ManagementPortal.Core;
 using Mapster;
 using Marten;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
 using OpenIddict.Core;
+using Scopes;
 using SharedKernel.Core.Database;
 using OpenIddictScope = OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreScope<System.Guid>;
 
@@ -141,7 +141,7 @@ public static class SeedDb
     {
         var scopeManager = serviceScope.ServiceProvider.GetRequiredService<OpenIddictScopeManager<OpenIddictScope>>();
 
-        var defaultScopes = ManagementPortalConstatns.DefaultScopes;
+        var defaultScopes = ScopesConstants.DefaultScopes;
 
         foreach (var defaultScope in defaultScopes)
             if (await scopeManager.FindByNameAsync(defaultScope.Name) is null)

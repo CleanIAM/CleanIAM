@@ -31,7 +31,7 @@ builder.Services.AddIdentityProject(builder.Configuration);
 // Register the Coravel's mailer service
 builder.AddMailer();
 
-builder.Host.UseProjects(assemblies);
+builder.Host.AddProjects(assemblies);
 builder.Services.AddControllersWithViews();
 // Configure Razor view locations
 builder.Services.Configure<RazorViewEngineOptions>(options =>

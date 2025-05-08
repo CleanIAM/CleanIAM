@@ -1,11 +1,11 @@
-using ManagementPortal.Core.Events.Scopes;
 using Mapster;
 using OpenIddict.Core;
+using Scopes.Core.Events;
 using SharedKernel.Infrastructure.Utils;
 using Wolverine;
 using OpenIddictScope = OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreScope<System.Guid>;
 
-namespace ManagementPortal.Application.Commands.Scopes;
+namespace Scopes.Application.Commands;
 
 /// <summary>
 /// Command to create a new scope.

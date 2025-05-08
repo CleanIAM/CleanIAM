@@ -1,4 +1,4 @@
-namespace ManagementPortal.Core.Events.Scopes;
+namespace Scopes.Core.Events;
 
 /// <summary>
 /// Event that is published when a scope is deleted.

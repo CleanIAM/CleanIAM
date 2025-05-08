@@ -1,16 +1,16 @@
-using ManagementPortal.Api.Controllers.Models.Requests.Scopes;
-using ManagementPortal.Application.Commands.Scopes;
-using ManagementPortal.Application.Queries.Scopes;
-using ManagementPortal.Core.Events.Scopes;
-using ManagementPortal.Core.Scopes;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Validation.AspNetCore;
+using Scopes.Api.Controllers.Models.Requests;
+using Scopes.Application.Commands;
+using Scopes.Application.Queries;
+using Scopes.Core;
+using Scopes.Core.Events;
 using SharedKernel.Infrastructure.Utils;
 using Wolverine;
 
-namespace ManagementPortal.Api.Controllers;
+namespace Scopes.Api.Controllers;
 
 /// <summary>
 /// Controller to manage OpenID scopes through API operations such as retrieval, creation, update, and deletion.
@@ -45,7 +45,7 @@ public class ScopesApiEndpoint(IMessageBus bus) : Controller
     [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
     public IActionResult GetDefaultScopes(CancellationToken cancellationToken)
     {
-        return Result.Ok(ManagementPortalConstatns.DefaultScopes);
+        return Result.Ok(ScopesConstants.DefaultScopes);
     }
 
     /// <summary>

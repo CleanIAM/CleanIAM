@@ -1,11 +1,11 @@
-using ManagementPortal.Core.Events.Scopes;
 using Mapster;
 using OpenIddict.Core;
+using Scopes.Core.Events;
 using SharedKernel.Infrastructure.Utils;
 using Wolverine;
 using OpenIddictScope = OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreScope<System.Guid>;
 
-namespace ManagementPortal.Application.Commands.Scopes;
+namespace Scopes.Application.Commands;
 
 /// <summary>
 /// Command to update existing scope.
@@ -22,7 +22,7 @@ public class UpdateScopeCommandHandler
         OpenIddictScopeManager<OpenIddictScope> scopeManager, CancellationToken cancellationToken)
     {
         // Check if the scope with the given name isn't default scope
-        if (ManagementPortalConstatns.DefaultScopeNames.Contains(command.Name))
+        if (ScopesConstants.DefaultScopeNames.Contains(command.Name))
             return Result.Error("Default scopes cannot be updated", StatusCodes.Status400BadRequest);
 
         // Check if the scope with the given name doesn't exist
