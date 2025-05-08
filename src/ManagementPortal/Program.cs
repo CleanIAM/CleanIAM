@@ -35,8 +35,6 @@ builder.Services.AddOpenIddictValidations(builder.Configuration);
 builder.Services.AddOidcAuthentication(builder.Configuration);
 builder.Services.AddUtils(builder.Configuration);
 builder.Services.AddManagementPortal(builder.Configuration);
-// Configure Mapster
-MapsterConfig.Configure();
 
 var app = builder.Build();
 

@@ -1,5 +1,4 @@
 using Events.Core.Events.ManagementPortal.Mfa;
-using ManagementPortal.Api.Controllers.Models.Responses.Mfa;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +8,7 @@ using SharedKernel.Infrastructure.Utils;
 using Users.Api.Controllers.Models;
 using Users.Api.Controllers.Models.Requests.Mfa;
 using Users.Api.Controllers.Models.Requests.User;
+using Users.Api.Controllers.Models.Responses.Mfa;
 using Users.Application.Commands.Mfa;
 using Users.Application.Commands.Users;
 using Users.Application.Queries.Users;

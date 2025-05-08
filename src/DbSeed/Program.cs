@@ -1,6 +1,6 @@
+using Applications;
 using DbConfig;
 using DotNetEnv;
-using ManagementPortal;
 using SharedKernel;
 using SharedKernel.Core.Database;
 
@@ -8,6 +8,8 @@ Env.Load();
 
 // Load object mapping configurations
 MapsterConfig.Configure();
+Users.MapsterConfig.Configure();
+Scopes.MapsterConfig.Configure();
 Identity.MapsterConfig.Configure();
 
 var builder = WebApplication.CreateBuilder(args);

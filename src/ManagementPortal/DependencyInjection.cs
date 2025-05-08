@@ -17,9 +17,6 @@ public static class DependencyInjection
     /// <returns></returns>
     public static IServiceCollection AddManagementPortal(this IServiceCollection services, IConfiguration configuration)
     {
-        // Configure custom mapster config
-        MapsterConfig.Configure();
-
         return services;
     }
 
