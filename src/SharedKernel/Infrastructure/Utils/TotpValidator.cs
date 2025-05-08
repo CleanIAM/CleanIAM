@@ -24,6 +24,7 @@ public class TotpValidator : ITotpValidator
         var res = totpTool.VerifyTotp(
             totp,
             out _,
+            // How many time windows in the past and future is the code valid for
             new VerificationWindow(1));
 
         if (res)

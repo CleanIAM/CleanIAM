@@ -28,12 +28,19 @@ public class SigninController(
         if (User.Identity?.IsAuthenticated != true)
             return View();
 
+        // TODO: redirect to management portal signin
         var signinRequest = await signinRequestService.GetAsync(request);
-
-        // TODO: If no oidc request, redirect to console signin.
-        // If signin without oidc request, show error
         if (signinRequest == null)
             return View("Error", new ErrorViewModel { Error = "Error", ErrorDescription = "Request not found" });
+
+        // Check if the user has validated email
+        if (!signinRequest.IsEmailVerified)
+            return RedirectToAction("VerifyEmail", "EmailVerification");
+
+        //If MFA is enabled redirect to the MFA handler
+        if (signinRequest is { IsMfaRequired: true, IsMfaValidated: false })
+            return RedirectToAction("MfaInput", "Mfa");
+
 
         return RedirectToAction("Authorize", "Auth", signinRequestService.CreateOidcQueryObject(signinRequest));
     }
@@ -43,7 +50,6 @@ public class SigninController(
         CancellationToken cancellationToken)
     {
         var signinRequest = await signinRequestService.GetAsync(request);
-
         if (signinRequest == null)
             return RedirectToAction("Error", "Error",
                 new { error = "Not found", errorDescription = "Signin request not found" });
@@ -91,15 +97,20 @@ public class SigninController(
 
         // Update signin request
         signinRequest.UserId = user.Id;
+        signinRequest.IsEmailVerified = user.EmailVerified;
+        signinRequest.IsMfaRequired = user.IsMFAEnabled;
+        signinRequest.IsMfaValidated = false;
         await signinRequestService.UpdateAsync(signinRequest);
-
 
         // Check if the user has validated email
         if (!user.EmailVerified)
             return RedirectToAction("VerifyEmail", "EmailVerification");
 
 
-        //TODO: If MFA is enabled redirect to the MFA handler
+        //If MFA is enabled redirect to the MFA handler
+        if (user.IsMFAEnabled)
+            // Redirect to MFA handler
+            return RedirectToAction("MfaInput", "Mfa");
 
 
         // Redirect to authorize endpoint to authorize the client

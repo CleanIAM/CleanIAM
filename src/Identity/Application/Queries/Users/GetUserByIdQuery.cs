@@ -11,8 +11,10 @@ public record GetUserByIdQuery(Guid Id);
 
 public class GetUserByIdQueryHandler
 {
-    public static IdentityUser? Handle(GetUserByIdQuery query, IDocumentSession session)
+    public static async Task<IdentityUser?> Handle(GetUserByIdQuery query, IDocumentSession session,
+        CancellationToken cancellationToken)
     {
-        return session.Query<IdentityUser>().FirstOrDefault(u => u.Id == query.Id && u.AnyTenant());
+        return await session.Query<IdentityUser>()
+            .FirstOrDefaultAsync(u => u.Id == query.Id && u.AnyTenant(), cancellationToken);
     }
 }

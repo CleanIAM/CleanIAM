@@ -27,7 +27,7 @@ public class ExternalSigninProvidersController(
         if (request == Guid.Empty)
             RedirectToSignin("Request id is invalid");
         var signinRequest = await signinRequestService.GetAsync(request);
-        if (signinRequest == null)
+        if (signinRequest is null)
             RedirectToSignin("Request not found");
 
         TempData["RequestId"] = request;

@@ -9,7 +9,7 @@ namespace ManagementPortal.Api.Controllers.Models.Requests.Mfa;
 /// <summary>
 /// Remove mfa configuration command for user and disable mfa.
 /// </summary>
-/// <param name="Id"></param>
+/// <param name="Id">Id of the user</param>
 public record CleanMfaConfigurationCommand(Guid Id);
 
 public class CleanMfaConfigurationCommandHandler
