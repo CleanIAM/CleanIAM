@@ -1,7 +1,7 @@
 # masters-thesis
 This is my Masters thesis 2025 
 
-## Documentation is available at [docs](https://cleariam.github.io/ClearIAM/)
+## Documentation is available at [docs](https://cleaniam.github.io/CleanIAM/)
 
 
 # This repo is a work in progress and is not yet complete!!!
