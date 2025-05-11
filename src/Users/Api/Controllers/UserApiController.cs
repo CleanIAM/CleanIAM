@@ -21,7 +21,7 @@ namespace Users.Api.Controllers;
 /// <summary>
 /// /// API controller for managing user with his own data
 /// </summary>
-/// <param name="bus"></param>
+/// <remarks>No specific roles required</remarks>
 [Route("/api/user")]
 [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
 public class UserApiController(

@@ -13,12 +13,21 @@ namespace Identity.Api.Controllers;
 [Route("/invitations")]
 public class InvitationController(IMessageBus bus) : Controller
 {
+    /// <summary>
+    /// Show the invitation page for a user to set up their account
+    /// </summary>
+    /// <param name="requestId">Id og te signin request</param>
     [HttpGet("{requestId:guid}")]
-    public async Task<IActionResult> Index([FromRoute] Guid requestId)
+    public IActionResult Index([FromRoute] Guid requestId)
     {
         return View("Invitation", new InvitationViewModel { RequestId = requestId });
     }
 
+    /// <summary>
+    /// Handle the user setting up their account after receiving an invitation
+    /// </summary>
+    /// <param name="requestId">Id og te signin request</param>
+    /// <param name="model">Model containing the new password</param>
     [HttpPost("{requestId:guid}")]
     public async Task<IActionResult> Index([FromRoute] Guid requestId, [FromForm] InvitationViewModel model)
     {

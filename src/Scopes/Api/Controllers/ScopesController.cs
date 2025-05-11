@@ -17,6 +17,7 @@ namespace Scopes.Api.Controllers;
 /// </summary>
 [Route("/api/scopes")]
 [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+[Authorize(Roles = "Admin")]
 public class ScopesController(IMessageBus bus) : Controller
 {
     /// <summary>

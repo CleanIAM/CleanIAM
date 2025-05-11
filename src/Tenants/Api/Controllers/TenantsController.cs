@@ -18,6 +18,8 @@ namespace Tenants.Api.Controllers;
 /// </summary>
 [Route("/api/tenants")]
 [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+[Authorize(Roles = "MasterAdmin")]
+
 public class TenantsController(IMessageBus bus) : Controller
 {
     /// <summary>

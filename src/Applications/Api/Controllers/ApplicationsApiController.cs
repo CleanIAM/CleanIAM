@@ -18,6 +18,7 @@ namespace Applications.Api.Controllers;
 /// </summary>
 [Route("/api/applications")]
 [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
+[Authorize(Roles = "Admin")]
 public class ApplicationsApiController(
     IMessageBus bus) : Controller
 {
