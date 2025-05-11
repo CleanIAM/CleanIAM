@@ -24,7 +24,7 @@ namespace Users.Api.Controllers;
 /// <param name="bus"></param>
 [Route("/api/user")]
 [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
-public class UserApiEndpoint(
+public class UserApiController(
     IMessageBus bus) : Controller
 {
     /// <summary>

@@ -17,7 +17,7 @@ namespace Scopes.Api.Controllers;
 /// </summary>
 [Route("/api/scopes")]
 [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
-public class ScopesApiEndpoint(IMessageBus bus) : Controller
+public class ScopesController(IMessageBus bus) : Controller
 {
     /// <summary>
     /// Get the list of all scopes.

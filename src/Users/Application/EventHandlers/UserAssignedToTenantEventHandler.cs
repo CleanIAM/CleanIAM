@@ -9,7 +9,8 @@ public class UserAssignedToTenantEventHandler
     public static async Task HandleAsync(UserAssignedToTenant userAssignedEvent, IDocumentSession session,
         ILogger logger, CancellationToken cancellationToken)
     {
-        var user = await session.LoadAsync<User>(userAssignedEvent.UserId, cancellationToken);
+        var user = await session.Query<User>().Where(u => u.Id == userAssignedEvent.UserId && u.AnyTenant())
+            .FirstOrDefaultAsync(cancellationToken);
         if (user is null)
         {
             logger.LogError("[UserAssignedToTenantEventHandler] User not found: {UserId}", userAssignedEvent.UserId);
