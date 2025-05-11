@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SharedKernel.Infrastructure.Utils;
@@ -31,14 +32,11 @@ public class Result : IActionResult
         // Error
         context.HttpContext.Response.StatusCode = ErrorCode ?? StatusCodes.Status500InternalServerError;
         context.HttpContext.Response.ContentType = "application/json";
-        await context.HttpContext.Response.WriteAsJsonAsync(new
+        await context.HttpContext.Response.WriteAsync(JsonSerializer.Serialize(new Error
         {
-            error = new Error
-            {
-                Message = ErrorMessage ?? string.Empty,
-                Code = ErrorCode ?? 0
-            }
-        });
+            Message = ErrorMessage ?? string.Empty,
+            Code = ErrorCode ?? StatusCodes.Status500InternalServerError
+        }));
     }
 
     /// <summary>
@@ -181,18 +179,18 @@ public class Result<T> : IActionResult
         {
             context.HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             context.HttpContext.Response.ContentType = "application/json";
-            await context.HttpContext.Response.WriteAsJsonAsync(SuccessValue);
+            await context.HttpContext.Response.WriteAsync(JsonSerializer.Serialize(SuccessValue));
             return;
         }
 
         // Error
         context.HttpContext.Response.StatusCode = ErrorCode ?? StatusCodes.Status500InternalServerError;
         context.HttpContext.Response.ContentType = "application/json";
-        await context.HttpContext.Response.WriteAsJsonAsync(new
-        {
-            Message = ErrorMessage ?? string.Empty,
-            Code = ErrorCode ?? 0
-        });
+                await context.HttpContext.Response.WriteAsync(JsonSerializer.Serialize(new Error
+            {
+                Message = ErrorMessage ?? string.Empty,
+                Code = ErrorCode ?? StatusCodes.Status500InternalServerError
+            }));
     }
 
 
