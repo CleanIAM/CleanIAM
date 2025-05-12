@@ -19,7 +19,7 @@ public class SigninController(
     IIdentityBuilderService identityBuilderService,
     IMessageBus bus,
     IPasswordHasher passwordHasher,
-    ILogger logger) : Controller
+    ILogger<SigninController> logger) : Controller
 {
     [HttpGet("signin")]
     public async Task<IActionResult> Signin([FromQuery] Guid request, [FromQuery] string? error)
