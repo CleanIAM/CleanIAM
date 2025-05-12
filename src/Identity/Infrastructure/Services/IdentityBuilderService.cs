@@ -82,7 +82,8 @@ public class IdentityBuilderService(IOpenIddictScopeManager scopeManager, IMessa
         {
             new(OpenIddictConstants.Claims.Subject, user.Id.ToString()),
             new(IdentityConstants.SigninRequestClaimName, requestId.ToString()),
-            new(OpenIddictConstants.Claims.Name, $"{user.FirstName} {user.LastName}")
+            new(OpenIddictConstants.Claims.Name, $"{user.FirstName} {user.LastName}"),
+            new(SharedKernelConstants.TenantClaimName, user.TenantId.ToString())
         };
 
         var identity = new ClaimsIdentity(

@@ -1,6 +1,7 @@
 using OpenIddict.Abstractions;
 using SharedKernel.Core;
 using Wolverine;
+using Wolverine.Http;
 
 namespace SharedKernel.Application.Middlewares;
 
@@ -15,7 +16,7 @@ public class TenantParserMiddleware(RequestDelegate next)
     {
         if (context.User.Identity is { IsAuthenticated: true })
         {
-            // Try get tenant from query string
+            // Try to get tenant from query string
             var queryTenant = GetTenantFromQueryString(context);
             if (queryTenant != null && IsMasterAdmin(context))
             {
@@ -28,9 +29,13 @@ public class TenantParserMiddleware(RequestDelegate next)
                     .FirstOrDefault(c => c.Type == SharedKernelConstants.TenantClaimName)?.Value;
                 if (tenantId != null)
                     bus.TenantId = tenantId;
+                else
+                    bus.TenantId = Guid.Empty.ToString();
             }
         }
-
+        else
+            bus.TenantId = Guid.Empty.ToString();
+        
         // Call the next delegate/middleware in the pipeline.
         await next(context);
     }
@@ -40,7 +45,7 @@ public class TenantParserMiddleware(RequestDelegate next)
     /// </summary>
     /// <param name="context"></param>
     /// <returns></returns>
-    private string? GetTenantFromQueryString(HttpContext context)
+    private static string? GetTenantFromQueryString(HttpContext context)
     {
         var tenantId = context.Request.Query["tenant"].ToString();
         // Check tenant query was provided
@@ -59,7 +64,7 @@ public class TenantParserMiddleware(RequestDelegate next)
     /// </summary>
     /// <param name="context"></param>
     /// <returns>true if user is master admin, false otherwise</returns>
-    private bool IsMasterAdmin(HttpContext context)
+    private static bool IsMasterAdmin(HttpContext context)
     {
         return context.User.Claims
             .Any(c => c is { Type: OpenIddictConstants.Claims.Role, Value: nameof(UserRole.MasterAdmin) });
