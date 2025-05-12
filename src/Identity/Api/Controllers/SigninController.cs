@@ -9,6 +9,7 @@ using Mapster;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using SharedKernel.Application.Interfaces;
 using Wolverine;
 
 namespace Identity.Api.Controllers;
@@ -18,6 +19,7 @@ public class SigninController(
     ISigninRequestService signinRequestService,
     IIdentityBuilderService identityBuilderService,
     IMessageBus bus,
+    IAppConfiguration appConfiguration,
     IPasswordHasher passwordHasher,
     ILogger<SigninController> logger) : Controller
 {
@@ -26,14 +28,15 @@ public class SigninController(
     {
         ViewData["Error"] = error;
         ViewData["Request"] = request;
-        // If user not signed in show signin form
-        if (User.Identity?.IsAuthenticated != true)
-            return View();
 
         // TODO: redirect to management portal signin
         var signinRequest = await signinRequestService.GetAsync(request);
         if (signinRequest == null)
-            return View("Error", new ErrorViewModel { Error = "Error", ErrorDescription = "Request not found" });
+            return Redirect(appConfiguration.ManagementPortalBaseUrl + "/signin");
+
+        // If user not signed in show signin form
+        if (User.Identity?.IsAuthenticated != true)
+            return View();
 
         // Check if the user has validated email
         if (!signinRequest.IsEmailVerified)

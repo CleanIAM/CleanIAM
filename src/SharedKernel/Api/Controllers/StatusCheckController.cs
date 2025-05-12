@@ -1,19 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SharedKernel.Application.Interfaces;
 
 namespace SharedKernel.Api.Controllers;
 
 /// <summary>
 /// Controller for maintenance endpoints.
 /// </summary>
-public class StatusCheckController: Controller
+public class StatusCheckController(IAppConfiguration appConfiguration): Controller
 {
     /// <summary>
     /// Get app health status
     /// </summary>
     [AllowAnonymous]
     [HttpGet("/healthz")]
-    public static IResult GetHealthStatus()
+    public IResult GetHealthStatus()
     {
         return Results.Ok();
     }
@@ -23,8 +24,17 @@ public class StatusCheckController: Controller
     /// </summary>
     [AllowAnonymous]
     [HttpGet("/readyz")]
-    public static IResult GetReadyStatus()
+    public IResult GetReadyStatus()
     {
         return Results.Ok();
+    }
+    
+    /// <summary>
+    /// Redirect to the management portal.
+    /// </summary>
+    [HttpGet("/")]
+    public IActionResult Index()
+    {
+        return Redirect(appConfiguration.ManagementPortalBaseUrl);
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Scopes;
 using SharedKernel;
+using SharedKernel.Application.Interfaces;
 using Tenants;
 using Users;
 using Wolverine.Http;
@@ -96,6 +97,5 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 
 app.Run();

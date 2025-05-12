@@ -7,7 +7,13 @@ public interface IAppConfiguration
     /// </summary>
     /// <remarks>Without the trailing slash</remarks>
     public string IdentityBaseUrl { get; init; }
-
+    
+    /// <summary>
+    /// base url for the management portal website
+    /// </summary>
+    /// <remarks>Without the trailing slash</remarks>
+    public string ManagementPortalBaseUrl { get; init; }
+    
     /// <summary>
     /// Indicates whether the URL shortener feature is enabled.
     /// </summary>

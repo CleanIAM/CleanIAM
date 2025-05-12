@@ -54,7 +54,9 @@ public class SendPasswordResetRequestCommandHandler
         if (timeSinceLastEmail < IdentityConstants.VerificationEmailDelay)
             return Result.Error(
                 $"Email already send, " +
-                $"you need to wait {(IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Minutes} minutes " +
+                $"you need to wait"  + ((IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Minutes != 0 ? 
+                    $" {(IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Minutes} minutes " : 
+                    $" {(IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Seconds} seconds ") +
                 $"before you request new email.",
                 HttpStatusCode.BadRequest);
 

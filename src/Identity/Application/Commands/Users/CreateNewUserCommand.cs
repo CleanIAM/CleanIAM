@@ -1,9 +1,11 @@
 using Identity.Application.Interfaces;
+using Identity.Core.Events;
 using Identity.Core.Users;
 using Mapster;
 using Marten;
 using SharedKernel.Core;
 using SharedKernel.Infrastructure.Utils;
+using Wolverine;
 using HashedPassword = Identity.Core.Users.HashedPassword;
 
 namespace Identity.Application.Commands.Users;
@@ -27,7 +29,7 @@ public class CreateNewUserCommandHandler
     }
 
     public static async Task<Result> HandleAsync(CreateNewUserCommand command, Result loadResult,
-        IDocumentSession documentSession, IPasswordHasher passwordHasher, CancellationToken cancellationToken)
+        IDocumentSession documentSession, IPasswordHasher passwordHasher, IMessageBus bus, CancellationToken cancellationToken)
     {
         if (loadResult.IsError())
             return loadResult;
@@ -41,6 +43,10 @@ public class CreateNewUserCommandHandler
 
         documentSession.Store(newUser);
         await documentSession.SaveChangesAsync(cancellationToken);
+        
+        // Publish user signed up event
+        var userSignedUp = newUser.Adapt<NewUserSignedUp>();
+        await bus.PublishAsync(userSignedUp);
 
         return Result.Ok();
     }

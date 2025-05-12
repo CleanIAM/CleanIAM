@@ -196,11 +196,14 @@ public static class DependencyInjection
     /// <returns></returns>
     private static IAppConfiguration ParseConfiguration(IConfiguration configuration)
     {
-        var identityBaseUrl = configuration.GetSection("Identity")["BaseUrl"];
+        var identityBaseUrl = configuration.GetSection("HttpRoutes")["IdentityBaseUrl"];
+        var managementPortalBaseUrl = configuration.GetSection("HttpRoutes")["ManagementPortalBaseUrl"];
+
         var useUrlShortener = configuration.GetSection("UrlShortener:UseUrlShortener").Get<bool>();
         var urlShortenerBaseUrl = configuration.GetSection("UrlShortener")["BaseUrl"];
 
         Guard.IsNotNullOrEmpty(identityBaseUrl, "Identity base url not provided");
+        Guard.IsNotNullOrEmpty(managementPortalBaseUrl, "Management portal base url not provided");
         Guard.IsNotNull(useUrlShortener, "Use url shortener not provided");
         if (useUrlShortener)
             Guard.IsNotNullOrEmpty(urlShortenerBaseUrl, "Url shortener base url not provided");
@@ -209,6 +212,7 @@ public static class DependencyInjection
         var appConfiguration = new AppConfiguration
         {
             IdentityBaseUrl = identityBaseUrl,
+            ManagementPortalBaseUrl = managementPortalBaseUrl,
             UseUrlShortener = useUrlShortener,
             UrlShortenerBaseUrl = urlShortenerBaseUrl
         };
