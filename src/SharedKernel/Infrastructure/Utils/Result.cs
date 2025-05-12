@@ -36,6 +36,9 @@ public class Result : IActionResult
         {
             Message = ErrorMessage ?? string.Empty,
             Code = ErrorCode ?? StatusCodes.Status500InternalServerError
+        }, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         }));
     }
 
@@ -179,7 +182,10 @@ public class Result<T> : IActionResult
         {
             context.HttpContext.Response.StatusCode = StatusCodes.Status200OK;
             context.HttpContext.Response.ContentType = "application/json";
-            await context.HttpContext.Response.WriteAsync(JsonSerializer.Serialize(SuccessValue));
+            await context.HttpContext.Response.WriteAsync(JsonSerializer.Serialize(SuccessValue, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            }));
             return;
         }
 
@@ -190,7 +196,11 @@ public class Result<T> : IActionResult
             {
                 Message = ErrorMessage ?? string.Empty,
                 Code = ErrorCode ?? StatusCodes.Status500InternalServerError
-            }));
+            }, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            }
+            ));
     }
 
 
