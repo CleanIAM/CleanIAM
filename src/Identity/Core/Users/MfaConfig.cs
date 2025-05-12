@@ -1,4 +1,4 @@
-namespace ManagementPortal.Core.Users;
+namespace Identity.Core.Users;
 
 /// <summary>
 /// Represents the configuration for multifactor authentication (MFA) for a user.

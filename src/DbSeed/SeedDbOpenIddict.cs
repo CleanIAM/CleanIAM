@@ -10,7 +10,7 @@ using OpenIddictScope = OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFr
 
 namespace DbConfig;
 
-public static class SeedDb
+public static class SeedDbOpenIddict
 {
     public static void Seed(IServiceProvider serviceProvider)
     {
@@ -159,22 +159,5 @@ public static class SeedDb
                     "example-BE-client"
                 }
             });
-    }
-
-    public static async Task SeedMartenDb(this IApplicationBuilder app)
-    {
-        await using var scope = app.ApplicationServices.CreateAsyncScope();
-
-        var session = scope.ServiceProvider.GetRequiredService<IDocumentSession>();
-
-        // Generate default tenant
-        var defaultTenant = new Tenant
-        {
-            Id = Guid.Empty,
-            Name = "Default Tenant"
-        };
-        session.Store(defaultTenant);
-
-        await session.SaveChangesAsync();
     }
 }

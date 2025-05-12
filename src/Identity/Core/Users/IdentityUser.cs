@@ -1,4 +1,3 @@
-using ManagementPortal.Core.Users;
 using SharedKernel.Core;
 
 namespace Identity.Core.Users;
