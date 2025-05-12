@@ -21,7 +21,7 @@ public class UpdateUserCommandHandler
         return Result.Ok(user);
     }
 
-    public static async Task<Result<UserUpdated>> Handle(UpdateUserCommand command, Result<User> loadResult,
+    public static async Task<Result<UserUpdated>> HandleAsync(UpdateUserCommand command, Result<User> loadResult,
         IDocumentSession session, IMessageBus bus)
     {
         if (loadResult.IsError())

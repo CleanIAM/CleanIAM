@@ -47,7 +47,7 @@ public class UpdateOpenIdClientCommandHandler
         return Result.Ok(application);
     }
 
-    public static async Task<Result<OpenIdApplicationUpdated>> Handle(UpdateOpenIdApplicationCommand command,
+    public static async Task<Result<OpenIdApplicationUpdated>> HandleAsync(UpdateOpenIdApplicationCommand command,
         Result<OpenIddictEntityFrameworkCoreApplication<Guid>> loadResult,
         IMessageBus bus,
         OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager

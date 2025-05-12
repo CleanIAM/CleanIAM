@@ -49,7 +49,7 @@ public class CreateNewOpenIdApplicationCommandHandler
         return Result.Ok();
     }
 
-    public static async Task<Result<OpenIdApplicationCreated>> Handle(CreateNewOpenIdApplicationCommand command,
+    public static async Task<Result<OpenIdApplicationCreated>> HandleAsync(CreateNewOpenIdApplicationCommand command,
         Result loadResult, IMessageBus bus,
         OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager
     )

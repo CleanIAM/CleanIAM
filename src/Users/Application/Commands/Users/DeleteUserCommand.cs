@@ -18,7 +18,7 @@ public record DeleteUserCommand(Guid Id);
 
 public class DeleteUserCommandHandler
 {
-    public async Task<Result> LoadAsync(DeleteUserCommand command, IQuerySession session)
+    public static async Task<Result> LoadAsync(DeleteUserCommand command, IQuerySession session)
     {
         var user = await session.LoadAsync<User>(command.Id);
         if (user == null)
@@ -27,17 +27,12 @@ public class DeleteUserCommandHandler
         return Result.Ok();
     }
 
-    public async Task<Result<UserDeleted>> Handle(DeleteUserCommand command, Result loadResult,
+    public static async Task<Result<UserDeleted>> HandleAsync(DeleteUserCommand command, Result loadResult,
         IDocumentSession session,
         IMessageBus bus, CancellationToken cancellationToken, IOpenIddictTokenManager tokenManager)
     {
         if (loadResult.IsError())
             return loadResult;
-
-        // Revoke all tokens associated with the user
-        // TODO: check why is it not working
-
-        // await tokenManager.RevokeBySubjectAsync(command.Id.ToString(), cancellationToken);
 
         // Delete the user from the database
         session.Delete<User>(command.Id);

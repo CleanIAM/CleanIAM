@@ -7,7 +7,7 @@ public record GetAllUsersCountQuery;
 
 public class GetAllUsersCountQueryHandler
 {
-    public static async Task<long> Handle(GetAllUsersCountQuery query, IQuerySession session)
+    public static async Task<long> HandleAsync(GetAllUsersCountQuery query, IQuerySession session)
     {
         return await session.Query<User>().CountAsync();
     }

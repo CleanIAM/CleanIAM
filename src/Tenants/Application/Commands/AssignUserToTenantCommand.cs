@@ -17,9 +17,7 @@ public record AssignUserToTenantCommand(Guid NewTenantId, Guid UserId);
 
 public class AssignUsersToTenantCommandHandler
 {
-    //TODO: FIX this
-
-    public async Task<Result<Tenant>> LoadAsync(AssignUserToTenantCommand command, IQuerySession session,
+    public static async Task<Result<Tenant>> LoadAsync(AssignUserToTenantCommand command, IQuerySession session,
         CancellationToken cancellationToken)
     {
         var tenant = await session.LoadAsync<Tenant>(command.NewTenantId, cancellationToken);
@@ -29,7 +27,7 @@ public class AssignUsersToTenantCommandHandler
         return Result.Ok(tenant);
     }
 
-    public async Task<Result<UserAssignedToTenant>> Handle(AssignUserToTenantCommand command,
+    public static async Task<Result<UserAssignedToTenant>> HandleAsync(AssignUserToTenantCommand command,
         Result<Tenant> loadResult, IDocumentSession session, IMessageBus bus,
         CancellationToken cancellationToken)
     {

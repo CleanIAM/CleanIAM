@@ -33,7 +33,7 @@ public class ValidateMfaConnectionCommandHandler
         return Result.Ok(user);
     }
 
-    public static async Task<Result<MfaConfiguredForUser>> Handle(ValidateMfaConnectionCommand command,
+    public static async Task<Result<MfaConfiguredForUser>> HandleAsync(ValidateMfaConnectionCommand command,
         Result<User> loadResult, IDocumentSession session, ITotpValidator totpValidator, IMessageBus bus,
         CancellationToken cancellationToken)
     {

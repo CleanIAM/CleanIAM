@@ -7,7 +7,7 @@ public record GetPasswordResetRequestByIdQuery(Guid Id);
 
 public class GetPasswordResetRequestByIdQueryHandler
 {
-    public static async Task<PasswordResetRequest?> Handle(
+    public static async Task<PasswordResetRequest?> HandleAsync(
         GetPasswordResetRequestByIdQuery query,
         IQuerySession session,
         CancellationToken cancellationToken)

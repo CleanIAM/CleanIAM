@@ -26,7 +26,7 @@ public class UpdateUserSimpleCommandHandler
         return Result.Ok(user);
     }
 
-    public static async Task<Result<UserUpdated>> Handle(UpdateUserSimpleCommand command, Result<User> loadResult,
+    public static async Task<Result<UserUpdated>> HandleAsync(UpdateUserSimpleCommand command, Result<User> loadResult,
         IDocumentSession session, IMessageBus bus)
     {
         if (loadResult.IsError())

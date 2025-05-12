@@ -62,6 +62,7 @@ public class SigninController(
 
         if (user == null)
         {
+            logger.LogWarning("User with email {email} not found", model.Email);
             ModelState.AddModelError("password", "Incorrect email or password");
             return View();
         }
@@ -77,6 +78,7 @@ public class SigninController(
         // Validate user password
         if (!passwordHasher.Compare(model.Password, user.HashedPassword))
         {
+            logger.LogWarning("User with email {email} provided incorrect password", model.Email);
             ModelState.AddModelError("password", "Incorrect email or password");
             return View();
         }

@@ -26,7 +26,7 @@ public class CreateNewUserCommandHandler
         return Result.Ok();
     }
 
-    public static async Task<Result> Handle(CreateNewUserCommand command, Result loadResult,
+    public static async Task<Result> HandleAsync(CreateNewUserCommand command, Result loadResult,
         IDocumentSession documentSession, IPasswordHasher passwordHasher, CancellationToken cancellationToken)
     {
         if (loadResult.IsError())

@@ -12,7 +12,7 @@ public struct GetAllScopesQuery;
 
 public class GetAllScopesQueryHandler
 {
-    public static async Task<IEnumerable<Scope>> Handle(GetAllScopesQuery query,
+    public static async Task<IEnumerable<Scope>> HandleAsync(GetAllScopesQuery query,
         OpenIddictScopeManager<OpenIddictScope> scopeManager)
     {
         var scopes = await scopeManager.ListAsync().ToListAsync();

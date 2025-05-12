@@ -15,7 +15,7 @@ public record GetOpenIdApplicationByIdQuery(Guid Id);
 /// </summary>
 public class GetOpenIdClientByIdQueryHandler
 {
-    public static async Task<OpenIdApplication?> Handle(GetOpenIdApplicationByIdQuery query,
+    public static async Task<OpenIdApplication?> HandleAsync(GetOpenIdApplicationByIdQuery query,
         OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager,
         CancellationToken cancellationToken)
     {

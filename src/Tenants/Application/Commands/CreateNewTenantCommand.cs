@@ -17,17 +17,17 @@ public record CreateNewTenantCommand(Guid Id, string Name);
 
 public class CreateNewTenantCoomandHandler
 {
-    public async Task<Result> LoadAsync(CreateNewTenantCommand command, IQuerySession session,
+    public static async Task<Result> LoadAsync(CreateNewTenantCommand command, IQuerySession session,
         CancellationToken cancellationToken)
     {
-        var tenant = session.Query<Tenant>().FirstOrDefault(t => t.Id == command.Id || t.Name == command.Name);
+        var tenant = await session.Query<Tenant>().FirstOrDefaultAsync(t => t.Id == command.Id || t.Name == command.Name, token: cancellationToken);
         if (tenant is not null)
             return Result.Error("Tenant already exists", HttpStatusCode.BadRequest);
 
         return Result.Ok();
     }
 
-    public async Task<Result<NewTenantCreated>> Handle(CreateNewTenantCommand command, Result loadResult,
+    public static async Task<Result<NewTenantCreated>> HandleAsync(CreateNewTenantCommand command, Result loadResult,
         IDocumentSession session, IMessageBus bus, CancellationToken cancellationToken)
     {
         if (loadResult.IsError())

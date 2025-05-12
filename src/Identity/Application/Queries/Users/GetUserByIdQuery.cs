@@ -11,7 +11,7 @@ public record GetUserByIdQuery(Guid Id);
 
 public class GetUserByIdQueryHandler
 {
-    public static async Task<IdentityUser?> Handle(GetUserByIdQuery query, IDocumentSession session,
+    public static async Task<IdentityUser?> HandleAsync(GetUserByIdQuery query, IDocumentSession session,
         CancellationToken cancellationToken)
     {
         return await session.Query<IdentityUser>()

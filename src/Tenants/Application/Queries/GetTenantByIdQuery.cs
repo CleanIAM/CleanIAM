@@ -11,7 +11,7 @@ public record GetTenantByIdQuery(Guid Id);
 
 public class GetTenantByIdQueryHandler
 {
-    public async Task<Tenant?> Handle(GetTenantByIdQuery query, IQuerySession session,
+    public static async Task<Tenant?> HandleAsync(GetTenantByIdQuery query, IQuerySession session,
         CancellationToken cancellationToken)
     {
         return await session.LoadAsync<Tenant>(query.Id, cancellationToken);

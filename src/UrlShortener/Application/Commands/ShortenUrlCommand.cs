@@ -18,7 +18,7 @@ public class ShortenUrlCommandHandler
         return Result.Ok();
     }
 
-    public static async Task<Result<UrlShortened>> Handle(ShortenUrlCommand command, Result result,
+    public static async Task<Result<UrlShortened>> HandleAsync(ShortenUrlCommand command, Result result,
         IDocumentSession session, IMessageBus bus, IConfiguration configuration)
     {
         if (result.IsError())

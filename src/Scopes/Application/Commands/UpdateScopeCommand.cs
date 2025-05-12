@@ -33,7 +33,7 @@ public class UpdateScopeCommandHandler
         return Result.Ok(scope);
     }
 
-    public static async Task<Result<ScopeUpdated>> Handle(UpdateScopeCommand command,
+    public static async Task<Result<ScopeUpdated>> HandleAsync(UpdateScopeCommand command,
         Result<OpenIddictScope> loadResult,
         OpenIddictScopeManager<OpenIddictScope> scopeManager, IMessageBus bus, CancellationToken cancellationToken)
     {

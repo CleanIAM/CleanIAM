@@ -14,7 +14,7 @@ public record GetUserByIdQuery(Guid Id);
 /// </summary>
 public class GetUserByIdQueryHandler
 {
-    public static async Task<User?> Handle(GetUserByIdQuery query, IQuerySession session)
+    public static async Task<User?> HandleAsync(GetUserByIdQuery query, IQuerySession session)
     {
         return await session.LoadAsync<User>(query.Id);
     }

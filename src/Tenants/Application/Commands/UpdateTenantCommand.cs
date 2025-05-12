@@ -30,7 +30,7 @@ public class UpdateTenantCommandHandler
         return Result.Ok(tenant);
     }
 
-    public static async Task<Result<TenantUpdated>> Handle(UpdateTenantCommand command, Result<Tenant> loadResult,
+    public static async Task<Result<TenantUpdated>> HandleAsync(UpdateTenantCommand command, Result<Tenant> loadResult,
         IDocumentSession session, IMessageBus bus, CancellationToken cancellationToken)
     {
         if (loadResult.IsError())

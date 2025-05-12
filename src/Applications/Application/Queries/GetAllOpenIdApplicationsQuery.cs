@@ -12,7 +12,7 @@ public record GetAllOpenIdApplicationsQuery;
 
 public class GetAllOpenIdClientsQueryHandler
 {
-    public static async Task<IEnumerable<OpenIdApplication>> Handle(GetAllOpenIdApplicationsQuery query,
+    public static async Task<IEnumerable<OpenIdApplication>> HandleAsync(GetAllOpenIdApplicationsQuery query,
         OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager, IMapper mapper)
     {
         var application = await applicationManager.ListAsync().ToArrayAsync();

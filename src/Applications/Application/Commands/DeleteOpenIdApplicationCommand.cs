@@ -31,7 +31,7 @@ public class DeleteOpenIdApplicationCommandHandler
         return Result.Ok(application);
     }
 
-    public static async Task<Result<OpenIdApplicationDeleted>> Handle(DeleteOpenIdApplicationCommand command,
+    public static async Task<Result<OpenIdApplicationDeleted>> HandleAsync(DeleteOpenIdApplicationCommand command,
         Result<OpenIddictEntityFrameworkCoreApplication<Guid>> loadResult,
         OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager,
         ApplicationDbContext dbContext,

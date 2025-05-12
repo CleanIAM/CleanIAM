@@ -29,7 +29,7 @@ public class EnableMfaForUserCommandHandler
         return Result.Ok(user);
     }
 
-    public static async Task<Result<MfaEnabledForUser>> Handle(EnableMfaForUserCommand command, Result<User> loadResult,
+    public static async Task<Result<MfaEnabledForUser>> HandleAsync(EnableMfaForUserCommand command, Result<User> loadResult,
         IDocumentSession session, IMessageBus bus)
     {
         if (loadResult.IsError())
