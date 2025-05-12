@@ -3,6 +3,7 @@ using Identity.Api.ViewModels.Shared;
 using Identity.Api.ViewModels.Signin;
 using Identity.Application.Interfaces;
 using Identity.Application.Queries.Users;
+using Identity.Core.Events;
 using Identity.Core.Users;
 using Mapster;
 using Microsoft.AspNetCore.Authentication;
@@ -17,7 +18,8 @@ public class SigninController(
     ISigninRequestService signinRequestService,
     IIdentityBuilderService identityBuilderService,
     IMessageBus bus,
-    IPasswordHasher passwordHasher) : Controller
+    IPasswordHasher passwordHasher,
+    ILogger logger) : Controller
 {
     [HttpGet("signin")]
     public async Task<IActionResult> Signin([FromQuery] Guid request, [FromQuery] string? error)
@@ -40,7 +42,6 @@ public class SigninController(
         //If MFA is enabled redirect to the MFA handler
         if (signinRequest is { IsMfaRequired: true, IsMfaValidated: false })
             return RedirectToAction("MfaInput", "Mfa");
-
 
         return RedirectToAction("Authorize", "Auth", signinRequestService.CreateOidcQueryObject(signinRequest));
     }
@@ -111,6 +112,11 @@ public class SigninController(
         if (user.IsMFAEnabled)
             // Redirect to MFA handler
             return RedirectToAction("MfaInput", "Mfa");
+        
+        // publish event
+        var newEvent = user.Adapt<UserLoggedIn>();
+        await bus.PublishAsync(newEvent);
+        logger.LogInformation("User {user} logged in.", user.Id);
 
 
         // Redirect to authorize endpoint to authorize the client

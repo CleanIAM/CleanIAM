@@ -1,11 +1,14 @@
 using System.Security.Claims;
 using Identity.Application.Interfaces;
+using Identity.Core.Events;
 using Identity.Core.Users;
+using Mapster;
 using Marten;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Client.WebIntegration;
+using Wolverine;
 
 namespace Identity.Api.Controllers;
 
@@ -16,7 +19,9 @@ namespace Identity.Api.Controllers;
 public class ExternalSigninProvidersController(
     IQuerySession session,
     ISigninRequestService signinRequestService,
-    IIdentityBuilderService identityBuilderService) : Controller
+    IIdentityBuilderService identityBuilderService,
+    IMessageBus bus,
+    ILogger logger) : Controller
 {
     /// <summary>
     /// Initiates the authentication process with Microsoft provider
@@ -83,6 +88,11 @@ public class ExternalSigninProvidersController(
         if (signinRequest == null)
             return RedirectToSignin("Request id is invalid");
 
+        // publish event
+        var newEvent = user.Adapt<UserLoggedIn>();
+        await bus.PublishAsync(newEvent);
+        logger.LogInformation("User {user} logged in.", user.Id);
+        
         // Redirect to authorize endpoint to authorize the client
         var oidcRequestParams = signinRequestService.CreateOidcQueryObject(signinRequest);
         oidcRequestParams["chooseAccount"] = "false"; // Set chooseAccount to false to skip account chooser

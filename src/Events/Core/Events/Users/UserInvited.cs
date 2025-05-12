@@ -1,6 +1,6 @@
 using SharedKernel.Core;
 
-namespace Events.Core.Events.ManagementPortal.Users;
+namespace Events.Core.Events.Users;
 
 /// <summary>
 /// Represents an event that is triggered when a user is invited.

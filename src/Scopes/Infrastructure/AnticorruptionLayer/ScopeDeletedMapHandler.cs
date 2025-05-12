@@ -1,4 +1,4 @@
-using Events.Core.Events.ManagementPortal.Scopes;
+using Events.Core.Events.Scopes;
 using Mapster;
 
 namespace Scopes.Infrastructure.AnticorruptionLayer;

@@ -1,4 +1,4 @@
-namespace Events.Core.Events.ManagementPortal.Users;
+namespace Events.Core.Events.Users;
 
 /// <summary>
 /// Represents an event triggered when a user has been disabled within the system.
@@ -7,4 +7,4 @@ namespace Events.Core.Events.ManagementPortal.Users;
 /// <param name="Email">Email address of the user</param>
 /// <param name="FirstName">First name of the user</param>
 /// <param name="LastName">Last name of the user</param>
-public record UserEnabled(Guid Id, string Email, string FirstName, string LastName);
+public record UserDisabled(Guid Id, string Email, string FirstName, string LastName);

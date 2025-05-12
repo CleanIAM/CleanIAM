@@ -1,4 +1,4 @@
-using Events.Core.Events.ManagementPortal.Mfa;
+using Events.Core.Events.Users.Mfa;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,4 +1,4 @@
-namespace Events.Core.Events.ManagementPortal.Mfa;
+namespace Events.Core.Events.Users.Mfa;
 
 /// <summary>
 /// Represents the event of user disabling multifactor authentication (MFA).

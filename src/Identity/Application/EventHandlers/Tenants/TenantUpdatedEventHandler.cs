@@ -1,4 +1,4 @@
-using Events.Core.Events.ManagementPortal.Tenants;
+using Events.Core.Events.Tenants;
 using Identity.Core.Users;
 using Marten;
 

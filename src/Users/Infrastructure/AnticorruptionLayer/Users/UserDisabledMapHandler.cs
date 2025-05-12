@@ -1,4 +1,4 @@
-using Events.Core.Events.ManagementPortal.Users;
+using Events.Core.Events.Users;
 using Mapster;
 
 namespace Users.Infrastructure.AnticorruptionLayer.Users;

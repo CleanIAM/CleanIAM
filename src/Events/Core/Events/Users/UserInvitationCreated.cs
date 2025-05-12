@@ -1,4 +1,4 @@
-namespace Events.Core.Events;
+namespace Events.Core.Events.Users;
 
 /// <summary>
 /// Event that is published when a user invitation is created and sent via email.

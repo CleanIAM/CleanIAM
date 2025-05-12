@@ -1,4 +1,4 @@
-using Events.Core.Events.ManagementPortal.Mfa;
+using Events.Core.Events.Users.Mfa;
 using Identity.Core.Users;
 using Marten;
 

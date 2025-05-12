@@ -1,4 +1,4 @@
-namespace Events.Core.Events.ManagementPortal.Tenants;
+namespace Events.Core.Events.Tenants;
 
 /// <summary>
 /// Event that is raised when a user is assigned to a tenant

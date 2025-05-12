@@ -1,4 +1,4 @@
-using Events.Core.Events.ManagementPortal.Users;
+using Events.Core.Events.Users;
 using Identity.Core.Requests;
 using Identity.Core.Users;
 using Marten;

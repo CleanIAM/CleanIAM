@@ -1,6 +1,6 @@
 using SharedKernel.Core;
 
-namespace Events.Core.Events.ManagementPortal.Users;
+namespace Events.Core.Events.Users;
 
 /// <summary>
 /// Event that is published when a user is deleted.

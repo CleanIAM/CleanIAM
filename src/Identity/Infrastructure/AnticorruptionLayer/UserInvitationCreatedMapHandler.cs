@@ -1,4 +1,4 @@
-using Events.Core.Events;
+using Events.Core.Events.Users;
 using Mapster;
 
 namespace Identity.Infrastructure.AnticorruptionLayer;

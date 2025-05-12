@@ -19,10 +19,13 @@ using Wolverine.Marten;
 
 namespace SharedKernel;
 
+/// <summary>
+/// Class containing methods for registering shared services or utils and configuration shared behaviour.
+/// </summary>
 public static class DependencyInjection
 {
     /// <summary>
-    /// Configure parts the project that need asccess to all assemblies (e.g. Wolverine)
+    /// Configure parts the project that need access to all assemblies (e.g. Wolverine)
     /// </summary>
     /// <param name="host"></param>
     /// <param name="assemblies"></param>
