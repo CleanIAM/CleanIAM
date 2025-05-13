@@ -108,7 +108,7 @@ namespace CleanIAM.SharedKernel.Migrations
                     b.Property<string>("Properties")
                         .HasColumnType("text");
 
-                    b.Property<string>("CleanIAM.Scopes")
+                    b.Property<string>("Scopes")
                         .HasColumnType("text");
 
                     b.Property<string>("Status")
