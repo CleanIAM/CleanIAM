@@ -1,0 +1,57 @@
+@model CleanIAM.Identity.Api.Views.Auth.AuthorizeViewModel
+
+@{
+    ViewData["Title"] = "Authorize";
+}
+<div class="min-h-screen bg-gray-50 flex flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
+
+    <div class="m-2 w-full md:w-lg">
+        <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <div class="sm:mx-auto sm:w-full sm:max-w-md">
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    Account Authorization
+                </h2>
+            </div>
+            <div class="mb-6 text-center">
+                <p class="text-sm text-gray-600">You are about to authorize this application</p>
+                <p class="mt-2 text-lg font-medium text-gray-900">Continue as</p>
+            </div>
+
+            <div class="space-y-4">
+                <form method="post" asp-action="AuthorizePost" asp-controller="Auth">
+                    @foreach (var value in Model.OidcRequest)
+                    {
+                        <input type="hidden" name="@value.Key" value="@value.Value">
+                    }
+                    <button type="submit"
+                            class="w-full text-base flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm
+                                     font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none
+                                    focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        @Model.Name
+                    </button>
+                </form>
+
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">Or</span>
+                    </div>
+                </div>
+
+                <form method="post" asp-action="AuthorizePost" asp-controller="Auth">
+                    @foreach (var value in Model.OidcRequest)
+                    {
+                        <input type="hidden" name="@value.Key" value="@value.Value">
+                    }
+                    <input type="hidden" name="newSignIn" value="true">
+                    <button type="submit"
+                            class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Sign in with a different account
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

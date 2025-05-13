@@ -52,3 +52,5 @@ src/Identity/obj
 docs/.vitepress/dist
 docs/.vitepress/cache 
 node_modules
+.env
+src/**/wwwroot/css/main.css

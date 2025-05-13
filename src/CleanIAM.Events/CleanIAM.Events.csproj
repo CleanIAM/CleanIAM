@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="ExpressionDebugger" Version="2.2.1"/>
+        <PackageReference Include="Mapster.Async" Version="2.0.1"/>
+        <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\CleanIAM.SharedKernel\CleanIAM.SharedKernel.csproj" />
+    </ItemGroup>
+
+</Project>

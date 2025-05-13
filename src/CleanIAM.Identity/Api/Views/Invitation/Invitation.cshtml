@@ -1,0 +1,33 @@
+@model CleanIAM.Identity.Api.Views.Invitation.InvitationViewModel;
+
+@{
+    ViewData["Title"] = "Account setup";
+}
+
+<div class="flex min-h-screen items-center justify-center bg-gray-50 p-6">
+    <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-xl ring-1 ring-gray-200">
+        <h1 class="text-3xl font-semibold text-center text-gray-900 mb-6">Account setup</h1>
+        <form method="post" class="space-y-6">
+            <input hidden asp-for="RequestId" value="@Model.RequestId"/>
+            <div>
+                <label asp-for="NewPassword" class="block text-sm font-medium text-gray-700">New Password</label>
+                <input asp-for="NewPassword" type="password" value="@Model.NewPassword"
+                       class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-300"
+                       placeholder="Enter your new password"/>
+                <span asp-validation-for="NewPassword" class="text-red-500 text-sm"></span>
+            </div>
+            <div>
+                <label asp-for="ConfirmPassword" class="block text-sm font-medium text-gray-700">Confirm
+                    Password</label>
+                <input asp-for="ConfirmPassword" type="password" value="@Model.ConfirmPassword"
+                       class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-300"
+                       placeholder="Confirm your new password"/>
+                <span asp-validation-for="ConfirmPassword" class="text-red-500 text-sm"></span>
+            </div>
+            <button type="submit"
+                    class="w-full px-4 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                Setup account
+            </button>
+        </form>
+    </div>
+</div>
