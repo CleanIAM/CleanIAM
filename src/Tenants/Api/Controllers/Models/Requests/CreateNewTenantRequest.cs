@@ -11,5 +11,6 @@ public class CreateNewTenantRequest
     /// Name of the new tenant
     /// </summary>
     [Required]
+    [Length(3, 32, ErrorMessage = "Name length must be between 3 and 32 character long")]
     public string Name { get; set; }
 }

@@ -6,30 +6,37 @@ namespace Applications.Api.Controllers.Models.Requests;
 public class CreateNewApplicationRequest
 {
     /// <summary>
-    /// Gets or sets the application type associated with the application.
+    /// The client identifier associated with the application.
     /// </summary>
+    [Required]
+    [Length(1, 32, ErrorMessage = "ClientId length must be between 1 and 32 character long")]
+    [RegularExpression(@"^\S*$", ErrorMessage = "No white space allowed")]
+    public required string ClientId { get; set; }
+
+    /// <summary>
+    /// The display name associated with the application.
+    /// </summary>
+    [Required]
+    [Length(1, 32, ErrorMessage = "Display name length must be between 1 and 32 character long")]
+    public string? DisplayName { get; set; }
+
+    /// <summary>
+    /// The application type associated with the application.
+    /// </summary>
+    [Required]
     public ApplicationType? ApplicationType { get; set; }
 
     /// <summary>
-    /// Gets or sets the client identifier associated with the application.
+    /// The client type associated with the application.
     /// </summary>
     [Required]
-    public string ClientId { get; set; }
-
-    /// <summary>
-    /// Gets or sets the client type associated with the application.
-    /// </summary>
     public ClientType? ClientType { get; set; }
 
     /// <summary>
-    /// Gets or sets the consent type associated with the application.
+    /// The consent type associated with the application.
     /// </summary>
+    [Required]
     public ConsentType? ConsentType { get; set; }
-
-    /// <summary>
-    /// Gets or sets the display name associated with the application.
-    /// </summary>
-    public string? DisplayName { get; set; }
 
     /// <summary>
     /// Allowed scopes for the application.
@@ -38,13 +45,13 @@ public class CreateNewApplicationRequest
     public HashSet<string> Scopes { get; set; } = [];
 
     /// <summary>
-    /// Gets the post-logout redirect URIs associated with the application.
+    /// Post-logout redirect URIs associated with the application.
     /// </summary>
     [Required]
     public HashSet<Uri> PostLogoutRedirectUris { get; set; } = [];
 
     /// <summary>
-    /// Gets the redirect URIs associated with the application.
+    /// Redirect URIs associated with the application.
     /// </summary>
     [Required]
     public HashSet<Uri> RedirectUris { get; set; } = [];
