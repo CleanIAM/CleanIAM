@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.4.0"/>
+        <PackageReference Include="coravel" Version="6.0.2"/>
+        <PackageReference Include="Coravel.Mailer" Version="7.1.0"/>
+        <PackageReference Include="DotNetEnv" Version="3.1.1"/>
+        <PackageReference Include="ExpressionDebugger" Version="2.2.1"/>
+        <PackageReference Include="Mapster" Version="7.4.0"/>
+        <PackageReference Include="Mapster.Async" Version="2.0.1"/>
+        <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1"/>
+        <PackageReference Include="Marten" Version="7.38.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Npgsql" Version="9.0.3"/>
+        <PackageReference Include="NSec.Cryptography" Version="24.4.0"/>
+        <PackageReference Include="OpenIddict.AspNetCore" Version="6.2.0"/>
+        <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="6.2.0"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4"/>
+        <PackageReference Include="Otp.NET" Version="1.4.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
+        <PackageReference Include="WolverineFx" Version="3.10.4"/>
+        <PackageReference Include="WolverineFx.FluentValidation" Version="3.6.5"/>
+        <PackageReference Include="WolverineFx.Http" Version="3.6.5"/>
+        <PackageReference Include="WolverineFx.Http.FluentValidation" Version="3.6.5"/>
+        <PackageReference Include="WolverineFx.Http.Marten" Version="3.6.5"/>
+        <PackageReference Include="WolverineFx.Marten" Version="3.6.5"/>
+        <PackageReference Include="Lamar.Microsoft.DependencyInjection" Version="14.0.1"/>
+
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.1"/>
+        <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="9.0.1"/>
+        <PackageReference Include="WolverineFx.Postgresql" Version="3.10.4"/>
+        <PackageReference Include="System.Linq.Async"/>
+
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\CleanIAM.Events\CleanIAM.Events.csproj" />
+        <ProjectReference Include="..\CleanIAM.SharedKernel\CleanIAM.SharedKernel.csproj" />
+        <ProjectReference Include="..\CleanIAM.UrlShortener\CleanIAM.UrlShortener.csproj" />
+    </ItemGroup>
+
+
+    <Target Name="Tailwind" BeforeTargets="Build">
+        <Exec Command="npx @tailwindcss/cli -i ./wwwroot/css/base.css -o ./wwwroot/css/main.css"/>
+    </Target>
+
+</Project>

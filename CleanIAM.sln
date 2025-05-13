@@ -1,24 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity", "src\Identity\Identity.csproj", "{ADAE613C-AAD9-42DE-8FE2-4B8D1E1B9127}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanIAM.Identity", "src\CleanIAM.Identity\CleanIAM.Identity.csproj", "{ADAE613C-AAD9-42DE-8FE2-4B8D1E1B9127}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedKernel", "src\SharedKernel\SharedKernel.csproj", "{071AEEEF-7B56-4380-9B21-9A692D6200A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanIAM.SharedKernel", "src\CleanIAM.SharedKernel\CleanIAM.SharedKernel.csproj", "{071AEEEF-7B56-4380-9B21-9A692D6200A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Events", "src\Events\Events.csproj", "{EA19333A-43B9-4023-BB56-9FC07EF8CD9A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanIAM.Events", "src\CleanIAM.Events\CleanIAM.Events.csproj", "{EA19333A-43B9-4023-BB56-9FC07EF8CD9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener", "src\UrlShortener\UrlShortener.csproj", "{AFE0494D-735E-447F-9570-427DDC634555}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanIAM.UrlShortener", "src\CleanIAM.UrlShortener\CleanIAM.UrlShortener.csproj", "{AFE0494D-735E-447F-9570-427DDC634555}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Host", "src\Host\Host.csproj", "{5A732172-C0B8-43C6-8A1F-FB38EBC3193E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanIAM.Host", "src\CleanIAM.Host\CleanIAM.Host.csproj", "{5A732172-C0B8-43C6-8A1F-FB38EBC3193E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbSeed", "src\DbSeed\DbSeed.csproj", "{2FA89BCB-5020-418B-BA8C-032EB56A0E59}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanIAM.DbSeed", "src\CleanIAM.DbSeed\CleanIAM.DbSeed.csproj", "{2FA89BCB-5020-418B-BA8C-032EB56A0E59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scopes", "src\Scopes\Scopes.csproj", "{1694238D-C99B-4DA9-B94B-A419B01404F4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanIAM.Scopes", "src\CleanIAM.Scopes\CleanIAM.Scopes.csproj", "{1694238D-C99B-4DA9-B94B-A419B01404F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Users", "src\Users\Users.csproj", "{F5C31446-B6CD-421C-B1C1-BBFEF4E4EE36}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanIAM.Users", "src\CleanIAM.Users\CleanIAM.Users.csproj", "{F5C31446-B6CD-421C-B1C1-BBFEF4E4EE36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Applications", "src\Applications\Applications.csproj", "{7374E793-F39B-4B27-8C10-1B2CA36180FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanIAM.Applications", "src\CleanIAM.Applications\CleanIAM.Applications.csproj", "{7374E793-F39B-4B27-8C10-1B2CA36180FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tenants", "src\Tenants\Tenants.csproj", "{CB946315-51C4-4479-B0EB-475CDB972EC9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanIAM.Tenants", "src\CleanIAM.Tenants\CleanIAM.Tenants.csproj", "{CB946315-51C4-4479-B0EB-475CDB972EC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
