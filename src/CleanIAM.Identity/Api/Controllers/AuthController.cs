@@ -131,7 +131,7 @@ public class AuthController(
     /// Endpoint handling the sign-out request.
     /// </summary>
     [HttpPost("endsession")]
-    public async Task<IActionResult> EndSession(OpenIddictRequest request, EndSessionViewModel? model)
+    public async Task<IActionResult> EndSession(EndSessionViewModel? model)
     {
         var oidcRequest = HttpContext.GetOpenIddictServerRequest();
 

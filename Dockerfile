@@ -12,44 +12,23 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0-bookworm-slim AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY src/ .
+COPY package.json .
 
 FROM build AS host-build
-RUN dotnet restore "/src/Lifeliqe.Host/Lifeliqe.Host.csproj"
-WORKDIR /src/Lifeliqe.Host
-RUN dotnet build "Lifeliqe.Host.csproj" -c $BUILD_CONFIGURATION -o /app/build /p:PublishReadyToRun=true
+RUN dotnet restore "/src/CleanIAM.Host/CleanIAM.Host.csproj"
+RUN apt-get update && apt-get install -y npm
+RUN npm install
+WORKDIR /src/CleanIAM.Host
+RUN dotnet build "CleanIAM.Host.csproj" -c $BUILD_CONFIGURATION -o /app/build /p:PublishReadyToRun=true
 
 FROM host-build AS host-publish
 ARG BUILD_CONFIGURATION=Release
-COPY --from=host-build src/Lifeliqe.Host/Key_private_default.pem /app/Key_private_default.pem 
-COPY --from=host-build src/Lifeliqe.Host/Key_public_default.pem /app/Key_public_default.pem 
-COPY --from=host-build src/Lifeliqe.Host/type-sense-import.json /app/type-sense-import.json 
 
-WORKDIR /src/Lifeliqe.Host
-RUN dotnet publish "./Lifeliqe.Host.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false /p:PublishReadyToRun=true
+WORKDIR /src/CleanIAM.Host
+RUN dotnet publish "./CleanIAM.Host.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false /p:PublishReadyToRun=true
 
 FROM base AS host-final
 WORKDIR /app
-ARG VERSION_TAG="Not Specified"
-RUN echo "$VERSION_TAG" > /app/build-version.txt
 COPY --from=host-publish /app/Key_private_default.pem /app/Key_private_default.pem
-COPY --from=host-publish /app/Key_public_default.pem /app/Key_public_default.pem
-COPY --from=host-publish /app/type-sense-import.json /app/type-sense-import.json
 COPY --from=host-publish /app/publish .
-ENTRYPOINT ["dotnet", "Lifeliqe.Host.dll"]
-
-FROM build AS identity-build
-RUN dotnet restore "/src/Lifeliqe.Identity/Lifeliqe.Identity.csproj"
-WORKDIR /src/Lifeliqe.Identity
-RUN dotnet build "Lifeliqe.Identity.csproj" -c $BUILD_CONFIGURATION -o /app/build /p:PublishReadyToRun=true
-
-FROM identity-build AS identity-publish
-ARG BUILD_CONFIGURATION=Release
-WORKDIR /src/Lifeliqe.Identity
-RUN dotnet publish "./Lifeliqe.Identity.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false /p:PublishReadyToRun=true
-
-FROM base AS identity-final
-WORKDIR /app
-ARG VERSION_TAG="Not Specified"
-RUN echo "$VERSION_TAG" > /app/build-version.txt
-COPY --from=identity-publish /app/publish .
-ENTRYPOINT ["dotnet", "Lifeliqe.Identity.dll"]
+ENTRYPOINT ["dotnet", "CleanIAM.Host.dll"]

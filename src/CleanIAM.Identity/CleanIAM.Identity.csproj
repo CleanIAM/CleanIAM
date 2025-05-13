@@ -19,10 +19,6 @@
         <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1"/>
         <PackageReference Include="Marten" Version="7.38.1"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.1">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
         <PackageReference Include="Npgsql" Version="9.0.3"/>
         <PackageReference Include="NSec.Cryptography" Version="24.4.0"/>
         <PackageReference Include="OpenIddict.AspNetCore" Version="6.2.0"/>
@@ -47,9 +43,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CleanIAM.Events\CleanIAM.Events.csproj" />
-        <ProjectReference Include="..\CleanIAM.SharedKernel\CleanIAM.SharedKernel.csproj" />
-        <ProjectReference Include="..\CleanIAM.UrlShortener\CleanIAM.UrlShortener.csproj" />
+        <ProjectReference Include="..\CleanIAM.Events\CleanIAM.Events.csproj"/>
+        <ProjectReference Include="..\CleanIAM.SharedKernel\CleanIAM.SharedKernel.csproj"/>
+        <ProjectReference Include="..\CleanIAM.UrlShortener\CleanIAM.UrlShortener.csproj"/>
     </ItemGroup>
 
 
