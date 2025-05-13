@@ -1,6 +1,7 @@
 using CleanIAM.Events.Core.Events.Users;
 using CleanIAM.Identity.Application.Commands.Invitations;
 using CleanIAM.Identity.Core.Users;
+using CleanIAM.SharedKernel;
 using Mapster;
 using Marten;
 using CleanIAM.SharedKernel.Infrastructure.Utils;
@@ -18,7 +19,9 @@ public class UserInvitedEventHandler
         logger.LogDebug("Handling UserInvited event for user [{}]", userInvitedEvent.Email);
         // Create a new user account if it doesn't exist
         var user = userInvitedEvent.Adapt<IdentityUser>();
-        user.TenantId = Guid.TryParse(session.TenantId, out var tenantId) ? tenantId : Guid.Empty;
+        user.TenantId = Guid.TryParse(session.TenantId, out var tenantId)
+            ? tenantId
+            : SharedKernelConstants.DefaultTenantId;
         user.IsInvitePending = true;
         session.Store(user);
         await session.SaveChangesAsync(cancellationToken);

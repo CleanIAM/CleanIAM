@@ -1,5 +1,6 @@
 using CleanIAM.Identity.Core.Users;
 using CleanIAM.Identity.Infrastructure.Services;
+using CleanIAM.SharedKernel;
 using Marten;
 using CleanIAM.SharedKernel.Core;
 using CleanIAM.Tenants.Core;
@@ -17,7 +18,6 @@ public static class SeedDbMarten
         var session = scope.ServiceProvider.GetRequiredService<IDocumentSession>();
 
 
-
         SeedUsers(session);
         SeedDefaultTenant(session);
 
@@ -30,17 +30,17 @@ public static class SeedDbMarten
         // Generate default tenant
         var defaultTenant = new Tenant
         {
-            Id = Guid.Empty,
+            Id = SharedKernelConstants.DefaultTenantId,
             Name = "Default Tenant"
         };
-        
+
         session.Store(defaultTenant);
     }
-    
+
     private static void SeedUsers(IDocumentSession session)
     {
         var passwordHasher = new PasswordHasher();
-        
+
         session.Store(
             new IdentityUser
             {
@@ -52,7 +52,7 @@ public static class SeedDbMarten
                 IsInvitePending = false,
                 EmailVerified = true,
                 Roles = [UserRole.User, UserRole.Admin, UserRole.MasterAdmin],
-                TenantId =  Guid.Empty,
+                TenantId = Guid.Empty,
                 TenantName = "Default Tenant",
                 IsMFAEnabled = false,
                 MfaConfig = new MfaConfig
@@ -61,7 +61,7 @@ public static class SeedDbMarten
                     TotpSecretKey = ""
                 },
             }
-            );
+        );
         session.Store(
             new User
             {
@@ -72,7 +72,7 @@ public static class SeedDbMarten
                 IsInvitePending = false,
                 EmailVerified = true,
                 Roles = [UserRole.User, UserRole.Admin, UserRole.MasterAdmin],
-                TenantId =  Guid.Empty,
+                TenantId = Guid.Empty,
                 TenantName = "Default Tenant",
                 IsMFAEnabled = false,
                 MfaConfig = new CleanIAM.Users.Core.MfaConfig
@@ -82,6 +82,5 @@ public static class SeedDbMarten
                 },
             }
         );
-        
     }
 }

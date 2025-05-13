@@ -1,3 +1,4 @@
+using CleanIAM.SharedKernel;
 using CleanIAM.SharedKernel.Core;
 
 namespace CleanIAM.Users.Core;
@@ -40,7 +41,7 @@ public class User
     /// <summary>
     /// The id of the tenant to which the user belongs.
     /// </summary>
-    public Guid TenantId { get; set; } = Guid.Empty;
+    public Guid TenantId { get; set; } = SharedKernelConstants.DefaultTenantId;
 
     /// <summary>
     /// The name of the tenant to which the user belongs.

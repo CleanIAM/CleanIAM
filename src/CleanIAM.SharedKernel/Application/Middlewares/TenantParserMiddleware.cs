@@ -27,15 +27,12 @@ public class TenantParserMiddleware(RequestDelegate next)
                 // Try to get tenant from claims
                 var tenantId = context.User.Claims
                     .FirstOrDefault(c => c.Type == SharedKernelConstants.TenantClaimName)?.Value;
-                if (tenantId != null)
-                    bus.TenantId = tenantId;
-                else
-                    bus.TenantId = Guid.Empty.ToString();
+                bus.TenantId = tenantId ?? SharedKernelConstants.DefaultTenantId.ToString();
             }
         }
         else
-            bus.TenantId = Guid.Empty.ToString();
-        
+            bus.TenantId = SharedKernelConstants.DefaultTenantId.ToString();
+
         // Call the next delegate/middleware in the pipeline.
         await next(context);
     }

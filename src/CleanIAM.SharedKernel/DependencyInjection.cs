@@ -105,7 +105,7 @@ public static class DependencyInjection
         {
             // Tenant name is organization id
             opts.IsClaimTypeNamed(SharedKernelConstants.TenantClaimName);
-            opts.DefaultIs(Guid.Empty.ToString());
+            opts.DefaultIs(SharedKernelConstants.DefaultTenantId.ToString());
         });
 
         return services;
@@ -234,5 +234,5 @@ public static class DependencyInjection
         // Add CORS policy provider
         services.AddSingleton<ICorsPolicyProvider, DynamicCorsPolicyProvider>();
         return services;
-    } 
+    }
 }

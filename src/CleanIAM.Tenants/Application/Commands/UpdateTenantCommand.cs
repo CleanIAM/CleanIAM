@@ -1,4 +1,5 @@
 using System.Net;
+using CleanIAM.SharedKernel;
 using Mapster;
 using Marten;
 using CleanIAM.SharedKernel.Infrastructure.Utils;
@@ -24,7 +25,7 @@ public class UpdateTenantCommandHandler
         if (tenant is null)
             return Result.Error("Tenant not found", HttpStatusCode.NotFound);
 
-        if (tenant.Id == Guid.Empty)
+        if (tenant.Id == SharedKernelConstants.DefaultTenantId)
             return Result.Error("Default tenant cannot be updated", HttpStatusCode.Forbidden);
 
         return Result.Ok(tenant);

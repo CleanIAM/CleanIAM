@@ -1,11 +1,9 @@
 using Mapster;
-using Marten;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
 using OpenIddict.Core;
 using CleanIAM.Scopes;
 using CleanIAM.SharedKernel.Core.Database;
-using CleanIAM.Tenants.Core;
 using OpenIddictScope = OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreScope<System.Guid>;
 
 namespace DbConfig;
