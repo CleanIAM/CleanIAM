@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SharedKernel.Application.Interfaces;
 
 namespace SharedKernel.Api.Controllers;
@@ -12,7 +11,6 @@ public class StatusCheckController(IAppConfiguration appConfiguration): Controll
     /// <summary>
     /// Get app health status
     /// </summary>
-    [AllowAnonymous]
     [HttpGet("/healthz")]
     public IResult GetHealthStatus()
     {
@@ -22,7 +20,6 @@ public class StatusCheckController(IAppConfiguration appConfiguration): Controll
     /// <summary>
     /// Get app ready status
     /// </summary>
-    [AllowAnonymous]
     [HttpGet("/readyz")]
     public IResult GetReadyStatus()
     {

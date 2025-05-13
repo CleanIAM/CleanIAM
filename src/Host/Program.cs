@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Scopes;
 using SharedKernel;
-using SharedKernel.Application.Interfaces;
 using Tenants;
 using Users;
 using Wolverine.Http;
@@ -15,19 +14,9 @@ using Wolverine.Http;
 Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Host.UseLamar();
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-    {
-        policy
-            .AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-});
 
+builder.Services.AddCorsProvider(builder.Configuration);
 builder.Services.AddLogging();
 
 // Register the Coravel's mailer service

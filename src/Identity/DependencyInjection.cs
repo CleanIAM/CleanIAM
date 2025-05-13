@@ -57,15 +57,9 @@ public static class DependencyInjection
             {
                 options.SetAuthorizationEndpointUris("/connect/authorize")
                     .SetTokenEndpointUris("/connect/token")
-                    .SetIntrospectionEndpointUris("connect/introspect")
+                    .SetIntrospectionEndpointUris("/connect/introspect")
                     .SetEndSessionEndpointUris("/connect/endsession")
-                    .SetUserInfoEndpointUris("/connect/userinfo");
-
-                // .SetDeviceAuthorizationEndpointUris("connect/device")
-                // .SetEndUserVerificationEndpointUris("connect/verify")
-                // .SetPushedAuthorizationEndpointUris("connect/par")
-                // .SetRevocationEndpointUris("connect/revoke")
-                // .SetUserInfoEndpointUris("connect/userinfo");
+                    .SetUserInfoEndpointUris("/connect/userinfo");  
 
                 options.AllowAuthorizationCodeFlow(); // For FE clients
                 options.AllowClientCredentialsFlow() // For BE clients

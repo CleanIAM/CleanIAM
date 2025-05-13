@@ -3,8 +3,10 @@ using CommunityToolkit.Diagnostics;
 using JasperFx.CodeGeneration;
 using Mapster;
 using Marten;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using SharedKernel.Application.Cors;
 using SharedKernel.Application.Interfaces;
 using SharedKernel.Application.Interfaces.Utils;
 using SharedKernel.Application.Middlewares;
@@ -219,4 +221,18 @@ public static class DependencyInjection
 
         return appConfiguration;
     }
+
+
+    /// <summary>
+    /// Register custom CORS policy provider
+    /// </summary>
+    /// <remarks>
+    /// For some OIDC endpoints there has to be custom CORS settings to allow request from different sources.
+    /// </remarks>>
+    public static IServiceCollection AddCorsProvider(this IServiceCollection services, IConfiguration configuration)
+    {
+        // Add CORS policy provider
+        services.AddSingleton<ICorsPolicyProvider, DynamicCorsPolicyProvider>();
+        return services;
+    } 
 }
