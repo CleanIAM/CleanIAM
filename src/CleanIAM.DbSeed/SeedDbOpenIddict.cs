@@ -32,9 +32,46 @@ public static class SeedDbOpenIddict
     {
         var applicationManager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
 
+        var managementConsoleFrontend = new OpenIddictApplicationDescriptor
+        {
+            ClientId = "management-portal",
+            DisplayName = "Management Portal",
+            ApplicationType = OpenIddictConstants.ApplicationTypes.Web,
+            ClientType = OpenIddictConstants.ClientTypes.Public,
+            RedirectUris =
+            {
+                new Uri("https://localhost:3001/auth/signin-callback")
+            },
+            PostLogoutRedirectUris = { new Uri("https://localhost:3001") },
+            Permissions =
+            {
+                OpenIddictConstants.Permissions.Endpoints.Authorization,
+                OpenIddictConstants.Permissions.Endpoints.Token,
+                OpenIddictConstants.Permissions.Endpoints.EndSession,
+                OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
+                OpenIddictConstants.Permissions.ResponseTypes.Code,
+                OpenIddictConstants.Permissions.Scopes.Email,
+                OpenIddictConstants.Permissions.Scopes.Profile,
+                OpenIddictConstants.Permissions.Scopes.Roles,
+                OpenIddictConstants.Permissions.Prefixes.Scope + "BE1"
+            },
+            Requirements =
+            {
+                OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange
+            }
+        };
+
+        if (await applicationManager.FindByClientIdAsync("management-portal") is null)
+            await applicationManager.CreateAsync(managementConsoleFrontend);
+
+
+        /* DEMO APPLICATIONS */
         var feClient = new OpenIddictApplicationDescriptor
         {
             ClientId = "example-FE-client",
+            DisplayName = "Example FE Client",
+            ApplicationType = OpenIddictConstants.ApplicationTypes.Web,
             ClientType = OpenIddictConstants.ClientTypes.Public,
             RedirectUris =
             {
@@ -63,42 +100,13 @@ public static class SeedDbOpenIddict
         if (await applicationManager.FindByClientIdAsync("example-FE-client") is null)
             await applicationManager.CreateAsync(feClient);
 
-        var managementConsoleFrontend = new OpenIddictApplicationDescriptor
-        {
-            ClientId = "management-console-fe-client",
-            ClientType = OpenIddictConstants.ClientTypes.Public,
-            RedirectUris =
-            {
-                new Uri("https://localhost:3001/auth/signin-callback")
-            },
-            PostLogoutRedirectUris = { new Uri("https://localhost:3001/auth/signout-callback") },
-            Permissions =
-            {
-                OpenIddictConstants.Permissions.Endpoints.Authorization,
-                OpenIddictConstants.Permissions.Endpoints.Token,
-                OpenIddictConstants.Permissions.Endpoints.EndSession,
-                OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
-                OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
-                OpenIddictConstants.Permissions.ResponseTypes.Code,
-                OpenIddictConstants.Permissions.Scopes.Email,
-                OpenIddictConstants.Permissions.Scopes.Profile,
-                OpenIddictConstants.Permissions.Scopes.Roles,
-                OpenIddictConstants.Permissions.Prefixes.Scope + "BE1"
-            },
-            Requirements =
-            {
-                OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange
-            }
-        };
-
-        if (await applicationManager.FindByClientIdAsync("management-console-fe-client") is null)
-            await applicationManager.CreateAsync(managementConsoleFrontend);
-
 
         var beClient = new OpenIddictApplicationDescriptor
         {
             ClientId = "example-BE-client",
+            DisplayName = "Example BE Client",
             ClientSecret = "test-secret",
+            ApplicationType = OpenIddictConstants.ApplicationTypes.Native,
             ClientType = OpenIddictConstants.ClientTypes.Confidential,
             Permissions =
             {
@@ -108,31 +116,6 @@ public static class SeedDbOpenIddict
 
         if (await applicationManager.FindByClientIdAsync("example-BE-client") is null)
             await applicationManager.CreateAsync(beClient);
-
-        var managementPortal = new OpenIddictApplicationDescriptor
-        {
-            ClientId = "management-portal",
-            ClientSecret = "management-portal-secret",
-            ClientType = OpenIddictConstants.ClientTypes.Confidential,
-            RedirectUris =
-            {
-                new Uri("https://localhost:5001/signin-oidc")
-            },
-            Permissions =
-            {
-                OpenIddictConstants.Permissions.Endpoints.Authorization,
-                OpenIddictConstants.Permissions.Endpoints.Token,
-                OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
-                OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
-                OpenIddictConstants.Permissions.ResponseTypes.Code,
-                OpenIddictConstants.Permissions.Scopes.Email,
-                OpenIddictConstants.Permissions.Scopes.Profile,
-                OpenIddictConstants.Permissions.Scopes.Roles
-            }
-        };
-
-        if (await applicationManager.FindByClientIdAsync("management-portal") is null)
-            await applicationManager.CreateAsync(managementPortal);
     }
 
     private static async Task CreateDefaultOidcScopes(AsyncServiceScope serviceScope)
