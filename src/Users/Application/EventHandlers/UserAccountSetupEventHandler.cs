@@ -17,6 +17,7 @@ public class UserAccountSetupEventHandler
         }
         
         user.IsInvitePending = false;
+        user.EmailVerified = true;
         session.Store(user);
         await session.SaveChangesAsync(cancellationToken);
     }
