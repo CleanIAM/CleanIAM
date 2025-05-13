@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Scopes;
 using SharedKernel;
+using SharedKernel.Application.Middlewares;
 using Tenants;
 using Users;
 using Wolverine.Http;
@@ -57,7 +58,12 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     }
 );
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(opts =>
+{
+    // Register API routes model validation filter
+    opts.Filters.Add<ModelValidationFilter>();
+});
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
