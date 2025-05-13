@@ -16,6 +16,9 @@ public class MapsterConfig
         TypeAdapterConfig<UpdateScopeCommand, OpenIddictEntityFrameworkCoreScope<Guid>>.ForType()
             .AfterMapping((src, dest) => { dest.Resources = JsonSerializer.Serialize(src.Resources); });
 
+        TypeAdapterConfig<Scope, OpenIddictEntityFrameworkCoreScope<Guid>>.ForType()
+            .AfterMapping((src, dest) => { dest.Resources = JsonSerializer.Serialize(src.Resources); });
+
         TypeAdapterConfig<OpenIddictEntityFrameworkCoreScope<Guid>, Scope>.ForType()
             .Ignore(dest => dest.Resources)
             .AfterMapping((src, dest) =>
