@@ -29,6 +29,5 @@ RUN dotnet publish "./CleanIAM.Host.csproj" -c $BUILD_CONFIGURATION -o /app/publ
 
 FROM base AS host-final
 WORKDIR /app
-COPY --from=host-publish /app/Key_private_default.pem /app/Key_private_default.pem
 COPY --from=host-publish /app/publish .
 ENTRYPOINT ["dotnet", "CleanIAM.Host.dll"]
