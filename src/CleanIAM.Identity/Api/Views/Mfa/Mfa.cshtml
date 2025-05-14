@@ -29,7 +29,16 @@
             </button>
         </form>
 
-        <p class="text-xs text-center text-gray-500 mt-6">
+        <div class="text-center mt-2">
+            <form id="cancel-form" method="post" action="/mfa/cancel" class="inline">
+                <button type="submit"
+                        class="text-sm text-gray-500 hover:underline">
+                     Cancel authentication flow
+                </button>
+            </form>
+        </div>
+
+        <p class="text-xs text-center text-gray-500 mt-2">
             This page is protected — your verification code is never stored or shared.
         </p>
     </div>

@@ -4,7 +4,6 @@ using CleanIAM.Identity.Application.Interfaces;
 using CleanIAM.Identity.Application.Queries.Users;
 using CleanIAM.Identity.Core.Events;
 using CleanIAM.Identity.Core.Users;
-using CleanIAM.Identity.Api.ViewModels.Shared;
 using Mapster;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -14,6 +13,9 @@ using Wolverine;
 
 namespace CleanIAM.Identity.Api.Controllers;
 
+/// <summary>
+/// Controller for handling signin requests.
+/// </summary>
 [Route("/")]
 public class SigninController(
     ISigninRequestService signinRequestService,
@@ -23,30 +25,41 @@ public class SigninController(
     IPasswordHasher passwordHasher,
     ILogger<SigninController> logger) : Controller
 {
+    /// <summary>
+    /// Check on what step is user in signin and eather redirect
+    /// him to correct step or show the signin form.
+    /// </summary>
+    /// <param name="request">Id of the signin flow request</param>
+    /// <param name="error">Optional error that occured in some step of the auth flow</param>
+    /// <returns></returns>
     [HttpGet("signin")]
     public async Task<IActionResult> Signin([FromQuery] Guid request, [FromQuery] string? error)
     {
         ViewData["Error"] = error;
         ViewData["Request"] = request;
 
-        // TODO: redirect to management portal signin
+        // Redirect to management portal signin (to get the OIDC flow values)
         var signinRequest = await signinRequestService.GetAsync(request);
         if (signinRequest == null)
             return Redirect(appConfiguration.ManagementPortalBaseUrl + "/signin");
 
         // If user not signed in show signin form
-        if (User.Identity?.IsAuthenticated != true)
+        if (User.Identity?.IsAuthenticated != true || signinRequest.UserId == null)
             return View();
 
         // Check if the user has validated email
         if (!signinRequest.IsEmailVerified)
             return RedirectToAction("VerifyEmail", "EmailVerification");
 
-        //If MFA is enabled redirect to the MFA handler
+        // If MFA is enabled redirect to the MFA handler
         if (signinRequest is { IsMfaRequired: true, IsMfaValidated: false })
             return RedirectToAction("MfaInput", "Mfa");
 
-        return RedirectToAction("Authorize", "Auth", signinRequestService.CreateOidcQueryObject(signinRequest));
+        // If all previos steps of the signin flow are done, redirect to the final authorization endpoint
+        // (with skip account chooser flog)
+        var oidcRequestParams = signinRequestService.CreateOidcQueryObject(signinRequest);
+        oidcRequestParams["chooseAccount"] = "false"; // Set chooseAccount to false, to skip account chooser
+        return RedirectToAction("Authorize", "Auth", oidcRequestParams);
     }
 
     [HttpPost("signin")]
@@ -57,7 +70,6 @@ public class SigninController(
         if (signinRequest == null)
             return RedirectToAction("Error", "Error",
                 new { error = "Not found", errorDescription = "Signin request not found" });
-
 
         // Validate user credentials
         var query = model.Adapt<GetUserByEmailQuery>();
@@ -108,21 +120,18 @@ public class SigninController(
         signinRequest.IsMfaValidated = false;
         await signinRequestService.UpdateAsync(signinRequest);
 
-        // Check if the user has validated email
-        if (!user.EmailVerified)
-            return RedirectToAction("VerifyEmail", "EmailVerification");
-
-
-        //If MFA is enabled redirect to the MFA handler
-        if (user.IsMFAEnabled)
-            // Redirect to MFA handler
-            return RedirectToAction("MfaInput", "Mfa");
-        
         // publish event
         var newEvent = user.Adapt<UserLoggedIn>();
         await bus.PublishAsync(newEvent);
         logger.LogInformation("User {user} logged in.", user.Id);
-
+        
+        // Check if the user has verified email
+        if (!signinRequest.IsEmailVerified)
+            return RedirectToAction("VerifyEmail", "EmailVerification");
+        
+        // If MFA is enabled and not verified redirect to the MFA handler
+        if (signinRequest is { IsMfaRequired: true, IsMfaValidated: false })
+            return RedirectToAction("MfaInput", "Mfa");
 
         // Redirect to authorize endpoint to authorize the client
         var oidcRequestParams = signinRequestService.CreateOidcQueryObject(signinRequest);

@@ -35,8 +35,11 @@ public class AuthController(
         if (chooseAccount == false)
             return await AuthorizePost();
 
+        // Try to get the signin request from the claims
+        var signinRequestResult = await signinRequestService.GetFromClaimsAsync(User);
+
         // If user not authenticated, redirect to signin
-        if (User.Identity is not { IsAuthenticated: true })
+        if (signinRequestResult.IsError())
         {
             // Validate the OpenID Connect request
             var oidcRequest = HttpContext.GetOpenIddictServerRequest();
@@ -56,11 +59,16 @@ public class AuthController(
             await signinRequestService.SaveAsync(request);
             return RedirectToAction("Signin", "Signin", new { request = request.Id });
         }
+        var signinRequest = signinRequestResult.Value;
+        
+        // If the signin flow is not completed, redirect to the signin page to handle the rest
+        if(!signinRequest.AuthFlowCompleted)
+            return RedirectToAction("Signin", "Signin", new { request = signinRequest.Id });
 
         // Show account chooser
         var oidcRequestValues = HttpContext.Request.Query.ToDictionary();
-        var name = User.Identity.Name;
-        return View("Authorize", new AuthorizeViewModel { Name = name, OidcRequest = oidcRequestValues });
+        var name = User.Identity?.Name;
+        return View("Authorize", new AuthorizeViewModel { Name = name?? "Unknown name", OidcRequest = oidcRequestValues });
     }
 
     /// <summary>

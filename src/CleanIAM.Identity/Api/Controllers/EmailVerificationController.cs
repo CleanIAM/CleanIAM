@@ -27,6 +27,10 @@ public class EmailVerificationController(ISigninRequestService signinRequestServ
         if (signinRequest.IsError() || signinRequest.Value.UserId is null)
             return View("Error", new ErrorViewModel { Error = "Error", ErrorDescription = "Invalid signin request" });
 
+        // If the user is already verified, redirect to the signin page
+        if(signinRequest.Value.IsEmailVerified)
+            return RedirectToAction("Signin", "Signin", new{ request = signinRequest.Value.Id });
+        
         // Show the view with an email verification form
         return View(new VerifyEmailViewModel());
     }

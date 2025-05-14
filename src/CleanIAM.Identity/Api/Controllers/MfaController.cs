@@ -4,6 +4,7 @@ using CleanIAM.Identity.Application.Queries.Users;
 using CleanIAM.Identity.Core.Users;
 using Microsoft.AspNetCore.Mvc;
 using CleanIAM.SharedKernel.Application.Interfaces.Utils;
+using Microsoft.AspNetCore.Authentication;
 using Wolverine;
 
 namespace CleanIAM.Identity.Api.Controllers;
@@ -18,7 +19,7 @@ public class MfaController(IMessageBus bus, ISigninRequestService signinRequestS
     /// Shows the MFA input from the user.
     /// </summary>
     [HttpGet("mfa/totp")]
-    public async Task<IActionResult> MfaInput([FromRoute] Guid requestId)
+    public async Task<IActionResult> MfaInput()
     {
         if (User.Identity == null || User.Identity.IsAuthenticated == false)
             RedirectToAction("Signin", "Signin");
@@ -74,6 +75,24 @@ public class MfaController(IMessageBus bus, ISigninRequestService signinRequestS
         // Redirect to authorize endpoint to authorize the client
         var oidcRequestParams = signinRequestService.CreateOidcQueryObject(signinRequest);
         oidcRequestParams["chooseAccount"] = "false"; // Set chooseAccount to false to skip account chooser
+        return RedirectToAction("Authorize", "Auth", oidcRequestParams);
+    }
+    
+    /// <summary>
+    /// Handles the cancellation of MFA.
+    /// </summary>
+    [HttpPost("mfa/cancel")]
+    public async Task<IActionResult> CancelMfa()
+    {
+        var signinRequestResult = await signinRequestService.GetFromClaimsAsync(User);
+        if (!signinRequestResult.IsError())
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Signin", "Signin", new {request = signinRequestResult.Value.Id});
+        }
+
+        var oidcRequestParams = signinRequestService.CreateOidcQueryObject(signinRequestResult.Value);
+        oidcRequestParams["error"] = "access_denied";
         return RedirectToAction("Authorize", "Auth", oidcRequestParams);
     }
 }
