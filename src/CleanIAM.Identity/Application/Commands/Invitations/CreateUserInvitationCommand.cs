@@ -26,8 +26,7 @@ public record CreateUserInvitationCommand(Guid Id, string Email, string FirstNam
 public class CreateUserInvitationCommandHandler
 {
     public static async Task<Result<InvitationRequest>> LoadAsync(CreateUserInvitationCommand command,
-        IQuerySession session, ILogger logger,
-        CancellationToken cancellationToken)
+        IQuerySession session, CancellationToken cancellationToken)
     {
         var user = await session.LoadAsync<IdentityUser>(command.Id, cancellationToken);
         if (user is null)
@@ -42,7 +41,6 @@ public class CreateUserInvitationCommandHandler
         // If request for given user doesn't exist, create a new one
         if (request is null)
         {
-            logger.LogDebug("Creating new invitation request for user [{Email}]", command.Email);
             var newRequest = user.Adapt<InvitationRequest>();
             newRequest.Id = Guid.NewGuid();
             newRequest.LastEmailsSendAt = DateTime.MinValue;
@@ -54,8 +52,6 @@ public class CreateUserInvitationCommandHandler
         var timeSinceLastEmail = DateTime.UtcNow - request.LastEmailsSendAt;
         if (timeSinceLastEmail < IdentityConstants.VerificationEmailDelay)
         {
-            logger.LogDebug("Email already send, you need to wait {Minutes} minutesbefore you request new email.",
-                (IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Minutes);
             return Result.Error(
                 $"Email already send, " +
                 $"you need to wait {(IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Minutes} minutes " +
@@ -63,7 +59,6 @@ public class CreateUserInvitationCommandHandler
                 HttpStatusCode.BadRequest);
         }
 
-        logger.LogDebug("Using existing invitation request for user [{Email}]", command.Email);
         return Result.Ok(request);
     }
 
@@ -71,8 +66,6 @@ public class CreateUserInvitationCommandHandler
         Result<InvitationRequest> loadResult, IDocumentSession session, IMessageBus bus, IEmailService emailService,
         IAppConfiguration configuration, CancellationToken cancellationToken, ILogger logger)
     {
-        logger.LogDebug("Creating user invitation for {Email}", command.Email);
-
         if (loadResult.IsError())
             return Result.From(loadResult);
         var request = loadResult.Value;
@@ -83,7 +76,6 @@ public class CreateUserInvitationCommandHandler
         // Shorten the url if shortening is enabled
         if (configuration.UseUrlShortener)
         {
-            logger.LogDebug("Shortening url [{Url}]", invitationUrl);
             var shortenUrlCommand = new ShortenUrlCommand(invitationUrl);
             var shortingRes = await bus.InvokeAsync<Result<UrlShortened>>(shortenUrlCommand, cancellationToken);
             if (shortingRes.IsError())
@@ -100,6 +92,9 @@ public class CreateUserInvitationCommandHandler
         request.LastEmailsSendAt = DateTime.UtcNow;
         session.Store(request);
         await session.SaveChangesAsync(cancellationToken);
+
+        // Log the invitation request
+        logger.LogInformation("Invitation request for user {Id} sent", request.UserId);
 
         // Publish event
         var invitationCreated = request.Adapt<UserInvitationCreated>();

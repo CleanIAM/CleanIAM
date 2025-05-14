@@ -35,7 +35,8 @@ public class ValidateMfaConnectionCommandHandler
 
     public static async Task<Result<MfaConfiguredForUser>> HandleAsync(ValidateMfaConnectionCommand command,
         Result<User> loadResult, IDocumentSession session, ITotpValidator totpValidator, IMessageBus bus,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, ILogger<ValidateMfaConnectionCommandHandler> logger)
+
     {
         if (loadResult.IsError())
             return Result.From(loadResult);
@@ -51,6 +52,9 @@ public class ValidateMfaConnectionCommandHandler
         user.IsMFAEnabled = command.EnableMfa;
         session.Update(user);
         await session.SaveChangesAsync(cancellationToken);
+
+        // Log the mfa configuration
+        logger.LogInformation("User {Id} mfa configuration validated", user.Id);
 
         // Publish the MfaConfigured event
         var mfaConfiguredEvent = new MfaConfiguredForUser(user.Id, user.MfaConfig.TotpSecretKey, command.EnableMfa);

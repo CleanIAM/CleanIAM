@@ -54,9 +54,9 @@ public class SendPasswordResetRequestCommandHandler
         if (timeSinceLastEmail < IdentityConstants.VerificationEmailDelay)
             return Result.Error(
                 $"Email already send, " +
-                $"you need to wait"  + ((IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Minutes != 0 ? 
-                    $" {(IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Minutes} minutes " : 
-                    $" {(IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Seconds} seconds ") +
+                $"you need to wait" + ((IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Minutes != 0
+                    ? $" {(IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Minutes} minutes "
+                    : $" {(IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Seconds} seconds ") +
                 $"before you request new email.",
                 HttpStatusCode.BadRequest);
 
@@ -66,7 +66,8 @@ public class SendPasswordResetRequestCommandHandler
     public static async Task<Result<PasswordResetRequestSent>> HandleAsync(
         SendPasswordResetRequestCommand command,
         Result<PasswordResetRequest> result, IEmailService emailService, IAppConfiguration configuration,
-        IDocumentSession documentSession, IMessageBus bus, CancellationToken cancellationToken)
+        IDocumentSession documentSession, IMessageBus bus, CancellationToken cancellationToken,
+        ILogger<SendPasswordResetRequestCommandHandler> logger)
     {
         if (result.IsError())
             return Result.From(result);
@@ -94,6 +95,9 @@ public class SendPasswordResetRequestCommandHandler
         request.LastEmailsSendAt = DateTime.UtcNow;
         documentSession.Store(request);
         await documentSession.SaveChangesAsync(cancellationToken);
+
+        // Log the password reset request
+        logger.LogInformation("Password reset request for user {Id} sent", request.UserId);
 
         // Publish event
         var passwordResetRequest = request.Adapt<PasswordResetRequestSent>();

@@ -34,9 +34,8 @@ public class DeleteOpenIdApplicationCommandHandler
     public static async Task<Result<OpenIdApplicationDeleted>> HandleAsync(DeleteOpenIdApplicationCommand command,
         Result<OpenIddictEntityFrameworkCoreApplication<Guid>> loadResult,
         OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager,
-        ApplicationDbContext dbContext,
-        IMessageBus bus,
-        CancellationToken cancellationToken)
+        ApplicationDbContext dbContext, IMessageBus bus, CancellationToken cancellationToken,
+        ILogger<DeleteOpenIdApplicationCommandHandler> logger)
     {
         if (loadResult.IsError())
             return Result.From(loadResult);
@@ -52,6 +51,10 @@ public class DeleteOpenIdApplicationCommandHandler
 
             // On success publish event and return Ok with that event
             var applicationDeletedEvent = command.Adapt<OpenIdApplicationDeleted>();
+
+            // Log the deletion
+            logger.LogInformation("Application {Id} deleted successfully", command.Id);
+
             await bus.PublishAsync(applicationDeletedEvent);
             return Result.Ok(applicationDeletedEvent);
         }

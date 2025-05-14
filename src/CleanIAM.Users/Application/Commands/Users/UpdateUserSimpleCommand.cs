@@ -27,7 +27,7 @@ public class UpdateUserSimpleCommandHandler
     }
 
     public static async Task<Result<UserUpdated>> HandleAsync(UpdateUserSimpleCommand command, Result<User> loadResult,
-        IDocumentSession session, IMessageBus bus)
+        IDocumentSession session, IMessageBus bus, ILogger<UpdateUserSimpleCommandHandler> logger)
     {
         if (loadResult.IsError())
             return Result.From(loadResult);
@@ -36,6 +36,9 @@ public class UpdateUserSimpleCommandHandler
         var updatedUser = command.Adapt(user);
         session.Store(updatedUser);
         await session.SaveChangesAsync();
+
+        // Log the update
+        logger.LogInformation("User {Id} updated successfully", updatedUser.Id);
 
         var userUpdated = updatedUser.Adapt<UserUpdated>();
         await bus.PublishAsync(userUpdated);

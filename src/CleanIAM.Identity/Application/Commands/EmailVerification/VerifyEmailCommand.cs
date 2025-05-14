@@ -36,7 +36,7 @@ public class VerifyEmailCommandHandler
 
     public static async Task<Result<UserEmailVerified>> HandleAsync(VerifyEmailCommand command,
         Result<(EmailVerificationReqest, IdentityUser)> result, IDocumentSession documentSession, IMessageBus bus,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, ILogger<VerifyEmailCommandHandler> logger)
     {
         if (result.IsError())
             return Result.From(result);
@@ -48,6 +48,9 @@ public class VerifyEmailCommandHandler
         documentSession.Delete(request);
         documentSession.Update(user);
         await documentSession.SaveChangesAsync(cancellationToken);
+
+        // Log the email verification
+        logger.LogInformation("User {Id} email verified", user.Id);
 
         // Publish event
         var emailVerified = user.Adapt<UserEmailVerified>();

@@ -42,14 +42,15 @@ public class InviteUserCommandHandler
             return Result.From(loadResult);
         var tenantId = loadResult.Value;
 
-        logger.LogDebug("Inviting user [{}]", command.Email);
-
         var user = command.Adapt<User>();
         user.IsInvitePending = true;
         user.Email = user.Email.ToLowerInvariant(); // Normalize email
         user.TenantId = tenantId;
         session.Store(user);
         await session.SaveChangesAsync(cancellationToken);
+
+        // Log the user invitation
+        logger.LogInformation("User {Id} invited", user.Id);
 
         var userInvited = user.Adapt<UserInvited>();
         await bus.PublishAsync(userInvited);

@@ -29,11 +29,14 @@ public class AssignUsersToTenantCommandHandler
 
     public static async Task<Result<UserAssignedToTenant>> HandleAsync(AssignUserToTenantCommand command,
         Result<Tenant> loadResult, IDocumentSession session, IMessageBus bus,
-        CancellationToken cancellationToken)
+        ILogger<AssignUsersToTenantCommandHandler> logger, CancellationToken cancellationToken)
     {
         if (loadResult.IsError())
             return Result.Error(loadResult.ErrorValue);
         var tenant = loadResult.Value;
+
+        // Log the assignment
+        logger.LogInformation("User {UserId} assigned to tenant {TenantId}", command.UserId, tenant.Id);
 
         var userAssignedToTenant = command.Adapt<UserAssignedToTenant>() with { TenantName = tenant.Name };
         await bus.PublishAsync(userAssignedToTenant);

@@ -50,7 +50,7 @@ public class CreateNewOpenIdApplicationCommandHandler
     }
 
     public static async Task<Result<OpenIdApplicationCreated>> HandleAsync(CreateNewOpenIdApplicationCommand command,
-        Result loadResult, IMessageBus bus,
+        Result loadResult, IMessageBus bus, ILogger<CreateNewOpenIdApplicationCommandHandler> logger,
         OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager
     )
     {
@@ -81,6 +81,10 @@ public class CreateNewOpenIdApplicationCommandHandler
             {
                 ClientSecret = descriptor.ClientSecret
             };
+
+            // Log the creation
+            logger.LogInformation("Application {Id} created successfully", command.Id);
+
             await bus.PublishAsync(applicationCreatedEvent);
             return Result.Ok(applicationCreatedEvent);
         }

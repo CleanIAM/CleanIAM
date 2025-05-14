@@ -1,5 +1,7 @@
 using CleanIAM.Identity.Api.ViewModels.Signup;
+using CleanIAM.Identity.Application.Commands.EmailVerification;
 using CleanIAM.Identity.Application.Commands.Users;
+using CleanIAM.Identity.Core.Events;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using CleanIAM.SharedKernel.Infrastructure.Utils;
@@ -8,7 +10,7 @@ using Wolverine;
 namespace CleanIAM.Identity.Api.Controllers;
 
 [Route("/")]
-public class SignupController(IMessageBus bus) : Controller
+public class SignupController(IMessageBus bus, ILogger<SignupController> logger) : Controller
 {
     [HttpGet("signup")]
     public IActionResult Signup()
@@ -24,7 +26,7 @@ public class SignupController(IMessageBus bus) : Controller
 
         // Create user
         var command = model.Adapt<CreateNewUserCommand>();
-        var res = await bus.InvokeAsync<Result>(command, cancellationToken);
+        var res = await bus.InvokeAsync<Result<NewUserSignedUp>>(command, cancellationToken);
 
         if (res.IsError())
         {
@@ -33,8 +35,11 @@ public class SignupController(IMessageBus bus) : Controller
         }
 
         // Send email verification
+        var sendEmailVerificationRequestCommand = new SendEmailVerificationRequestCommand(res.Value.Id);
+        await bus.InvokeAsync<Result<EmailVerificationRequestSent>>(sendEmailVerificationRequestCommand,
+            cancellationToken);
 
-
+        logger.LogInformation("User {Email} signed up and email verification sent", model.Email);
         return View("UserRegistered", new UserRegisteredViewModel
         {
             Email = model.Email,

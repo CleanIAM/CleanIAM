@@ -32,7 +32,8 @@ public class UpdateTenantCommandHandler
     }
 
     public static async Task<Result<TenantUpdated>> HandleAsync(UpdateTenantCommand command, Result<Tenant> loadResult,
-        IDocumentSession session, IMessageBus bus, CancellationToken cancellationToken)
+        IDocumentSession session, IMessageBus bus, CancellationToken cancellationToken,
+        ILogger<UpdateTenantCommandHandler> logger)
     {
         if (loadResult.IsError())
             return Result.From(loadResult);
@@ -41,8 +42,10 @@ public class UpdateTenantCommandHandler
         // Update tenant
         tenant.Name = command.Name;
         session.Store(tenant);
-
         await session.SaveChangesAsync(cancellationToken);
+
+        // Log the update
+        logger.LogInformation("Tenant {Id} updated successfully", tenant.Id);
 
         var tenantUpdated = command.Adapt<TenantUpdated>();
         await bus.PublishAsync(tenantUpdated);

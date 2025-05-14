@@ -22,7 +22,7 @@ public class UpdateUserCommandHandler
     }
 
     public static async Task<Result<UserUpdated>> HandleAsync(UpdateUserCommand command, Result<User> loadResult,
-        IDocumentSession session, IMessageBus bus)
+        IDocumentSession session, IMessageBus bus, ILogger<UpdateUserCommandHandler> logger)
     {
         if (loadResult.IsError())
             return Result.From(loadResult);
@@ -31,6 +31,9 @@ public class UpdateUserCommandHandler
         var updatedUser = command.Adapt(user);
         session.Store(updatedUser);
         await session.SaveChangesAsync();
+
+        // Log the user update action
+        logger.LogInformation("User {Id} updated", updatedUser.Id);
 
         var userUpdated = updatedUser.Adapt<UserUpdated>();
         await bus.PublishAsync(userUpdated);

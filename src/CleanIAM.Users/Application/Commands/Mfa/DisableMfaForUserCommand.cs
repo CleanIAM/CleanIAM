@@ -25,7 +25,7 @@ public class DisableMfaForUserCommandHandler
     }
 
     public static async Task<Result<MfaDisabledForUser>> HandleAsync(DisableMfaForUserCommand command,
-        Result<User> loadResult,
+        Result<User> loadResult, ILogger<DisableMfaForUserCommandHandler> logger,
         IDocumentSession session, IMessageBus bus)
     {
         if (loadResult.IsError())
@@ -35,6 +35,9 @@ public class DisableMfaForUserCommandHandler
         user.IsMFAEnabled = false;
         session.Store(user);
         await session.SaveChangesAsync();
+
+        // Log the mfa configuration
+        logger.LogInformation("User {Id} mfa configuration disabled", user.Id);
 
         var userUpdated = user.Adapt<MfaDisabledForUser>();
         await bus.PublishAsync(userUpdated);

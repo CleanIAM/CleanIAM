@@ -49,9 +49,9 @@ public class UpdateOpenIdClientCommandHandler
 
     public static async Task<Result<OpenIdApplicationUpdated>> HandleAsync(UpdateOpenIdApplicationCommand command,
         Result<OpenIddictEntityFrameworkCoreApplication<Guid>> loadResult,
-        IMessageBus bus,
+        IMessageBus bus, CancellationToken cancellationToken,
         OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager
-        , CancellationToken cancellationToken)
+        , ILogger<UpdateOpenIdClientCommandHandler> logger)
     {
         if (loadResult.IsError())
             return Result.From(loadResult);
@@ -76,6 +76,10 @@ public class UpdateOpenIdClientCommandHandler
 
             // On success publish event and return Ok with that event
             var applicationUpdatedEvent = command.Adapt<OpenIdApplicationUpdated>();
+
+            // Log the update
+            logger.LogInformation("Application {Id} updated successfully", command.Id);
+
             await bus.PublishAsync(applicationUpdatedEvent);
             return Result.Ok(applicationUpdatedEvent);
         }

@@ -35,7 +35,8 @@ public class UpdateScopeCommandHandler
 
     public static async Task<Result<ScopeUpdated>> HandleAsync(UpdateScopeCommand command,
         Result<OpenIddictScope> loadResult,
-        OpenIddictScopeManager<OpenIddictScope> scopeManager, IMessageBus bus, CancellationToken cancellationToken)
+        OpenIddictScopeManager<OpenIddictScope> scopeManager, IMessageBus bus, CancellationToken cancellationToken,
+        ILogger<UpdateScopeCommandHandler> logger)
     {
         if (loadResult.IsError())
             return Result.From(loadResult);
@@ -51,6 +52,9 @@ public class UpdateScopeCommandHandler
         {
             return Result.Error("Error updating scope", StatusCodes.Status500InternalServerError);
         }
+
+        // Log the update
+        logger.LogInformation("Scope {Name} updated successfully", newScope.Name);
 
         // Publish the ScopeUpdated event and return
         var scopeUpdatedEvent = command.Adapt<ScopeUpdated>();

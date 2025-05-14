@@ -29,8 +29,9 @@ public class EnableMfaForUserCommandHandler
         return Result.Ok(user);
     }
 
-    public static async Task<Result<MfaEnabledForUser>> HandleAsync(EnableMfaForUserCommand command, Result<User> loadResult,
-        IDocumentSession session, IMessageBus bus)
+    public static async Task<Result<MfaEnabledForUser>> HandleAsync(EnableMfaForUserCommand command,
+        Result<User> loadResult, IDocumentSession session, IMessageBus bus,
+        ILogger<EnableMfaForUserCommandHandler> logger)
     {
         if (loadResult.IsError())
             return Result.From(loadResult);
@@ -39,6 +40,9 @@ public class EnableMfaForUserCommandHandler
         user.IsMFAEnabled = true;
         session.Store(user);
         await session.SaveChangesAsync();
+
+        // Log the mfa configuration
+        logger.LogInformation("User {Id} mfa configuration enabled", user.Id);
 
         var userUpdated = user.Adapt<MfaEnabledForUser>();
         await bus.PublishAsync(userUpdated);
