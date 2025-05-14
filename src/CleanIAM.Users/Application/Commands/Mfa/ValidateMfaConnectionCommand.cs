@@ -33,7 +33,7 @@ public class ValidateMfaConnectionCommandHandler
         return Result.Ok(user);
     }
 
-    public static async Task<Result<MfaConfiguredForUser>> HandleAsync(ValidateMfaConnectionCommand command,
+    public static async Task<Result> HandleAsync(ValidateMfaConnectionCommand command,
         Result<User> loadResult, IDocumentSession session, ITotpValidator totpValidator, IMessageBus bus,
         CancellationToken cancellationToken, ILogger<ValidateMfaConnectionCommandHandler> logger)
 
@@ -59,6 +59,6 @@ public class ValidateMfaConnectionCommandHandler
         // Publish the MfaConfigured event
         var mfaConfiguredEvent = new MfaConfiguredForUser(user.Id, user.MfaConfig.TotpSecretKey, command.EnableMfa);
         await bus.PublishAsync(mfaConfiguredEvent);
-        return Result.Ok(mfaConfiguredEvent);
+        return Result.Ok();
     }
 }

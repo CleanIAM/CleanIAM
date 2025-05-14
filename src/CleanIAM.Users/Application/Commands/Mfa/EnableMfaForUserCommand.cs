@@ -29,7 +29,7 @@ public class EnableMfaForUserCommandHandler
         return Result.Ok(user);
     }
 
-    public static async Task<Result<MfaEnabledForUser>> HandleAsync(EnableMfaForUserCommand command,
+    public static async Task<Result> HandleAsync(EnableMfaForUserCommand command,
         Result<User> loadResult, IDocumentSession session, IMessageBus bus,
         ILogger<EnableMfaForUserCommandHandler> logger)
     {
@@ -46,6 +46,6 @@ public class EnableMfaForUserCommandHandler
 
         var userUpdated = user.Adapt<MfaEnabledForUser>();
         await bus.PublishAsync(userUpdated);
-        return Result.Ok(userUpdated);
+        return Result.Ok();
     }
 }

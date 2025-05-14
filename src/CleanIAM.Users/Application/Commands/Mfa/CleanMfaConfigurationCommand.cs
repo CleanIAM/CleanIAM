@@ -26,7 +26,7 @@ public class CleanMfaConfigurationCommandHandler
         return Result.Ok(user);
     }
 
-    public static async Task<Result<MfaConfiguredForUser>> HandleAsync(CleanMfaConfigurationCommand command,
+    public static async Task<Result> HandleAsync(CleanMfaConfigurationCommand command,
         Result<User> loadResult, IDocumentSession session, IMessageBus bus, CancellationToken cancellationToken,
         ILogger<CleanMfaConfigurationCommandHandler> logger)
     {
@@ -45,6 +45,6 @@ public class CleanMfaConfigurationCommandHandler
 
         var mfaConfiguredForUser = new MfaConfiguredForUser(user.Id, string.Empty, false);
         await bus.PublishAsync(mfaConfiguredForUser);
-        return Result.Ok(mfaConfiguredForUser);
+        return Result.Ok();
     }
 }

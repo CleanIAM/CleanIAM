@@ -153,17 +153,13 @@ public class UsersApiController(
     /// <param name="id">Id of user to disable mfa for</param>
     /// <returns></returns>
     [HttpDelete("{id:guid}/mfa/enabled")]
-    [ProducesResponseType<MfaDisabledForUser>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DisableMfaForUser([FromRoute] Guid id)
     {
         var command = new CleanMfaConfigurationCommand(id);
-        var res = await bus.InvokeAsync<Result<MfaConfiguredForUser>>(command);
-        if (res.IsError())
-            return res;
-        // Do not return MfaConfiguredForUser event since it contains sensitive data (TotpSecretKey)
-        return Result.Ok();
+        return await bus.InvokeAsync<Result>(command);
     }
 }

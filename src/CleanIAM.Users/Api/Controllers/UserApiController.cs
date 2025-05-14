@@ -57,7 +57,7 @@ public class UserApiController(
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPut]
-    [ProducesResponseType<UserUpdated>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<Error>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
@@ -91,7 +91,7 @@ public class UserApiController(
         if (request.Enable)
         {
             var command = new EnableMfaForUserCommand(userId);
-            var res = await bus.InvokeAsync<Result<MfaEnabledForUser>>(command);
+            var res = await bus.InvokeAsync<Result>(command);
             if (res.IsError())
                 return res;
             return Result.Ok(new MfaUpdatedResponse
@@ -102,7 +102,7 @@ public class UserApiController(
         else
         {
             var command = new DisableMfaForUserCommand(userId);
-            var res = await bus.InvokeAsync<Result<MfaDisabledForUser>>(command);
+            var res = await bus.InvokeAsync<Result>(command);
             if (res.IsError())
                 return res;
             return Result.Ok(new MfaUpdatedResponse
@@ -155,12 +155,7 @@ public class UserApiController(
         var userId = userIdRes.Value;
 
         var command = request.Adapt<ValidateMfaConnectionCommand>() with { Id = userId };
-        var res = await bus.InvokeAsync<Result<MfaConfiguredForUser>>(command);
-
-        if (res.IsError())
-            return res;
-        // Do not return MfaConfiguredForUser event since it contains sensitive data (TotpSecretKey)
-        return Result.Ok();
+        return await bus.InvokeAsync<Result>(command);
     }
 
     /// <summary>
@@ -179,11 +174,6 @@ public class UserApiController(
         var userId = userIdRes.Value;
 
         var command = new CleanMfaConfigurationCommand(userId);
-        var res = await bus.InvokeAsync<Result<MfaConfiguredForUser>>(command);
-
-        if (res.IsError())
-            return res;
-        // Do not return MfaConfiguredForUser event since it contains sensitive data (TotpSecretKey)
-        return Result.Ok();
+        return await bus.InvokeAsync<Result>(command);
     }
 }

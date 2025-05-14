@@ -24,7 +24,7 @@ public class DisableMfaForUserCommandHandler
         return Result.Ok(user);
     }
 
-    public static async Task<Result<MfaDisabledForUser>> HandleAsync(DisableMfaForUserCommand command,
+    public static async Task<Result> HandleAsync(DisableMfaForUserCommand command,
         Result<User> loadResult, ILogger<DisableMfaForUserCommandHandler> logger,
         IDocumentSession session, IMessageBus bus)
     {
@@ -41,6 +41,6 @@ public class DisableMfaForUserCommandHandler
 
         var userUpdated = user.Adapt<MfaDisabledForUser>();
         await bus.PublishAsync(userUpdated);
-        return Result.Ok(userUpdated);
+        return Result.Ok();
     }
 }
