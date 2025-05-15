@@ -3,7 +3,7 @@ using Marten.Schema;
 namespace CleanIAM.Identity.Core.Requests;
 
 [SingleTenanted]
-public class EmailVerificationReqest
+public class EmailVerificationRequest
 {
     /// <summary>
     /// Id of the request

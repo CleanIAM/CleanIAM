@@ -1,3 +1,6 @@
+using CleanIAM.Tenants.Core;
+using Marten;
+
 namespace CleanIAM.Tenants;
 
 public static class DependencyInjection
@@ -10,8 +13,12 @@ public static class DependencyInjection
     /// <returns></returns>
     public static IServiceCollection AddTenants(this IServiceCollection services, IConfiguration configuration)
     {
-        // Configure custom mapster config
-
+        // Register all aggregates to marten document store
+        services.ConfigureMarten(opts =>
+        {
+            opts.Schema.For<Tenant>().SingleTenanted();
+        });
+        
         return services;
     }
 

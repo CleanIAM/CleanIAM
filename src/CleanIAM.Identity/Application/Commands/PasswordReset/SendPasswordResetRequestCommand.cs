@@ -8,8 +8,8 @@ using Mapster;
 using Marten;
 using CleanIAM.SharedKernel.Application.Interfaces;
 using CleanIAM.SharedKernel.Infrastructure.Utils;
-using UrlShortner.Application.Commands;
-using UrlShortner.Core.Events;
+using CleanIAM.UrlShortener.Application.Commands;
+using CleanIAM.UrlShortener.Core.Events;
 using Wolverine;
 
 namespace CleanIAM.Identity.Application.Commands.PasswordReset;

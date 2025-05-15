@@ -18,6 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseLamar();
 
 builder.Services.AddCorsProvider(builder.Configuration);
+builder.Services.AddWolverineHttp();
 builder.Services.AddLogging();
 
 // Register the Coravel's mailer service
@@ -34,21 +35,21 @@ string[] assemblies =
     "CleanIAM.Tenants"
 ];
 
-builder.Services.AddWolverineHttp();
 builder.Host.AddProjects(assemblies);
-builder.Services.AddIdentityProject(builder.Configuration);
-builder.Services.AddScopes(builder.Configuration);
-builder.Services.AddUsers(builder.Configuration);
-builder.Services.AddApplications(builder.Configuration);
-builder.Services.AddTenants(builder.Configuration);
 
-// Configure Razor view locations
-builder.Services.Configure<RazorViewEngineOptions>(options =>
-{
-    options.ViewLocationFormats.Clear();
-    options.ViewLocationFormats.Add("/Api/Views/{1}/{0}.cshtml");
-    options.ViewLocationFormats.Add("/Api/Views/Shared/{0}.cshtml");
-});
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddSwagger("CleanIAM", assemblies);
+builder.Services.AddDatabases(builder.Configuration);
+builder.Services.AddOpenIddict(builder.Configuration);
+builder.Services.AddUtils(builder.Configuration);
+
+builder.Services.AddIdentityProject(builder.Configuration);
+builder.Services.AddTenants(builder.Configuration);
+builder.Services.AddUsers(builder.Configuration);
+builder.Services.AddScopes(builder.Configuration);
+builder.Services.AddApplications(builder.Configuration);
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(opts =>
     {
@@ -64,13 +65,7 @@ builder.Services.AddControllersWithViews(opts =>
     opts.Filters.Add<ModelValidationFilter>();
 });
 
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddSwagger("CleanIAM", assemblies);
-builder.Services.AddDatabases(builder.Configuration);
-builder.Services.AddOpenIddict(builder.Configuration);
-builder.Services.AddUtils(builder.Configuration);
+
 
 var app = builder.Build();
 app.UseCors();
@@ -81,9 +76,12 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.UseSharedKernel();
-app.UseScopes();
+app.UseTenants();
 app.UseUsers();
+app.UseScopes();
 app.UseApplications();
+app.UseIdentity();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

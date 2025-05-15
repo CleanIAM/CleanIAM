@@ -20,10 +20,10 @@ public record VerifyEmailCommand(Guid RequestId);
 /// </summary>
 public class VerifyEmailCommandHandler
 {
-    public static async Task<Result<(EmailVerificationReqest, IdentityUser)>> LoadAsync(VerifyEmailCommand command,
+    public static async Task<Result<(EmailVerificationRequest, IdentityUser)>> LoadAsync(VerifyEmailCommand command,
         IQuerySession querySession, CancellationToken cancellationToken)
     {
-        var request = await querySession.LoadAsync<EmailVerificationReqest>(command.RequestId, cancellationToken);
+        var request = await querySession.LoadAsync<EmailVerificationRequest>(command.RequestId, cancellationToken);
         if (request is null)
             return Result.Error("Request not found", HttpStatusCode.NotFound);
 
@@ -35,7 +35,7 @@ public class VerifyEmailCommandHandler
     }
 
     public static async Task<Result<UserEmailVerified>> HandleAsync(VerifyEmailCommand command,
-        Result<(EmailVerificationReqest, IdentityUser)> result, IDocumentSession documentSession, IMessageBus bus,
+        Result<(EmailVerificationRequest, IdentityUser)> result, IDocumentSession documentSession, IMessageBus bus,
         CancellationToken cancellationToken, ILogger<VerifyEmailCommandHandler> logger)
     {
         if (result.IsError())

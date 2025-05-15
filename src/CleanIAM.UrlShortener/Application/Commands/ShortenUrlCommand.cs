@@ -1,11 +1,11 @@
+using CleanIAM.SharedKernel.Infrastructure.Utils;
+using CleanIAM.UrlShortener.Core;
+using CleanIAM.UrlShortener.Core.Events;
 using Mapster;
 using Marten;
-using CleanIAM.SharedKernel.Infrastructure.Utils;
-using UrlShortner.Core;
-using UrlShortner.Core.Events;
 using Wolverine;
 
-namespace UrlShortner.Application.Commands;
+namespace CleanIAM.UrlShortener.Application.Commands;
 
 public record ShortenUrlCommand(string Url);
 

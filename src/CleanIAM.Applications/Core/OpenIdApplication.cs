@@ -6,6 +6,9 @@ using OpenIddict.EntityFrameworkCore.Models;
 
 namespace CleanIAM.Applications.Core;
 
+/// <summary>
+/// Abstraction over `OpenIddictEntityFrameworkCoreApplication[Guid]`
+/// </summary>
 public class OpenIdApplication
 {
     /// <summary>

@@ -16,7 +16,7 @@ public class UserDeletedEventHandler
         // Delete the user from the database
         session.Delete<IdentityUser>(userDeleted.Id);
         // Delete all other objects associated with the user
-        session.DeleteWhere<EmailVerificationReqest>(r => r.UserId == userDeleted.Id);
+        session.DeleteWhere<EmailVerificationRequest>(r => r.UserId == userDeleted.Id);
         session.DeleteWhere<InvitationRequest>(r => r.UserId == userDeleted.Id);
         session.DeleteWhere<PasswordResetRequest>(r => r.UserId == userDeleted.Id);
 

@@ -18,7 +18,7 @@ public class SigninRequestService(IDocumentSession documentSession) : ISigninReq
 
     public async Task<SigninRequest?> GetAsync(Guid id)
     {
-        return await documentSession.Query<SigninRequest>().FirstOrDefaultAsync(r => r.Id == id && r.AnyTenant());
+        return await documentSession.LoadAsync<SigninRequest>(id);
     }
 
     public async Task<Result<SigninRequest>> GetFromClaimsAsync(ClaimsPrincipal user)

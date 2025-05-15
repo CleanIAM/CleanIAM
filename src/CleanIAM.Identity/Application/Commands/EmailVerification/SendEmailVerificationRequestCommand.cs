@@ -8,8 +8,8 @@ using Mapster;
 using Marten;
 using CleanIAM.SharedKernel.Application.Interfaces;
 using CleanIAM.SharedKernel.Infrastructure.Utils;
-using UrlShortner.Application.Commands;
-using UrlShortner.Core.Events;
+using CleanIAM.UrlShortener.Application.Commands;
+using CleanIAM.UrlShortener.Core.Events;
 using Wolverine;
 
 namespace CleanIAM.Identity.Application.Commands.EmailVerification;
@@ -25,7 +25,7 @@ public record SendEmailVerificationRequestCommand(Guid UserId);
 /// </summary>
 public class SendEmailVerificationRequestCommandHandler
 {
-    public static async Task<Result<EmailVerificationReqest>> LoadAsync(SendEmailVerificationRequestCommand command,
+    public static async Task<Result<EmailVerificationRequest>> LoadAsync(SendEmailVerificationRequestCommand command,
         IQuerySession querySession, CancellationToken cancellationToken)
     {
         // Check if the user for a given request exists
@@ -33,13 +33,13 @@ public class SendEmailVerificationRequestCommandHandler
         if (user is null)
             return Result.Error("User not found", HttpStatusCode.NotFound);
 
-        var request = querySession.Query<EmailVerificationReqest>()
+        var request = querySession.Query<EmailVerificationRequest>()
             .FirstOrDefault(x => x.UserId == user.Id);
 
         // If request for given user doesn't exist, create a new one
         if (request is null)
         {
-            var newRequest = user.Adapt<EmailVerificationReqest>();
+            var newRequest = user.Adapt<EmailVerificationRequest>();
             newRequest.Id = Guid.NewGuid();
             newRequest.LastEmailsSendAt = DateTime.MinValue;
             newRequest.UserId = user.Id;
@@ -62,7 +62,7 @@ public class SendEmailVerificationRequestCommandHandler
 
     public static async Task<Result<EmailVerificationRequestSent>> HandleAsync(
         SendEmailVerificationRequestCommand command,
-        Result<EmailVerificationReqest> result, IEmailService emailService, IAppConfiguration configuration,
+        Result<EmailVerificationRequest> result, IEmailService emailService, IAppConfiguration configuration,
         IDocumentSession documentSession, IMessageBus bus, ILogger<SendEmailVerificationRequestCommandHandler> logger)
     {
         if (result.IsError())
