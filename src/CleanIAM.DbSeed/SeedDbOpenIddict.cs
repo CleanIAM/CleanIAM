@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
@@ -118,9 +119,9 @@ public static class SeedDbOpenIddict
             await applicationManager.CreateAsync(beClient);
     }
 
-    private static async Task CreateDefaultOidcScopes(AsyncServiceScope serviceScope)
+    private static async Task CreateDefaultOidcScopes(AsyncServiceScope scope)
     {
-        var scopeManager = serviceScope.ServiceProvider.GetRequiredService<OpenIddictScopeManager<OpenIddictScope>>();
+        var scopeManager = scope.ServiceProvider.GetRequiredService<OpenIddictScopeManager<OpenIddictScope>>();
 
         var defaultScopes = ScopesConstants.DefaultScopes;
 
