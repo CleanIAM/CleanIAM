@@ -142,7 +142,10 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🙏 Acknowledgements
 
-- [OpenID Connect](https://openid.net/connect/) specification
+- [OpenID Connect](https://openid.net/connect/) and [OAuth 2.0](https://oauth.net/2/) specifications
+- [OpenIddict](https://github.com/openiddict/openiddict-core) for the modern OpenID Connect server implementation
+- [Marten](https://martendb.io/) for amazing document database
+- [Wolverine](https://wolverine.netlify.app/) (WolverineFX) for command handling and message processing
 
 ---
 
