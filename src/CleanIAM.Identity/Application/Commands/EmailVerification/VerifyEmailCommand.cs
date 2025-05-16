@@ -27,7 +27,7 @@ public class VerifyEmailCommandHandler
         if (request is null)
             return Result.Error("Request not found", HttpStatusCode.NotFound);
 
-        var user = await querySession.LoadAsync<IdentityUser>(request.UserId, cancellationToken);
+        var user = await querySession.Query<IdentityUser>().FirstOrDefaultAsync(user => user.Id == request.UserId && user.AnyTenant(), cancellationToken);
         if (user is null)
             return Result.Error("User not found", HttpStatusCode.NotFound);
 
