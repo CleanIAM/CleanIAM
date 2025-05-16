@@ -21,7 +21,7 @@ namespace CleanIAM.Users.Api.Controllers;
 /// </summary>
 [Route("/api/users")]
 [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,MasterAdmin")]
 public class UsersApiController(
     IMessageBus bus) : Controller
 {

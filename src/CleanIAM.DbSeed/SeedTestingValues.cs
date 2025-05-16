@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using CleanIAM.Identity.Infrastructure.Services;
 using CleanIAM.SharedKernel;
 using CleanIAM.SharedKernel.Core;
@@ -193,7 +194,7 @@ public static class SeedTestingValues
         var serializedUsers = "";
         foreach (var user in seededUsers)
         {
-            serializedUsers += $"export const {user.Name} = {{ Id: \"{user.Id}\", AccessToken: \"{user.AccessToken}\" }};\n";
+            serializedUsers += $"export const {user.Name} = {{ id: \"{user.Id}\", accessToken: \"{user.AccessToken}\" }};\n";
         }
         var filePath = Path.Combine(Directory.GetCurrentDirectory(),"../../tests/k6", "testUsers.js");
         await File.WriteAllTextAsync(filePath, serializedUsers);
@@ -204,7 +205,7 @@ public static class SeedTestingValues
 
     private static async Task SeedTestUser(this IDocumentStore store, IdentityUser user)
             {
-            var session = store.LightweightSession(SharedKernelConstants.DefaultTenantId.ToString());
+            var session = store.LightweightSession(user.TenantId.ToString());
 
             // Seed identity user
             session.Store(user);
@@ -225,13 +226,21 @@ public static class SeedTestingValues
             var optionsGetter = scope.ServiceProvider.GetRequiredService<IOptionsMonitor<OpenIddictServerOptions>>();
 
             var options = optionsGetter.CurrentValue;
+            List<Claim> claims =
+            [
+                new("sub", user.Id.ToString()),
+                new("scope", "openid profile roles email offline_access"),
+                new(SharedKernelConstants.TenantClaimName, user.TenantId.ToString())
+            ];
+
+            foreach (var role in user.Roles)
+            {
+                claims.Add(new Claim("role", role.ToString()));
+            }
+            
             var descriptor = new SecurityTokenDescriptor
             {
-                Claims = new Dictionary<string, object>
-                {
-                    { "sub", user.Id },
-                    { "scope", "openid profile roles email offline_access" },
-                },
+                Subject = new ClaimsIdentity(claims),
                 EncryptingCredentials = options.DisableAccessTokenEncryption
                     ? null
                     : options.EncryptionCredentials.First(),

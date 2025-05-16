@@ -12,7 +12,7 @@ public class CreateNewScopeRequest
     /// </summary>
     [Required]
     [Length(3, 32, ErrorMessage = "Name length must be between 3 and 32 character long")]
-    [RegularExpression(@"^\S*$", ErrorMessage = "No white space allowed")]
+    [RegularExpression(@"^\S*$", ErrorMessage = "No white space allowed in the scope name")]
     public required string Name { get; set; }
 
     /// <summary>

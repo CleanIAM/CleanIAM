@@ -73,9 +73,9 @@ public class UpdateOpenIdClientCommandHandler
         try
         {
             await applicationManager.UpdateAsync(loadResult.Value, descriptor, cancellationToken);
-
-            // On success publish event and return Ok with that event
-            var applicationUpdatedEvent = command.Adapt<OpenIdApplicationUpdated>();
+            
+             // On success publish event and return Ok with that event
+             var applicationUpdatedEvent = command.Adapt<OpenIdApplicationUpdated>();
 
             // Log the update
             logger.LogInformation("Application {Id} updated successfully", command.Id);

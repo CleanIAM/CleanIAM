@@ -6,6 +6,7 @@ using CleanIAM.Identity.Core.Events;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using CleanIAM.SharedKernel.Infrastructure.Utils;
+using Microsoft.AspNetCore.Authentication;
 using Wolverine;
 
 namespace CleanIAM.Identity.Api.Controllers;
@@ -83,6 +84,8 @@ public class EmailVerificationController(ISigninRequestService signinRequestServ
                 Error = "Email verification failed",
                 ErrorDescription = res.ErrorValue.Message
             });
+
+        await HttpContext.SignOutAsync();
 
         return View();
     }
