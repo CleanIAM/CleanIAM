@@ -66,5 +66,6 @@ await app.SeedOpenIddictObjects();
 await app.SeedMartenDb();
 
 await app.SeedTesting();
+await app.SeedDemoApps();
 
 System.Console.WriteLine("Seeding finished");
