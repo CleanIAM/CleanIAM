@@ -32,7 +32,7 @@ public class SendPasswordResetRequestCommandHandler
         var normalizedEmail = command.Email.ToLowerInvariant();
         // Check if the user for a given request exists
         var user = await querySession.Query<IdentityUser>()
-            .FirstOrDefaultAsync(u => u.Email == normalizedEmail, cancellationToken);
+            .FirstOrDefaultAsync(u => u.Email == normalizedEmail && u.AnyTenant(), cancellationToken);
         if (user is null)
             return Result.Error("User not found", HttpStatusCode.NotFound);
 

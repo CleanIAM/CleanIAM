@@ -29,7 +29,7 @@ public class SendEmailVerificationRequestCommandHandler
         IQuerySession querySession, CancellationToken cancellationToken)
     {
         // Check if the user for a given request exists
-        var user = await querySession.LoadAsync<IdentityUser>(command.UserId, cancellationToken);
+        var user = await querySession.Query<IdentityUser>().FirstOrDefaultAsync(u => u.Id == command.UserId && u.AnyTenant(), cancellationToken);
         if (user is null)
             return Result.Error("User not found", HttpStatusCode.NotFound);
 

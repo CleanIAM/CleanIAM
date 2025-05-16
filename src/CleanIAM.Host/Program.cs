@@ -51,6 +51,15 @@ builder.Services.AddUsers(builder.Configuration);
 builder.Services.AddScopes(builder.Configuration);
 builder.Services.AddApplications(builder.Configuration);
 
+// Configure Razor view locations
+builder.Services.Configure<RazorViewEngineOptions>(options =>
+{
+    options.ViewLocationFormats.Clear();
+    options.ViewLocationFormats.Add("/Api/Views/{1}/{0}.cshtml");
+    options.ViewLocationFormats.Add("/Api/Views/Shared/{0}.cshtml");
+});
+
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(opts =>
     {
         opts.Cookie.SameSite = SameSiteMode.Lax;
