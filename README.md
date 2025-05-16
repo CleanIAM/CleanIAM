@@ -50,9 +50,9 @@ CleanIAM follows Clean Architecture principles with a Vertical Slices approach, 
 ```bash
 # Clone the repository
 git clone https://github.com/cleaniam/cleaniam.git
-cd cleaniam
+cd CleanIAM
 
-# Start using docker-compose
+# Build the Docker image
 docker build -t cleaniam .
 ```
 
@@ -61,7 +61,7 @@ docker build -t cleaniam .
 ```bash
 # Clone the repository
 git clone https://github.com/cleaniam/cleaniam.git
-cd cleaniam
+cd CleanIAM
 
 # Restore dependencies
 dotnet restore
@@ -122,6 +122,9 @@ Configuration is managed through standard .NET appsettings.json files and enviro
 - External identity providers configuration
 - SMTP server settings for emails
 - Logging preferences
+
+Sensitive data are stored in environment variables or secure vaults. For development, you can use a `.env` file to set environment variables.
+There is and `src/CleanIAM.Host/.env.example` file that you can copy and rename to `.env` and fill in with your values.
 
 ## 🛡️ Security
 
