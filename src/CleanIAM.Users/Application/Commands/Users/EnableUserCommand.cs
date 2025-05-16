@@ -26,7 +26,7 @@ public class EnableUserCommandHandler
     }
 
     public static async Task<Result<UserEnabled>> HandleAsync(EnableUserCommand command, Result<User> loadResult,
-        IMessageBus bus, IDocumentSession session)
+        IMessageBus bus, IDocumentSession session, ILogger<EnableUserCommandHandler> logger)
     {
         if (loadResult.IsError())
             return Result.From(loadResult);
@@ -36,6 +36,9 @@ public class EnableUserCommandHandler
         user.IsDisabled = false;
         session.Update(user);
         await session.SaveChangesAsync();
+
+        // Log the user enable action
+        logger.LogInformation("User {Id} enabled", user.Id);
 
         // Publish user enabled event
         var userEnabledEvent = user.Adapt<UserEnabled>();

@@ -25,17 +25,19 @@ public class ResendInvitationEmailCommandHandler
     }
 
     public static async Task<Result<UserInvited>> HandleAsync(ResendInvitationEmailCommand command,
-        Result<User> loadResult,
+        Result<User> loadResult, ILogger<ResendInvitationEmailCommandHandler> logger,
         IDocumentSession session, IMessageBus bus, CancellationToken cancellationToken)
     {
         if (loadResult.IsError())
             return Result.From(loadResult);
         var user = loadResult.Value;
 
+        // Log the user invitation
+        logger.LogInformation("User {Id} invitation email resent", user.Id);
+
         // Publishing userInvited event will trigger the email sending process
         var userInvited = user.Adapt<UserInvited>();
         await bus.PublishAsync(userInvited);
-
         return Result.Ok(userInvited);
     }
 }

@@ -29,8 +29,9 @@ public class CreateNewUserCommandHandler
         return Result.Ok();
     }
 
-    public static async Task<Result> HandleAsync(CreateNewUserCommand command, Result loadResult,
-        IDocumentSession documentSession, IPasswordHasher passwordHasher, IMessageBus bus, CancellationToken cancellationToken)
+    public static async Task<Result<NewUserSignedUp>> HandleAsync(CreateNewUserCommand command, Result loadResult,
+        IDocumentSession documentSession, IPasswordHasher passwordHasher, IMessageBus bus,
+        CancellationToken cancellationToken)
     {
         if (loadResult.IsError())
             return loadResult;
@@ -44,11 +45,11 @@ public class CreateNewUserCommandHandler
 
         documentSession.Store(newUser);
         await documentSession.SaveChangesAsync(cancellationToken);
-        
+
         // Publish user signed up event
         var userSignedUp = newUser.Adapt<NewUserSignedUp>();
         await bus.PublishAsync(userSignedUp);
 
-        return Result.Ok();
+        return Result.Ok(userSignedUp);
     }
 }

@@ -1,3 +1,6 @@
+using CleanIAM.Users.Core;
+using Marten;
+
 namespace CleanIAM.Users;
 
 public static class DependencyInjection
@@ -12,6 +15,12 @@ public static class DependencyInjection
     {
         // Configure custom mapster config
         MapsterConfig.Configure();
+        
+        // Register all aggregates to marten document store
+        services.ConfigureMarten(opts =>
+        {
+            opts.Schema.For<User>();
+        });
 
         return services;
     }

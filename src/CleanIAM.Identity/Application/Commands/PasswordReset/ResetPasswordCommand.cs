@@ -34,7 +34,8 @@ public class ResetPasswordCommandHandler
 
     public static async Task<Result<Core.Events.PasswordReset>> HandleAsync(ResetPasswordCommand command,
         Result<PasswordResetRequest> result, IDocumentSession documentSession, IMessageBus bus,
-        IPasswordHasher passwordHasher, CancellationToken cancellationToken)
+        IPasswordHasher passwordHasher, CancellationToken cancellationToken,
+        ILogger<ResetPasswordCommandHandler> logger)
     {
         if (result.IsError())
             return Result.From(result);
@@ -50,6 +51,9 @@ public class ResetPasswordCommandHandler
         documentSession.Delete(request);
         documentSession.Update(user);
         await documentSession.SaveChangesAsync(cancellationToken);
+
+        // Log the password reset
+        logger.LogInformation("User {Id} password reset", user.Id);
 
         // Publish event
         var passwordReset = user.Adapt<Core.Events.PasswordReset>();

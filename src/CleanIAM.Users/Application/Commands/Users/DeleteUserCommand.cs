@@ -28,8 +28,8 @@ public class DeleteUserCommandHandler
     }
 
     public static async Task<Result<UserDeleted>> HandleAsync(DeleteUserCommand command, Result loadResult,
-        IDocumentSession session,
-        IMessageBus bus, CancellationToken cancellationToken, IOpenIddictTokenManager tokenManager)
+        IDocumentSession session, IMessageBus bus, CancellationToken cancellationToken,
+        ILogger<DeleteUserCommandHandler> logger)
     {
         if (loadResult.IsError())
             return loadResult;
@@ -37,6 +37,9 @@ public class DeleteUserCommandHandler
         // Delete the user from the database
         session.Delete<User>(command.Id);
         await session.SaveChangesAsync(cancellationToken);
+
+        // Log the user deletion
+        logger.LogInformation("User {Id} deleted", command.Id);
 
         var userDeleted = command.Adapt<UserDeleted>();
         await bus.PublishAsync(userDeleted);

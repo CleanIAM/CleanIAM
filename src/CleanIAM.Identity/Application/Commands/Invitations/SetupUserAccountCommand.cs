@@ -35,7 +35,7 @@ public class SetupUserAccountCommandHandler
 
     public static async Task<Result<UserAccountSetup>> HandleAsync(SetupUserAccountCommand command,
         Result<(InvitationRequest, IdentityUser)> loadResult, IPasswordHasher passwordHasher, IMessageBus bus,
-        IDocumentSession session, CancellationToken cancellationToken)
+        IDocumentSession session, CancellationToken cancellationToken, ILogger<SetupUserAccountCommandHandler> logger)
     {
         if (loadResult.IsError())
             return Result.From(loadResult);
@@ -52,6 +52,9 @@ public class SetupUserAccountCommandHandler
         session.Store(user);
         session.Delete(request);
         await session.SaveChangesAsync(cancellationToken);
+
+        // Log the user setup
+        logger.LogInformation("User {Id} setup", user.Id);
 
         // Publish the user setup event
         var userSetup = user.Adapt<UserAccountSetup>();

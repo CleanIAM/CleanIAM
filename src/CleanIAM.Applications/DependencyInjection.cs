@@ -1,3 +1,6 @@
+using Marten;
+using Microsoft.AspNetCore.Identity;
+
 namespace CleanIAM.Applications;
 
 public static class DependencyInjection
@@ -12,6 +15,8 @@ public static class DependencyInjection
     {
         // Configure custom mapster config
         MapsterConfig.Configure();
+        
+        // This slice uses only the openIddict so no documents have to be registered to marten
 
         return services;
     }

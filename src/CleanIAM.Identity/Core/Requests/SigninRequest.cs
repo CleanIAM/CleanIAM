@@ -42,4 +42,9 @@ public class SigninRequest
     /// And user in MFA email validation and other places where we need to know the user.
     /// </remarks>
     public Guid? UserId { get; set; }
+
+    /// <summary>
+    /// Indicates whether the full authentication flow is completed.
+    /// </summary>
+    public bool AuthFlowCompleted => IsEmailVerified && (IsMfaValidated || !IsMfaRequired);
 }

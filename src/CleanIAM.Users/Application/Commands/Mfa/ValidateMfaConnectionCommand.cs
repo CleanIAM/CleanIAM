@@ -33,9 +33,10 @@ public class ValidateMfaConnectionCommandHandler
         return Result.Ok(user);
     }
 
-    public static async Task<Result<MfaConfiguredForUser>> HandleAsync(ValidateMfaConnectionCommand command,
+    public static async Task<Result> HandleAsync(ValidateMfaConnectionCommand command,
         Result<User> loadResult, IDocumentSession session, ITotpValidator totpValidator, IMessageBus bus,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, ILogger<ValidateMfaConnectionCommandHandler> logger)
+
     {
         if (loadResult.IsError())
             return Result.From(loadResult);
@@ -52,9 +53,12 @@ public class ValidateMfaConnectionCommandHandler
         session.Update(user);
         await session.SaveChangesAsync(cancellationToken);
 
+        // Log the mfa configuration
+        logger.LogInformation("User {Id} mfa configuration validated", user.Id);
+
         // Publish the MfaConfigured event
         var mfaConfiguredEvent = new MfaConfiguredForUser(user.Id, user.MfaConfig.TotpSecretKey, command.EnableMfa);
         await bus.PublishAsync(mfaConfiguredEvent);
-        return Result.Ok(mfaConfiguredEvent);
+        return Result.Ok();
     }
 }

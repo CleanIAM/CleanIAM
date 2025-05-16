@@ -92,7 +92,7 @@ public class ExternalSigninProvidersController(
         var newEvent = user.Adapt<UserLoggedIn>();
         await bus.PublishAsync(newEvent);
         logger.LogInformation("User {user} logged in.", user.Id);
-        
+
         // Redirect to authorize endpoint to authorize the client
         var oidcRequestParams = signinRequestService.CreateOidcQueryObject(signinRequest);
         oidcRequestParams["chooseAccount"] = "false"; // Set chooseAccount to false to skip account chooser

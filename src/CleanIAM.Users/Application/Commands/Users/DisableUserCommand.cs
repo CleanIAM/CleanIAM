@@ -26,7 +26,7 @@ public class DisableUserCommandHandler
     }
 
     public static async Task<Result<UserDisabled>> HandleAsync(DisableUserCommand command, Result<User> loadResult,
-        IMessageBus bus, IDocumentSession session)
+        IMessageBus bus, IDocumentSession session, ILogger<DisableUserCommandHandler> logger)
     {
         if (loadResult.IsError())
             return Result.From(loadResult);
@@ -36,6 +36,9 @@ public class DisableUserCommandHandler
         user.IsDisabled = true;
         session.Update(user);
         await session.SaveChangesAsync();
+
+        // Log the user disable action
+        logger.LogInformation("User {Id} disabled", user.Id);
 
         // Publish user disabled event
         var userDisabledEvent = user.Adapt<UserDisabled>();

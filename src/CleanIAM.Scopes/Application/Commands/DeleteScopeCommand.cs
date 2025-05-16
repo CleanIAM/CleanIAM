@@ -31,7 +31,7 @@ public class DeleteScopeCommandHandler
 
     public static async Task<Result<ScopeDeleted>> HandleAsync(DeleteScopeCommand command,
         Result<OpenIddictScope> loadResult, OpenIddictScopeManager<OpenIddictScope> scopeManager, IMessageBus bus,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, ILogger<DeleteScopeCommandHandler> logger)
     {
         if (loadResult.IsError())
             return Result.From(loadResult);
@@ -45,6 +45,9 @@ public class DeleteScopeCommandHandler
         {
             return Result.Error("Error deleting scope", StatusCodes.Status500InternalServerError);
         }
+
+        // Log the deletion
+        logger.LogInformation("Scope {Name} deleted successfully", command.Name);
 
         // Publish the ScopeDeleted event and return
         var scopeDeletedEvent = new ScopeDeleted(command.Name);

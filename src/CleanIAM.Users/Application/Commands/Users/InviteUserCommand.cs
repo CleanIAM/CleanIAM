@@ -1,3 +1,4 @@
+using CleanIAM.SharedKernel;
 using Mapster;
 using Marten;
 using CleanIAM.SharedKernel.Core;
@@ -28,7 +29,9 @@ public class InviteUserCommandHandler
         if (user is not null)
             return Result.Error("User already exists", StatusCodes.Status400BadRequest);
 
-        return Result.Ok(Guid.TryParse(session.TenantId, out var tenantId) ? tenantId : Guid.Empty);
+        return Result.Ok(Guid.TryParse(session.TenantId, out var tenantId)
+            ? tenantId
+            : SharedKernelConstants.DefaultTenantId);
     }
 
     public async Task<Result<UserInvited>> HandleAsync(InviteUserCommand command, Result<Guid> loadResult,
@@ -39,14 +42,15 @@ public class InviteUserCommandHandler
             return Result.From(loadResult);
         var tenantId = loadResult.Value;
 
-        logger.LogDebug("Inviting user [{}]", command.Email);
-
         var user = command.Adapt<User>();
         user.IsInvitePending = true;
         user.Email = user.Email.ToLowerInvariant(); // Normalize email
         user.TenantId = tenantId;
         session.Store(user);
         await session.SaveChangesAsync(cancellationToken);
+
+        // Log the user invitation
+        logger.LogInformation("User {Id} invited", user.Id);
 
         var userInvited = user.Adapt<UserInvited>();
         await bus.PublishAsync(userInvited);

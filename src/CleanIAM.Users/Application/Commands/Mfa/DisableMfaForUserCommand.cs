@@ -19,13 +19,13 @@ public class DisableMfaForUserCommandHandler
     {
         var user = await session.LoadAsync<User>(command.Id);
         if (user == null)
-            return Result.Error("User not found");
+            return Result.Error("User not found", StatusCodes.Status404NotFound);
 
         return Result.Ok(user);
     }
 
-    public static async Task<Result<MfaDisabledForUser>> HandleAsync(DisableMfaForUserCommand command,
-        Result<User> loadResult,
+    public static async Task<Result> HandleAsync(DisableMfaForUserCommand command,
+        Result<User> loadResult, ILogger<DisableMfaForUserCommandHandler> logger,
         IDocumentSession session, IMessageBus bus)
     {
         if (loadResult.IsError())
@@ -36,8 +36,11 @@ public class DisableMfaForUserCommandHandler
         session.Store(user);
         await session.SaveChangesAsync();
 
+        // Log the mfa configuration
+        logger.LogInformation("User {Id} mfa configuration disabled", user.Id);
+
         var userUpdated = user.Adapt<MfaDisabledForUser>();
         await bus.PublishAsync(userUpdated);
-        return Result.Ok(userUpdated);
+        return Result.Ok();
     }
 }

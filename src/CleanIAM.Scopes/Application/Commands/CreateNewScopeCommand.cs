@@ -30,8 +30,8 @@ public class CreateNewScopeCommandHandler
     }
 
     public static async Task<Result<ScopeCreated>> HandleAsync(CreateNewScopeCommand command, Result loadResult,
-        OpenIddictScopeManager<OpenIddictScope> scopeManager, IMessageBus bus,
-        CancellationToken cancellationToken)
+        OpenIddictScopeManager<OpenIddictScope> scopeManager, IMessageBus bus, CancellationToken cancellationToken,
+        ILogger<CreateNewScopeCommandHandler> logger)
     {
         if (loadResult.IsError())
             return loadResult;
@@ -45,6 +45,9 @@ public class CreateNewScopeCommandHandler
         {
             return Result.Error("Error creating scope", StatusCodes.Status500InternalServerError);
         }
+
+        // Log the creation
+        logger.LogInformation("Scope {Name} created successfully", newScope.Name);
 
         // Publish the ScopeCreated event and return
         var scopeCreatedEvent = command.Adapt<ScopeCreated>();

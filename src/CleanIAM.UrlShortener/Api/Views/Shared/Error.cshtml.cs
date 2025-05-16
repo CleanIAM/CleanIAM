@@ -1,4 +1,4 @@
-namespace UrlShortner.Api.Views.Shared;
+namespace CleanIAM.UrlShortener.Api.Views.Shared;
 
 public class ErrorViewModel
 {

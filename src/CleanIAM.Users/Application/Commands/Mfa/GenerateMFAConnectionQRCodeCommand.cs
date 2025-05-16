@@ -35,7 +35,7 @@ public class GenerateMfaConnectionQrCodeCommandHandler
     /// <returns>qrCode is encoded in BASE64 string with encoded totp connection url</returns>
     public static async Task<Result<string>> HandleAsync(GenerateMfaConnectionQrCodeCommand command,
         Result<User> loadResult, IDocumentSession session, ITotpValidator totpValidator,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, ILogger<GenerateMfaConnectionQrCodeCommandHandler> logger)
     {
         if (loadResult.IsError())
             return Result.From(loadResult);
@@ -54,6 +54,9 @@ public class GenerateMfaConnectionQrCodeCommandHandler
         var qrGenerator = new QRCodeGenerator();
         var qrCodeData = qrGenerator.CreateQrCode(mfaConnectionUrl, QRCodeGenerator.ECCLevel.Q);
         var qrCode = new PngByteQRCode(qrCodeData);
+
+        // Log the qrcode generation
+        logger.LogInformation("User {Id} TOTP qrcode generated", user.Id);
 
         // Convert qrCode image to base64
         var bitmap = qrCode.GetGraphic(20);

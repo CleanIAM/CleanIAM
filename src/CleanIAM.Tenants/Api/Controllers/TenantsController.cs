@@ -45,7 +45,9 @@ public class TenantsController(IMessageBus bus) : Controller
     public async Task<IActionResult> GetTenantByIdAsync(Guid tenantId, CancellationToken cancellationToken)
     {
         var query = new GetTenantByIdQuery(tenantId);
-        var res = await bus.InvokeAsync<Tenant>(query, cancellationToken);
+        var res = await bus.InvokeAsync<Tenant?>(query, cancellationToken);
+        if (res is null)
+            return Result.Error("Tenant not found", StatusCodes.Status404NotFound);
         return Result.Ok(res);
     }
 
@@ -97,5 +99,21 @@ public class TenantsController(IMessageBus bus) : Controller
     {
         var command = new AssignUserToTenantCommand(tenantId, userId);
         return await bus.InvokeAsync<Result<UserAssignedToTenant>>(command, cancellationToken);
+    }
+    
+    /// <summary>
+    /// Delete a tenant
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpDelete("{tenantId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<Error>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<Error>(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteTenantAsync(Guid tenantId, CancellationToken cancellationToken)
+    {
+        var command = new DeleteTenantCommand(tenantId);
+        return await bus.InvokeAsync<Result>(command, cancellationToken);
     }
 }

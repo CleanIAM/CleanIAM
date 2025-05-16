@@ -6,6 +6,7 @@ using CleanIAM.Identity.Core.Events;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using CleanIAM.SharedKernel.Infrastructure.Utils;
+using Microsoft.AspNetCore.Authentication;
 using Wolverine;
 
 namespace CleanIAM.Identity.Api.Controllers;
@@ -27,6 +28,10 @@ public class EmailVerificationController(ISigninRequestService signinRequestServ
         if (signinRequest.IsError() || signinRequest.Value.UserId is null)
             return View("Error", new ErrorViewModel { Error = "Error", ErrorDescription = "Invalid signin request" });
 
+        // If the user is already verified, redirect to the signin page
+        if(signinRequest.Value.IsEmailVerified)
+            return RedirectToAction("Signin", "Signin", new{ request = signinRequest.Value.Id });
+        
         // Show the view with an email verification form
         return View(new VerifyEmailViewModel());
     }
@@ -79,6 +84,8 @@ public class EmailVerificationController(ISigninRequestService signinRequestServ
                 Error = "Email verification failed",
                 ErrorDescription = res.ErrorValue.Message
             });
+
+        await HttpContext.SignOutAsync();
 
         return View();
     }

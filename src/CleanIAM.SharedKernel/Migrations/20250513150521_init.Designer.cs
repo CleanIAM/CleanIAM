@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CleanIAM.SharedKernel.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250410215551_init")]
+    [Migration("20250513150521_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -111,7 +111,7 @@ namespace CleanIAM.SharedKernel.Migrations
                     b.Property<string>("Properties")
                         .HasColumnType("text");
 
-                    b.Property<string>("CleanIAM.Scopes")
+                    b.Property<string>("Scopes")
                         .HasColumnType("text");
 
                     b.Property<string>("Status")

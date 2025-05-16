@@ -18,7 +18,7 @@ namespace CleanIAM.Applications.Api.Controllers;
 /// </summary>
 [Route("/api/applications")]
 [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,SuperAdmin")]
 public class ApplicationsApiController(
     IMessageBus bus) : Controller
 {
@@ -46,7 +46,7 @@ public class ApplicationsApiController(
     public async Task<IActionResult> CreateNewApplication([FromBody] CreateNewApplicationRequest request,
         CancellationToken cancellationToken)
     {
-        var command = request.Adapt<CreateNewOpenIdApplicationCommand>() with { Id = Guid.NewGuid() };
+        var command = request.Adapt<CreateNewOpenIdApplicationCommand>();
         return await bus.InvokeAsync<Result<OpenIdApplicationCreated>>(command, cancellationToken);
     }
 

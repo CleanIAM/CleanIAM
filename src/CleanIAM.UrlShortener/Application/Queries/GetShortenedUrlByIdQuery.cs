@@ -1,7 +1,7 @@
+using CleanIAM.UrlShortener.Core;
 using Marten;
-using UrlShortner.Core;
 
-namespace UrlShortner.Application.Queries;
+namespace CleanIAM.UrlShortener.Application.Queries;
 
 public record GetShortenedUrlByIdQuery(Guid Id);
 

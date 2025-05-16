@@ -24,7 +24,6 @@ namespace CleanIAM.Applications.Application.Commands;
 /// <param name="PostLogoutRedirectUris"></param>
 /// <param name="RedirectUris"></param>
 public record CreateNewOpenIdApplicationCommand(
-    Guid Id,
     ApplicationType? ApplicationType,
     string ClientId,
     ClientType? ClientType,
@@ -50,8 +49,9 @@ public class CreateNewOpenIdApplicationCommandHandler
     }
 
     public static async Task<Result<OpenIdApplicationCreated>> HandleAsync(CreateNewOpenIdApplicationCommand command,
-        Result loadResult, IMessageBus bus,
-        OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager
+        Result loadResult, IMessageBus bus, ILogger<CreateNewOpenIdApplicationCommandHandler> logger,
+        OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication<Guid>> applicationManager,
+        CancellationToken cancellationToken
     )
     {
         if (loadResult.IsError())
@@ -75,12 +75,21 @@ public class CreateNewOpenIdApplicationCommandHandler
 
         try
         {
-            await applicationManager.CreateAsync(descriptor);
+            await applicationManager.CreateAsync(descriptor, cancellationToken);
 
+            var application = await applicationManager.FindByClientIdAsync(command.ClientId, cancellationToken);
+            if (application is null)
+                return Result.Error("Application creation failed", 500);
+            
             var applicationCreatedEvent = command.Adapt<OpenIdApplicationCreated>() with
             {
-                ClientSecret = descriptor.ClientSecret
+                ClientSecret = descriptor.ClientSecret,
+                Id = application.Id,
             };
+
+            // Log the creation
+            logger.LogInformation("Application {Id} created successfully", application.Id);
+
             await bus.PublishAsync(applicationCreatedEvent);
             return Result.Ok(applicationCreatedEvent);
         }

@@ -1,24 +1,47 @@
 using System.Text;
 using CleanIAM.Identity.Application.Interfaces;
+using CleanIAM.Identity.Core.Requests;
 using CleanIAM.Identity.Infrastructure.Services;
 using CommunityToolkit.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using CleanIAM.SharedKernel.Core.Database;
+using Marten;
+using Microsoft.AspNetCore.Identity;
+using IdentityUser = CleanIAM.Identity.Core.Users.IdentityUser;
 
 namespace CleanIAM.Identity;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddIdentityProject(this IServiceCollection serviceCollection,
+    public static IServiceCollection AddIdentityProject(this IServiceCollection services,
         IConfiguration configuration)
     {
-        serviceCollection.AddScoped<ISigninRequestService, SigninRequestService>();
-        serviceCollection.AddTransient<IPasswordHasher, PasswordHasher>();
-        serviceCollection.AddTransient<IIdentityBuilderService, IdentityBuilderService>();
-        serviceCollection.AddScoped<IEmailService, CoravelEmailService>();
+        services.AddScoped<ISigninRequestService, SigninRequestService>();
+        services.AddTransient<IPasswordHasher, PasswordHasher>();
+        services.AddTransient<IIdentityBuilderService, IdentityBuilderService>();
+        services.AddScoped<IEmailService, CoravelEmailService>();
+        
+        // Register all aggregates to marten document store
+        services.ConfigureMarten(opts =>
+        {
+            opts.Schema.For<IdentityUser>();
+            opts.Schema.For<SigninRequest>().SingleTenanted();
+            opts.Schema.For<PasswordResetRequest>().SingleTenanted();
+            opts.Schema.For<InvitationRequest>().SingleTenanted();
+            opts.Schema.For<EmailVerificationRequest>().SingleTenanted();
+        });
 
-
-        return serviceCollection;
+        return services;
+    }
+    
+    /// <summary>
+    /// Register runtime configuration specific for the identity project.
+    /// </summary>
+    /// <param name="app"></param>
+    /// <returns></returns>
+    public static WebApplication UseIdentity(this WebApplication app)
+    {
+        return app;
     }
 
     public static IServiceCollection AddOpenIddict(this IServiceCollection serviceCollection,

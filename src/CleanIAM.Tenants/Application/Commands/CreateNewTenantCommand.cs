@@ -20,7 +20,8 @@ public class CreateNewTenantCoomandHandler
     public static async Task<Result> LoadAsync(CreateNewTenantCommand command, IQuerySession session,
         CancellationToken cancellationToken)
     {
-        var tenant = await session.Query<Tenant>().FirstOrDefaultAsync(t => t.Id == command.Id || t.Name == command.Name, token: cancellationToken);
+        var tenant = await session.Query<Tenant>()
+            .FirstOrDefaultAsync(t => t.Id == command.Id || t.Name == command.Name, token: cancellationToken);
         if (tenant is not null)
             return Result.Error("Tenant already exists", HttpStatusCode.BadRequest);
 
@@ -28,7 +29,8 @@ public class CreateNewTenantCoomandHandler
     }
 
     public static async Task<Result<NewTenantCreated>> HandleAsync(CreateNewTenantCommand command, Result loadResult,
-        IDocumentSession session, IMessageBus bus, CancellationToken cancellationToken)
+        IDocumentSession session, IMessageBus bus, CancellationToken cancellationToken,
+        ILogger<CreateNewTenantCoomandHandler> logger)
     {
         if (loadResult.IsError())
             return loadResult;
@@ -36,6 +38,9 @@ public class CreateNewTenantCoomandHandler
         var tenant = command.Adapt<Tenant>();
         session.Store(tenant);
         await session.SaveChangesAsync(cancellationToken);
+
+        // Log the creation
+        logger.LogInformation("Tenant {Id} created successfully", tenant.Id);
 
         var newTenantCreated = command.Adapt<NewTenantCreated>();
         await bus.PublishAsync(newTenantCreated);

@@ -8,8 +8,8 @@ using Mapster;
 using Marten;
 using CleanIAM.SharedKernel.Application.Interfaces;
 using CleanIAM.SharedKernel.Infrastructure.Utils;
-using UrlShortner.Application.Commands;
-using UrlShortner.Core.Events;
+using CleanIAM.UrlShortener.Application.Commands;
+using CleanIAM.UrlShortener.Core.Events;
 using Wolverine;
 
 namespace CleanIAM.Identity.Application.Commands.EmailVerification;
@@ -25,21 +25,21 @@ public record SendEmailVerificationRequestCommand(Guid UserId);
 /// </summary>
 public class SendEmailVerificationRequestCommandHandler
 {
-    public static async Task<Result<EmailVerificationReqest>> LoadAsync(SendEmailVerificationRequestCommand command,
+    public static async Task<Result<EmailVerificationRequest>> LoadAsync(SendEmailVerificationRequestCommand command,
         IQuerySession querySession, CancellationToken cancellationToken)
     {
         // Check if the user for a given request exists
-        var user = await querySession.LoadAsync<IdentityUser>(command.UserId, cancellationToken);
+        var user = await querySession.Query<IdentityUser>().FirstOrDefaultAsync(u => u.Id == command.UserId && u.AnyTenant(), cancellationToken);
         if (user is null)
             return Result.Error("User not found", HttpStatusCode.NotFound);
 
-        var request = querySession.Query<EmailVerificationReqest>()
+        var request = querySession.Query<EmailVerificationRequest>()
             .FirstOrDefault(x => x.UserId == user.Id);
 
         // If request for given user doesn't exist, create a new one
         if (request is null)
         {
-            var newRequest = user.Adapt<EmailVerificationReqest>();
+            var newRequest = user.Adapt<EmailVerificationRequest>();
             newRequest.Id = Guid.NewGuid();
             newRequest.LastEmailsSendAt = DateTime.MinValue;
             newRequest.UserId = user.Id;
@@ -51,9 +51,9 @@ public class SendEmailVerificationRequestCommandHandler
         if (timeSinceLastEmail < IdentityConstants.VerificationEmailDelay)
             return Result.Error(
                 $"Email verification request already send, " +
-                $"you need to wait"  + ((IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Minutes != 0 ? 
-                        $" {(IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Minutes} minutes " : 
-                        $" {(IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Seconds} seconds ") +
+                $"you need to wait" + ((IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Minutes != 0
+                    ? $" {(IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Minutes} minutes "
+                    : $" {(IdentityConstants.VerificationEmailDelay - timeSinceLastEmail).Seconds} seconds ") +
                 $"before you request new email.",
                 HttpStatusCode.BadRequest);
 
@@ -62,8 +62,8 @@ public class SendEmailVerificationRequestCommandHandler
 
     public static async Task<Result<EmailVerificationRequestSent>> HandleAsync(
         SendEmailVerificationRequestCommand command,
-        Result<EmailVerificationReqest> result, IEmailService emailService, IAppConfiguration configuration,
-        IDocumentSession documentSession, IMessageBus bus)
+        Result<EmailVerificationRequest> result, IEmailService emailService, IAppConfiguration configuration,
+        IDocumentSession documentSession, IMessageBus bus, ILogger<SendEmailVerificationRequestCommandHandler> logger)
     {
         if (result.IsError())
             return Result.From(result);
@@ -92,6 +92,9 @@ public class SendEmailVerificationRequestCommandHandler
         request.LastEmailsSendAt = DateTime.UtcNow;
         documentSession.Store(request);
         await documentSession.SaveChangesAsync();
+
+        // Log the email verification request
+        logger.LogInformation("User {Id} email verification request sent", request.UserId);
 
         // Publish event
         var verificationEmailSent = request.Adapt<EmailVerificationRequestSent>();

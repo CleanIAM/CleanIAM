@@ -1,5 +1,6 @@
 using CleanIAM.Identity.Core.Users;
 using CleanIAM.Identity.Infrastructure.Services;
+using CleanIAM.SharedKernel;
 using Marten;
 using CleanIAM.SharedKernel.Core;
 using CleanIAM.Tenants.Core;
@@ -14,37 +15,38 @@ public static class SeedDbMarten
     {
         await using var scope = app.ApplicationServices.CreateAsyncScope();
 
-        var session = scope.ServiceProvider.GetRequiredService<IDocumentSession>();
+        var store = scope.ServiceProvider.GetRequiredService<IDocumentStore>();
 
+        var defaultTenantSession = store.LightweightSession(SharedKernelConstants.DefaultTenantId.ToString());
 
+        await SeedUsers(defaultTenantSession);
+        await SeedDefaultTenant(defaultTenantSession);
 
-        SeedUsers(session);
-        SeedDefaultTenant(session);
-
-        await session.SaveChangesAsync();
+        await defaultTenantSession.SaveChangesAsync();
     }
 
 
-    private static void SeedDefaultTenant(IDocumentSession session)
+    private static async Task SeedDefaultTenant(IDocumentSession session)
     {
+
         // Generate default tenant
-        var defaultTenant = new Tenant
+        var newDefaultTenant = new Tenant
         {
-            Id = Guid.Empty,
+            Id = SharedKernelConstants.DefaultTenantId,
             Name = "Default Tenant"
         };
-        
-        session.Store(defaultTenant);
+
+        session.Store(newDefaultTenant);
     }
-    
-    private static void SeedUsers(IDocumentSession session)
+
+    private static async Task SeedUsers(IDocumentSession session)
     {
         var passwordHasher = new PasswordHasher();
-        
+
         session.Store(
             new IdentityUser
             {
-                Id = Guid.NewGuid(),
+                Id = SharedKernelConstants.DefaultTenantId,
                 FirstName = "Master",
                 LastName = "Admin",
                 Email = "master@admin.com",
@@ -52,7 +54,7 @@ public static class SeedDbMarten
                 IsInvitePending = false,
                 EmailVerified = true,
                 Roles = [UserRole.User, UserRole.Admin, UserRole.MasterAdmin],
-                TenantId =  Guid.Empty,
+                TenantId = SharedKernelConstants.DefaultTenantId,
                 TenantName = "Default Tenant",
                 IsMFAEnabled = false,
                 MfaConfig = new MfaConfig
@@ -61,18 +63,18 @@ public static class SeedDbMarten
                     TotpSecretKey = ""
                 },
             }
-            );
+        );
         session.Store(
             new User
             {
-                Id = Guid.NewGuid(),
+                Id = SharedKernelConstants.DefaultTenantId,
                 FirstName = "Master",
                 LastName = "Admin",
                 Email = "master@admin.com",
                 IsInvitePending = false,
                 EmailVerified = true,
                 Roles = [UserRole.User, UserRole.Admin, UserRole.MasterAdmin],
-                TenantId =  Guid.Empty,
+                TenantId = SharedKernelConstants.DefaultTenantId,
                 TenantName = "Default Tenant",
                 IsMFAEnabled = false,
                 MfaConfig = new CleanIAM.Users.Core.MfaConfig
@@ -82,6 +84,5 @@ public static class SeedDbMarten
                 },
             }
         );
-        
     }
 }

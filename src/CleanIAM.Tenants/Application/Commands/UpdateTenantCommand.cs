@@ -1,4 +1,5 @@
 using System.Net;
+using CleanIAM.SharedKernel;
 using Mapster;
 using Marten;
 using CleanIAM.SharedKernel.Infrastructure.Utils;
@@ -24,14 +25,15 @@ public class UpdateTenantCommandHandler
         if (tenant is null)
             return Result.Error("Tenant not found", HttpStatusCode.NotFound);
 
-        if (tenant.Id == Guid.Empty)
+        if (tenant.Id == SharedKernelConstants.DefaultTenantId)
             return Result.Error("Default tenant cannot be updated", HttpStatusCode.Forbidden);
 
         return Result.Ok(tenant);
     }
 
     public static async Task<Result<TenantUpdated>> HandleAsync(UpdateTenantCommand command, Result<Tenant> loadResult,
-        IDocumentSession session, IMessageBus bus, CancellationToken cancellationToken)
+        IDocumentSession session, IMessageBus bus, CancellationToken cancellationToken,
+        ILogger<UpdateTenantCommandHandler> logger)
     {
         if (loadResult.IsError())
             return Result.From(loadResult);
@@ -40,8 +42,10 @@ public class UpdateTenantCommandHandler
         // Update tenant
         tenant.Name = command.Name;
         session.Store(tenant);
-
         await session.SaveChangesAsync(cancellationToken);
+
+        // Log the update
+        logger.LogInformation("Tenant {Id} updated successfully", tenant.Id);
 
         var tenantUpdated = command.Adapt<TenantUpdated>();
         await bus.PublishAsync(tenantUpdated);

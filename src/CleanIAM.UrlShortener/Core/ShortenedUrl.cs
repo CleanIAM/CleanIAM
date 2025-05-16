@@ -1,4 +1,4 @@
-namespace UrlShortner.Core;
+namespace CleanIAM.UrlShortener.Core;
 
 public class ShortenedUrl
 {
