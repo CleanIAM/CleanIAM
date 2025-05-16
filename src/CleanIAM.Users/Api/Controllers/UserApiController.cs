@@ -176,20 +176,4 @@ public class UserApiController(
         var command = new CleanMfaConfigurationCommand(userId);
         return await bus.InvokeAsync<Result>(command);
     }
-    
-        
-    [HttpGet("/test")]
-    public IActionResult Test()
-    {
-        var asdf = HttpContext;
-        return Ok("Test");
-    }
-    
-    [AllowAnonymous]
-    [HttpGet("/test2")]
-    public IActionResult Test2()
-    {
-        var asdf = HttpContext;
-        return Ok("Test");
-    }
 }
