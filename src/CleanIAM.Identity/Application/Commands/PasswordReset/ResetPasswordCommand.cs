@@ -21,43 +21,46 @@ public record ResetPasswordCommand(Guid RequestId, string NewPassword);
 /// </summary>
 public class ResetPasswordCommandHandler
 {
-    public static async Task<Result<PasswordResetRequest>> LoadAsync(ResetPasswordCommand command,
+    public static async Task<Result<(PasswordResetRequest, IdentityUser)>> LoadAsync(ResetPasswordCommand command,
         IQuerySession querySession, CancellationToken cancellationToken)
     {
         var request = await querySession.LoadAsync<PasswordResetRequest>(command.RequestId, cancellationToken);
 
         if (request is null)
             return Result.Error("Request not found", HttpStatusCode.NotFound);
+        
+        var user = await querySession.Query<IdentityUser>()
+            .FirstOrDefaultAsync(user => user.Id == request.UserId && user.AnyTenant(), cancellationToken);
 
-        return Result.Ok(request);
+        if (user is null)
+            return Result.Error("User not found", HttpStatusCode.NotFound);
+        
+        return Result.Ok((request, user));
     }
 
     public static async Task<Result<Core.Events.PasswordReset>> HandleAsync(ResetPasswordCommand command,
-        Result<PasswordResetRequest> result, IDocumentSession documentSession, IMessageBus bus,
+        Result<(PasswordResetRequest, IdentityUser)> loadResult, IDocumentStore store, IMessageBus bus,
         IPasswordHasher passwordHasher, CancellationToken cancellationToken,
         ILogger<ResetPasswordCommandHandler> logger)
     {
-        if (result.IsError())
-            return Result.From(result);
-        var request = result.Value;
+        if (loadResult.IsError())
+            return Result.From(loadResult);
+        var (request, user) = loadResult.Value;
 
-        // Get user from the database
-        var user = await documentSession.LoadAsync<IdentityUser>(request.UserId, cancellationToken);
-        if (user is null)
-            return Result.Error("User not found", HttpStatusCode.NotFound);
 
         // Update user password
         user.HashedPassword = passwordHasher.Hash(command.NewPassword);
-        documentSession.Delete(request);
-        documentSession.Update(user);
-        await documentSession.SaveChangesAsync(cancellationToken);
+        var session = store.LightweightSession(user.TenantId.ToString());
+        session.Delete(request);
+        session.Update(user);
+        await session.SaveChangesAsync(cancellationToken);
 
         // Log the password reset
         logger.LogInformation("User {Id} password reset", user.Id);
 
         // Publish event
         var passwordReset = user.Adapt<Core.Events.PasswordReset>();
-        await bus.PublishAsync(passwordReset);
+        await bus.PublishAsync(passwordReset, new DeliveryOptions{TenantId = user.TenantId.ToString()});
         return Result.Ok(passwordReset);
     }
 }

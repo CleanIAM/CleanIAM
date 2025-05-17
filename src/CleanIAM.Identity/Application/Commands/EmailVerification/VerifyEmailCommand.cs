@@ -35,26 +35,29 @@ public class VerifyEmailCommandHandler
     }
 
     public static async Task<Result<UserEmailVerified>> HandleAsync(VerifyEmailCommand command,
-        Result<(EmailVerificationRequest, IdentityUser)> result, IDocumentSession documentSession, IMessageBus bus,
+        Result<(EmailVerificationRequest, IdentityUser)> result, IDocumentStore store, IMessageBus bus,
         CancellationToken cancellationToken, ILogger<VerifyEmailCommandHandler> logger)
     {
         if (result.IsError())
             return Result.From(result);
         var (request, user) = result.Value;
 
+        
 
         // Update email verification status
         user.EmailVerified = true;
-        documentSession.Delete(request);
-        documentSession.Update(user);
-        await documentSession.SaveChangesAsync(cancellationToken);
+        
+        var session = store.LightweightSession(user.TenantId.ToString());
+        session.Delete(request);
+        session.Update(user);
+        await session.SaveChangesAsync(cancellationToken);
 
         // Log the email verification
         logger.LogInformation("User {Id} email verified", user.Id);
 
         // Publish event
         var emailVerified = user.Adapt<UserEmailVerified>();
-        await bus.PublishAsync(emailVerified);
+        await bus.PublishAsync(emailVerified, new DeliveryOptions{TenantId = user.TenantId.ToString()});
         return Result.Ok(emailVerified);
     }
 }

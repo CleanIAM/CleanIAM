@@ -26,7 +26,8 @@ public class SetupUserAccountCommandHandler
         if (request is null)
             return Result.Error("Invitation request not found", HttpStatusCode.BadRequest);
 
-        var user = await session.LoadAsync<IdentityUser>(request.UserId, cancellationToken);
+        var user = await session.Query<IdentityUser>()
+            .FirstOrDefaultAsync(u => u.Id == request.UserId && u.AnyTenant(), cancellationToken);
         if (user is null)
             return Result.Error("User not found", HttpStatusCode.BadRequest);
 
@@ -35,12 +36,12 @@ public class SetupUserAccountCommandHandler
 
     public static async Task<Result<UserAccountSetup>> HandleAsync(SetupUserAccountCommand command,
         Result<(InvitationRequest, IdentityUser)> loadResult, IPasswordHasher passwordHasher, IMessageBus bus,
-        IDocumentSession session, CancellationToken cancellationToken, ILogger<SetupUserAccountCommandHandler> logger)
+        IDocumentStore store, CancellationToken cancellationToken, ILogger<SetupUserAccountCommandHandler> logger)
     {
         if (loadResult.IsError())
             return Result.From(loadResult);
         var (request, user) = loadResult.Value;
-
+        
         // Set the password
         user.HashedPassword = passwordHasher.Hash(command.Password);
 
@@ -49,6 +50,7 @@ public class SetupUserAccountCommandHandler
         user.SetUserEmailAsVerified();
 
         // update the use in database
+        var session = store.LightweightSession(user.TenantId.ToString());
         session.Store(user);
         session.Delete(request);
         await session.SaveChangesAsync(cancellationToken);
@@ -58,7 +60,7 @@ public class SetupUserAccountCommandHandler
 
         // Publish the user setup event
         var userSetup = user.Adapt<UserAccountSetup>();
-        await bus.PublishAsync(userSetup);
+        await bus.PublishAsync(userSetup, new DeliveryOptions{TenantId = user.TenantId.ToString()});
         return Result.Ok(userSetup);
     }
 }

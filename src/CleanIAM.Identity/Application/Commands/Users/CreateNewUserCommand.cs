@@ -48,7 +48,7 @@ public class CreateNewUserCommandHandler
 
         // Publish user signed up event
         var userSignedUp = newUser.Adapt<NewUserSignedUp>();
-        await bus.PublishAsync(userSignedUp);
+        await bus.PublishAsync(userSignedUp, new DeliveryOptions{TenantId = newUser.TenantId.ToString()});
 
         return Result.Ok(userSignedUp);
     }
