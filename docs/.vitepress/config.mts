@@ -55,6 +55,17 @@ export default defineConfig({
         ],
       },
       {
+        text: "Implementation",
+        items: [
+          { text: "Overview", link: "/implementation/" },
+          { text: "Project Structure", link: "/implementation/project-structure" },
+          { text: "CQRS Pattern", link: "/implementation/cqrs-pattern" },
+          { text: "Error Handling", link: "/implementation/error-handling" },
+          { text: "Naming Conventions", link: "/implementation/naming-conventions" },
+          { text: "File Organization", link: "/implementation/file-organization" },
+        ],
+      },
+      {
         text: "Advanced Topics",
         items: [{ text: "Deployment", link: "/advanced/deployment" }],
       },
