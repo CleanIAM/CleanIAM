@@ -11,7 +11,7 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: /getting-started
+      link: /introduction/getting-started
     - theme: alt
       text: View on GitHub
       link: https://github.com/CleanIAM/CleanIAM
@@ -30,4 +30,3 @@ features:
     title: Modern Frontend
     details: Beautiful UI for authentication flows and a React-powered management portal
 ---
-

@@ -89,4 +89,4 @@ After installation, you might want to:
 1. [Configure your first OIDC application](/slices/applications)
 2. [Set up external identity providers](/slices/identity)
 3. [Configure multi-factor authentication](/slices/users)
-4. [Learn about the architecture](/architecture)
+4. [Learn about the architecture](/architecture/architecture)
