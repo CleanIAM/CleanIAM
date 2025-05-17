@@ -21,7 +21,7 @@ public class UpdateUserSimpleCommandHandler
     {
         var user = await session.LoadAsync<User>(command.Id);
         if (user == null)
-            return Result.Error("User not found");
+            return Result.Error("User not found", StatusCodes.Status404NotFound);
 
         return Result.Ok(user);
     }

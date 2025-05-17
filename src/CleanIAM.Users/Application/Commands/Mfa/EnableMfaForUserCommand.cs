@@ -20,7 +20,7 @@ public class EnableMfaForUserCommandHandler
     {
         var user = await session.LoadAsync<User>(command.Id);
         if (user is null)
-            return Result.Error("User not found");
+            return Result.Error("User not found", StatusCodes.Status404NotFound);
 
         // Allow to enable mfa only if it is configured  
         if (!user.MfaConfig.IsMfaConfigured)
