@@ -71,6 +71,10 @@ public class MfaController(IMessageBus bus, ISigninRequestService signinRequestS
             ModelState.AddModelError("Totp", res.ErrorValue.Message);
             return View("Mfa", model);
         }
+        
+        // Update the signin request to mark MFA as validated
+        signinRequest.IsMfaValidated = true;
+        await signinRequestService.UpdateAsync(signinRequest);
 
         // Redirect to authorize endpoint to authorize the client
         var oidcRequestParams = signinRequestService.CreateOidcQueryObject(signinRequest);
