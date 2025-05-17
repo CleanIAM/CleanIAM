@@ -11,7 +11,12 @@ public class SigninRequestService(IDocumentSession documentSession) : ISigninReq
 {
     public async Task SaveAsync(SigninRequest request)
     {
-        //TODO: Only one per user should be allowed
+        //Only one request per user is allowed
+        var oldRequest = await documentSession.Query<SigninRequest>()
+            .FirstOrDefaultAsync(r => r.UserId == request.UserId);
+        if (oldRequest is not null)
+            documentSession.Delete(oldRequest);
+        
         documentSession.Store(request);
         await documentSession.SaveChangesAsync();
     }

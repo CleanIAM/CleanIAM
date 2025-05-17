@@ -34,6 +34,15 @@ public class AuthController(
         // If account chooser disabled, directly handle auth
         if (chooseAccount == false)
             return await AuthorizePost();
+        
+        // Validate the OpenID Connect request
+        var oidcRequest = HttpContext.GetOpenIddictServerRequest();
+        if (oidcRequest == null)
+            return View("error", new ErrorViewModel
+            {
+                Error = OpenIddictConstants.Errors.InvalidRequest,
+                ErrorDescription = "The OpenID Connect request cannot be retrieved."
+            });
 
         // Try to get the signin request from the claims
         var signinRequestResult = await signinRequestService.GetFromClaimsAsync(User);
@@ -41,15 +50,6 @@ public class AuthController(
         // If user not authenticated, redirect to signin
         if (signinRequestResult.IsError())
         {
-            // Validate the OpenID Connect request
-            var oidcRequest = HttpContext.GetOpenIddictServerRequest();
-            if (oidcRequest == null)
-                return View("error", new ErrorViewModel
-                {
-                    Error = OpenIddictConstants.Errors.InvalidRequest,
-                    ErrorDescription = "The OpenID Connect request cannot be retrieved."
-                });
-
             // Redirect user to signin page
             var request = new SigninRequest
             {
@@ -62,8 +62,12 @@ public class AuthController(
         var signinRequest = signinRequestResult.Value;
         
         // If the signin flow is not completed, redirect to the signin page to handle the rest
-        if(!signinRequest.AuthFlowCompleted)
+        if (!signinRequest.AuthFlowCompleted)
+        {
+            signinRequest.OidcRequest = oidcRequest;
+            await signinRequestService.UpdateAsync(signinRequest);
             return RedirectToAction("Signin", "Signin", new { request = signinRequest.Id });
+        }
 
         // Show account chooser
         var oidcRequestValues = HttpContext.Request.Query.ToDictionary();
