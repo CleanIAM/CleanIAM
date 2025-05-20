@@ -1,6 +1,6 @@
 # CleanIAM
 
-![CleanIAM](Figures/readme-header.png)
+![CleanIAM](docs/Figures/readme-header.png)
 
 A modern, secure, and extensible OpenID Connect server built with clean architecture principles.
 
