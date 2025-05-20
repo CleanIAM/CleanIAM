@@ -6,7 +6,7 @@ hero:
   text: "Modern Identity and Access Management for .NET"
   tagline: An open-source IAM solution built on the OpenIddict stack, providing OAuth 2.0 and OpenID Connect compliance
   image:
-    src: /Figures/cleaniam-logo.png
+    src: Figures/cleaniam-logo.png
     alt: CleanIAM Logo
   actions:
     - theme: brand

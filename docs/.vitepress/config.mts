@@ -7,7 +7,7 @@ export default defineConfig({
   base: "/CleanIAM/",
   head: [["link", { rel: "icon", href: "favicon.png" }]],
   themeConfig: {
-    logo: "/Figures/cleaniam-logo.svg",
+    logo: "Figures/cleaniam-logo.svg",
     search: {
       provider: "local",
     },
@@ -58,11 +58,20 @@ export default defineConfig({
         text: "Implementation",
         items: [
           { text: "Overview", link: "/implementation/" },
-          { text: "Project Structure", link: "/implementation/project-structure" },
+          {
+            text: "Project Structure",
+            link: "/implementation/project-structure",
+          },
           { text: "CQRS Pattern", link: "/implementation/cqrs-pattern" },
           { text: "Error Handling", link: "/implementation/error-handling" },
-          { text: "Naming Conventions", link: "/implementation/naming-conventions" },
-          { text: "File Organization", link: "/implementation/file-organization" },
+          {
+            text: "Naming Conventions",
+            link: "/implementation/naming-conventions",
+          },
+          {
+            text: "File Organization",
+            link: "/implementation/file-organization",
+          },
         ],
       },
       {

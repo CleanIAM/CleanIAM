@@ -1,6 +1,6 @@
 # CleanIAM
 
-![CleanIAM](docs/Figures/readme-header.png)
+![CleanIAM](Figures/readme-header.png)
 
 A modern, secure, and extensible OpenID Connect server built with clean architecture principles.
 
@@ -150,7 +150,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ---
 
 <p align="center">
-  <img src="docs/Figures/cleaniam-logo.png" alt="CleanIAM Logo" width="150">
+  <img src="igures/cleaniam-logo.png" alt="CleanIAM Logo" width="150">
 </p>
 <p align="center">
   Developed as part of a Master's Thesis 2025
