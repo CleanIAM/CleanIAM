@@ -101,16 +101,16 @@ The MVC views implement several security best practices:
 
 The login view provides a simple form for username and password entry, with options for social login and password reset.
 
-![Login View](Figures/SignIn_screen.png)
+![Login View](/Figures/SignIn_screen.png)
 
 ### MFA Setup View
 
 The MFA setup view displays a QR code for scanning with an authenticator app, along with manual entry options and clear instructions.
 
-![MFA Setup View](Figures/MFA_config_screen.png)
+![MFA Setup View](/Figures/MFA_config_screen.png)
 
 ### Consent Screen
 
 The OAuth consent screen clearly displays the requesting application and the permissions it's requesting, allowing the user to make an informed decision.
 
-![Consent Screen](Figures/account_chooser_screen.png)
+![Consent Screen](/Figures/account_chooser_screen.png)
